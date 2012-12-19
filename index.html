@@ -54,7 +54,7 @@ redraw();
 function redraw() {
   path = path.data(d3.geom.delaunay(vertices).map(function(d) { return "M" + d.join("L") + "Z"; }), String);
   path.exit().remove();
-  path.enter().insert("path", "circle").attr("class", function(d, i) { return "q" + (i % 9) + "-9"; }).attr("d", String);
+  path.enter().append("path").attr("class", function(d, i) { return "q" + (i % 9) + "-9"; }).attr("d", String);
 }
 
 </script>
