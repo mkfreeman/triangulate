@@ -41,10 +41,10 @@ var svg = d3.select("body").append("svg")
     .attr("class", "PiYG")
     .on("mousemove", update);
 
-svg.selectAll("path")
-    .data(d3.geom.voronoi(vertices))
+svg.append("g").selectAll("path")
+    .data(d3.geom.delaunay(vertices))
   .enter().append("path")
-    .attr("class", function(d, i) { return i ? "q" + (i % 9) + "-9" : null; })
+    .attr("class", function(d, i) { return "q" + (i % 9) + "-9"; })
     .attr("d", function(d) { return "M" + d.join("L") + "Z"; });
 
 svg.selectAll("circle")
@@ -56,7 +56,7 @@ svg.selectAll("circle")
 function update() {
   vertices[0] = d3.mouse(this);
   svg.selectAll("path")
-      .data(d3.geom.voronoi(vertices)
+      .data(d3.geom.delaunay(vertices)
       .map(function(d) { return "M" + d.join("L") + "Z"; }))
     .filter(function(d) { return this.getAttribute("d") != d; })
       .attr("d", function(d) { return d; });
