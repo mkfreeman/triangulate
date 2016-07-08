@@ -70,8 +70,10 @@ function moved() {
 
 function redraw() {
   var diagram = voronoi(sites);
-  triangle = triangle.data(diagram.triangles()).call(redrawTriangle);
-  link = link.data(diagram.links(sites)).call(redrawLink);
+  triangle = triangle.data(diagram.triangles()), triangle.exit().remove();
+  triangle = triangle.enter().append("path").merge(triangle).call(redrawTriangle);
+  link = link.data(diagram.links()), link.exit().remove();
+  link = link.enter().append("line").merge(link).call(redrawLink);
   site = site.data(sites).call(redrawSite);
 }
 
