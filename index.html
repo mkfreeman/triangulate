@@ -2,144 +2,111 @@
 <meta charset="utf-8">
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="https://zurb.com/playground/uploads/upload/upload/330/stackblur.min.js"></script>
-<style>
-
-.triangles {
-  fill: none;
-}
-
-.links {
-  stroke: #000;
-}
-
-.sites {
-  fill: #000;
-  stroke: #fff;
-}
-
-.triangles .primary {
-  fill: #f00;
-}
-
-.links .primary {
-  stroke: #fff;
-}
-
-.sites :first-child {
-  fill: #fff;
-}
-img{
-  opacity:0;
-  position:absolute;
-}
-
-@import "bourbon";
-
-.hero {
-  padding: 3em 0;
-  background: #333;
-  position: relative;
-  
-  &__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-  &__title {
-    position: relative;
-    z-index: 2;
-    color: #fff;
-    text-align: center;
-  }
-}
-
-</style>
-<img id="my-img" height="500" src="./imgs/emma.jpg"></img>
-<svg width="800" height="500"></svg>
+<link rel="stylesheet" href="styles.css" />
+<img id="my-img" src="./imgs/scott.jpg"></img>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script>
+    // Global variables
+    var height = 500;
+    var width = 500;
 
-var svg = d3.select("svg")
-    width = +svg.attr("width"),
-    height = +svg.attr("height");
-
-var sites = d3.range(3000)
-    .map(function(d) { return [Math.random() * width, Math.random() * height]; });
-
-
-// Create a canvas rendering of the photo (but don't display)
-var img = document.getElementById('my-img');
-var canvas = document.createElement('canvas');
-var clearCanvas = document.createElement('canvas');
-canvas.id = 'heroCanvas';
-canvas.className += 'hero';
-var makeImage = function(can) {
-  can.width = img.width;
-  can.height = img.height;
-  can.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-  document.body.appendChild(can);
-
-}
-makeImage(canvas);
-makeImage(clearCanvas);
-
-// Blur
-// Change this value to adjust the amount of blur
-var BLUR_RADIUS = 5;
-var canvasContext = canvas.getContext('2d');
-var drawBlur = function() {
-    var w = canvas.width;
-    var h = canvas.height;
-    canvasContext.drawImage(canvas, 0, 0, w, h);
-    stackBlurCanvasRGBA('heroCanvas', 0, 0, w, h, BLUR_RADIUS);
-  };
-setTimeout(function(){
-  drawBlur()
-  triangle.call(redrawTriangle);
-
-}, 1000)
+    var sites = d3.range(3000)
+        .map(function(d) {
+            return [Math.random() * width, Math.random() * height];
+        });
 
 
-var redrawTriangle = function(triangle) {
-  triangle
-      .classed("primary", function(d) { return d[0] === sites[0] || d[1] === sites[0] || d[2] === sites[0]; })
-      .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
-      .style("fill", function(d){
-        var x = 0;
-        var y = 0;
-        d.forEach(function(dd){
-          x += dd[0];
-          y += dd[1];
-        })
-        x = x/3;
-        y = y/3;
-        var pixelData = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
-        return 'rgba(' + pixelData.toString() + ')';
-      })
-      .style('stroke-opacity', '.2')
-}
+    // Select image
+    var img = document.getElementById('my-img');
+    img.height = height;
+    img.width = width;
 
-function redrawLink(link) {
-  link
-      .classed("primary", function(d) { return d.source === sites[0] || d.target === sites[0]; })
-      .attr("x1", function(d) { return d.source[0]; })
-      .attr("y1", function(d) { return d.source[1]; })
-      .attr("x2", function(d) { return d.target[0]; })
-      .attr("y2", function(d) { return d.target[1]; });
-}
+    // Canvases
+    var canvases = [
+        // {
+        //     id: 'normal',
+        //     className: 'normal'
+        // },
+        // {
+        //     id: 'triagled',
+        //     className: 'triangled'
+        // },
+        {
+            id: 'triangleBlur',
+            className: 'triangleBlur'
+        },
+        {
+            id: 'heroCanvas',
+            className: 'hero'
+        },
+    ];
+    var makeCanvas = function(can) {
+        var canvas = document.createElement('canvas');
+        canvas.id = can.id;
+        canvas.className += can.className;
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        document.body.appendChild(canvas);
+    }
+    // makeImage(canvas);
+    // makeImage(clearCanvas);
+    canvases.forEach(makeCanvas)
 
+    // Blur
+    // Change this value to adjust the amount of blur
+    var blurCanvas = document.getElementById('heroCanvas');
+    var BLUR_RADIUS = 10;
+    var canvasContext = blurCanvas.getContext('2d');
+    var drawBlur = function() {
+        canvasContext.drawImage(blurCanvas, 0, 0, width, height);
+        stackBlurCanvasRGBA('heroCanvas', 0, 0, width, height, BLUR_RADIUS);
+    };
+    drawBlur()
 
-var voronoi = d3.voronoi();
+    var drawPath = function(tri, can) {
+        console.log('canvas id', can)
+        var canvas = document.getElementById(can);
+        console.log('canvas ', canvas)
+        tri
+            .classed("primary", function(d) {
+                return d[0] === sites[0] || d[1] === sites[0] || d[2] === sites[0];
+            })
+            .attr("d", function(d) {
+                return "M" + d.join("L") + "Z";
+            })
+            .style("fill", function(d) {
+                var x = 0;
+                var y = 0;
+                d.forEach(function(dd) {
+                    x += dd[0];
+                    y += dd[1];
+                })
+                x = x / 3;
+                y = y / 3;
+                var pixelData = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
+                return 'rgba(' + pixelData.toString() + ')';
+            })
+            .style('stroke-opacity', '.2')
+    }
+    drawTriangle = function(can) {
+        var svg = d3.select('body')
+            .append("svg")
+            .attr('width', width)
+            .attr('height', height);
+        console.log("svg", svg)
 
-var triangle = svg.append("g")
-    .attr("class", "triangles")
-  .selectAll("path")
-  .data(voronoi.triangles(sites))
-  .enter().append("path")
-    .call(redrawTriangle);
+        var voronoi = d3.voronoi();
 
+        var triangle = svg.append("g")
+            .attr("class", "triangles")
+            .selectAll("path")
+            .data(voronoi.triangles(sites))
+            .enter().append("path")
+            .call(drawPath, can.id);
+    }
+    // setTimeout(function() {
+    canvases.map(drawTriangle)
 
+    // }, 1000)
 </script>
