@@ -82,7 +82,7 @@ var getColor = function(d, c) {
         .getContext('2d')
         .getImageData(x, y, 1, 1)
         .data;
-    var color = 'rgba(' + pixelData.toString() + ')';
+    var color = 'rgba(' + pixelData[0] + ',' + pixelData[1] + ',' + pixelData[2] + ',' + pixelData[3] + ')';
     var text = $("<text>").text(color);
     $('.intro').append(text);
     return color;
