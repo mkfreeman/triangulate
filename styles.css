@@ -1,52 +1,177 @@
-
 .triangles {
-  fill: none;
+    fill: none;
 }
 
 .links {
-  stroke: #000;
+    stroke: #000;
 }
 
 .sites {
-  fill: #000;
-  stroke: #fff;
+    fill: #000;
+    stroke: #fff;
 }
 
 .triangles .primary {
-  fill: #f00;
+    fill: #f00;
 }
 
 .links .primary {
-  stroke: #fff;
+    stroke: #fff;
 }
 
 .sites :first-child {
-  fill: #fff;
-}
-img{
-  opacity:0;
-  position:absolute;
+    fill: #fff;
 }
 
-@import "bourbon";
+#my-img {
+    opacity: 0;
+    position: absolute;
+}
+
+#slide-out {
+    padding: 20px;
+}
 
 .hero {
-  padding: 3em 0;
-  background: #333;
-  position: relative;
-  
-  &__background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-  }
-  &__title {
-    position: relative;
-    z-index: 2;
-    color: #fff;
-    text-align: center;
-  }
+    &__background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+    }
+    &__title {
+        position: relative;
+        z-index: 2;
+        color: #fff;
+        text-align: center;
+    }
 }
+
+.ele-container {
+    text-align: center;
+}
+
+.intro {
+    text-align: center;
+}
+
+nav {
+    line-height: inherit;
+}
+
+.side-nav {
+    padding: 20px;
+}
+
+h2 {
+    font-weight: 100;
+    margin-bottom: 6px;
+    font-size: 2.3em;
+}
+
+.image-background {
+    font-size: 25px;
+    text-align: center;
+}
+
+.image-background span {
+    position: relative;
+    top: -150px;
+}
+
+h3 {
+    font-size: 1.4em;
+    opacity: .3;
+    margin-top: 0px;
+}
+
+.button-wrapper {
+    text-align: center;
+}
+
+.file-field {
+    width: 200px;
+    display: inline-block;
+}
+
+.file-field input.file-path {
+    height: 20px;
+}
+
+.nav-wrapper {
+    text-align: center;
+}
+
+nav .brand-logo {
+    position: relative;
+    top: 10px;
+}
+
+nav .button-collapse {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+#sidenav-overlay {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+@media only screen and (max-width: 992px) {
+    nav .brand-logo {
+        left: 0%;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+}
+
+.btn {
+    width: 100%;
+}
+
+.ele-container span {
+    font-size: 100px;
+    font-weight: 100;
+    position: relative;
+    top: -200px;
+    opacity: .3;
+}
+
+.form-section,
+.modal-trigger {
+    color: rgba(0, 0, 0, 0.77);
+    font-size: x-large;
+}
+
+footer {
+    width: 100%;
+    background-color: white;
+    position: fixed;
+    bottom: 0px;
+}
+
+.footer-copyright {
+    border-top: 1px solid #ee6e73;
+    margin-top: 10px;
+}
+
+.input-field {
+    margin-top: 0px;
+}
+
+
+/* div.upload {
+    text-align: center;
+}
+
+.upload div {
+    background-color: #9C4C4C;
+    padding: 10px;
+    border-radius: 100px;
+    display: inline-block;
+    color: white; */
+
+
+/* } */

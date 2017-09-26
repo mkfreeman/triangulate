@@ -1,112 +1,84 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://zurb.com/playground/uploads/upload/upload/330/stackblur.min.js"></script>
+<script src="./lib/jquery.min.js"></script>
+<script src="./lib/stackblur.js"></script>
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="./lib/materialize.min.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="styles.css" />
-<img id="my-img" src="./imgs/scott.jpg"></img>
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script>
-    // Global variables
-    var height = 500;
-    var width = 500;
-
-    var sites = d3.range(3000)
-        .map(function(d) {
-            return [Math.random() * width, Math.random() * height];
-        });
+<!-- Compiled and minified JavaScript -->
+<script src="./lib/materialize.js"></script>
 
 
-    // Select image
-    var img = document.getElementById('my-img');
-    img.height = height;
-    img.width = width;
+<script src="./lib/d3.v4.min.js"></script>
 
-    // Canvases
-    var canvases = [
-        // {
-        //     id: 'normal',
-        //     className: 'normal'
-        // },
-        // {
-        //     id: 'triagled',
-        //     className: 'triangled'
-        // },
-        {
-            id: 'triangleBlur',
-            className: 'triangleBlur'
-        },
-        {
-            id: 'heroCanvas',
-            className: 'hero'
-        },
-    ];
-    var makeCanvas = function(can) {
-        var canvas = document.createElement('canvas');
-        canvas.id = can.id;
-        canvas.className += can.className;
-        canvas.width = width;
-        canvas.height = height;
-        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
-        document.body.appendChild(canvas);
-    }
-    // makeImage(canvas);
-    // makeImage(clearCanvas);
-    canvases.forEach(makeCanvas)
+<body>
+    <img id="my-img" src="./imgs/mountains.png"></img>
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#!" class="brand-logo">Triangulate</a>
+            <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
+            <div class="side-nav" id="mobile-demo">
+                <form>
+                    <p class="form-section">Controls</p>
+                    <p id="blur-size" class="range-field">
+                        <label for="blur-input">Blur</label>
+                        <input id="blur-input" type="range" min="0" max="100" />
+                    </p>
+                    <p id="num-points" class="range-field">
+                        <label for="points-input">Num. Triangles</label>
+                        <input id="points-input" type="range" min="10" max="5000" />
+                    </p>
+                    <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="intro">
+        <h2>Make triangle designs out of your photos.</h2>
+        <h3 class="subheader">(because it was once cool design)</h3>
+    </div>
+    <div class="button-wrapper">
+        <div class="file-field input-field">
+            <div class="btn">
+                <span>Upload a File</span>
+                <input type="file" id="file">
+            </div>
+            <div class="file-path-wrapper">
+                <input class="file-path validate" type="text">
+            </div>
+        </div>
+    </div>
 
-    // Blur
-    // Change this value to adjust the amount of blur
-    var blurCanvas = document.getElementById('heroCanvas');
-    var BLUR_RADIUS = 10;
-    var canvasContext = blurCanvas.getContext('2d');
-    var drawBlur = function() {
-        canvasContext.drawImage(blurCanvas, 0, 0, width, height);
-        stackBlurCanvasRGBA('heroCanvas', 0, 0, width, height, BLUR_RADIUS);
-    };
-    drawBlur()
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Triangulate</h4>
+            <p>This project uses a <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a> to randomly sample points from an image to construct an abstracted representation of it. It was built
+                based on
+                <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. </p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ok</a>
+        </div>
+    </div>
+    <!-- <div class="image-background">
+        <img src="./imgs/mountains.png" height=400 />
+        <span>&#x2192;</span>
+        <img src="./imgs/triangle-mountains.png" height=400 />
+    </div> -->
 
-    var drawPath = function(tri, can) {
-        console.log('canvas id', can)
-        var canvas = document.getElementById(can);
-        console.log('canvas ', canvas)
-        tri
-            .classed("primary", function(d) {
-                return d[0] === sites[0] || d[1] === sites[0] || d[2] === sites[0];
-            })
-            .attr("d", function(d) {
-                return "M" + d.join("L") + "Z";
-            })
-            .style("fill", function(d) {
-                var x = 0;
-                var y = 0;
-                d.forEach(function(dd) {
-                    x += dd[0];
-                    y += dd[1];
-                })
-                x = x / 3;
-                y = y / 3;
-                var pixelData = canvas.getContext('2d').getImageData(x, y, 1, 1).data;
-                return 'rgba(' + pixelData.toString() + ')';
-            })
-            .style('stroke-opacity', '.2')
-    }
-    drawTriangle = function(can) {
-        var svg = d3.select('body')
-            .append("svg")
-            .attr('width', width)
-            .attr('height', height);
-        console.log("svg", svg)
+    <div class="ele-container"></div>
+    <footer>
 
-        var voronoi = d3.voronoi();
-
-        var triangle = svg.append("g")
-            .attr("class", "triangles")
-            .selectAll("path")
-            .data(voronoi.triangles(sites))
-            .enter().append("path")
-            .call(drawPath, can.id);
-    }
-    // setTimeout(function() {
-    canvases.map(drawTriangle)
-
-    // }, 1000)
-</script>
+        <div class="footer-copyright">
+            <div class="container">
+                © 2017 Copyright Michael Freeman
+                <a class="right" target="_blank" href="http://twitter.com/mf_viz">@mf_viz</a>
+            </div>
+        </div>
+    </footer>
+</body>
+<script src="./main.js"></script>
