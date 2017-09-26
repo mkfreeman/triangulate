@@ -175,11 +175,18 @@ $("#file").change(function() {
     $('.ele-container').empty();
     $('canvas').remove();
     reader.onloadend = function(e) {
-        img = document.getElementById('my-img');
-        img.onload(function() {
+        // img = document.getElementById('my-img');
+        img = $('#my-img');
+        // img.onload(function() {
+        //     build();
+        // })
+        img.attr('src', e.target.result);
+        img.one("load", function() {
             build();
-        })
-        img.src = e.target.result;
+        }).each(function() {
+            if (this.complete) $(this).load();
+        });
+        // img.src = e.target.result;
     };
 
     reader.readAsDataURL(this.files[0]);
