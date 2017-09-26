@@ -2,7 +2,7 @@
 var height = 500;
 var width = 500;
 var BLUR_RADIUS = 0;
-var NUM_POINTS = 1000;
+var NUM_POINTS = 100;
 var img;
 
 // Function to build -- after image is uploaded
@@ -54,29 +54,6 @@ var drawBlur = function() {
     stackBlurCanvasRGBA('heroCanvas', 0, 0, width, height, BLUR_RADIUS);
 };
 
-// Function to draw Path
-var drawPath = function(tri, can) {
-    var canvas = document.getElementById(can);
-    tri
-        .attr("d", function(d) {
-            return "M" + d.join("L") + "Z";
-        })
-        .style("fill", function(d) {
-            var x = 0;
-            var y = 0;
-            d.forEach(function(dd) {
-                x += dd[0];
-                y += dd[1];
-            })
-            x = x / 3;
-            y = y / 3;
-            var pixelData = canvas
-                .getContext('2d')
-                .getImageData(x, y, 1, 1)
-                .data;
-            return 'rgba(' + pixelData.toString() + ')';
-        });
-}
 var appendCanvases = function() {
     canvases
         .forEach(function(can) {
@@ -105,7 +82,10 @@ var getColor = function(d, c) {
         .getContext('2d')
         .getImageData(x, y, 1, 1)
         .data;
-    return 'rgba(' + pixelData.toString() + ')';
+    var color = 'rgba(' + pixelData.toString() + ')';
+    var text = $("<text>").text(color);
+    $('.intro').append(text);
+    return color;
 }
 // Function to draw a cell
 function drawCell(cell, con) {
@@ -116,8 +96,8 @@ function drawCell(cell, con) {
         con.lineTo(cell[j][0], cell[j][1]);
     }
 
-    // con.fillStyle = getColor(cell);
-    con.fillStyle = 'green';
+    con.fillStyle = getColor(cell);
+    // con.fillStyle = 'green';
     con.strokeStyle = 'none';
     con.fill();
     con.closePath();
