@@ -166,27 +166,7 @@ $('#num-points input').on('change', function(value) {
     canvases.map(drawTriangle)
 });
 
-// Test if mobile
-// if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-//     // File uploader
-//     $("#file-mobile").change(function() {
-//         // New file reader
-//         var reader = new FileReader();
-//         // Empty the container -- a little lazy
-//         $('.ele-container').empty();
-//         $('canvas').remove();
-//         reader.onloadend = function(e) {
-//             img = document.getElementById('my-img');
-//             img.src = e.target.result;
-//             // Unsure why this is necessary to setTimeout
-//             setTimeout(build, 1)
-//         };
 
-//         reader.readAsDataURL(this.files[0]);
-
-//     });
-//     $('#file').hide();
-// } else {
 // File uploader
 $("#file").change(function() {
     // New file reader
@@ -196,32 +176,16 @@ $("#file").change(function() {
     $('canvas').remove();
     reader.onloadend = function(e) {
         img = document.getElementById('my-img');
+        img.onload(function() {
+            build();
+        })
         img.src = e.target.result;
-        // Unsure why this is necessary to setTimeout
-        setTimeout(build, 1)
     };
 
     reader.readAsDataURL(this.files[0]);
 
 });
-// }
-// // File uploader
-// $("#file").change(function() {
-//     // New file reader
-//     var reader = new FileReader();
-//     // Empty the container -- a little lazy
-//     $('.ele-container').empty();
-//     $('canvas').remove();
-//     reader.onloadend = function(e) {
-//         img = document.getElementById('my-img');
-//         img.src = e.target.result;
-//         // Unsure why this is necessary to setTimeout
-//         setTimeout(build, 1)
-//     };
 
-//     reader.readAsDataURL(this.files[0]);
-
-// });
 // Wait for image to load
 $(window).on("load", function() {
     build();
