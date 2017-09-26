@@ -116,7 +116,8 @@ function drawCell(cell, con) {
         con.lineTo(cell[j][0], cell[j][1]);
     }
 
-    con.fillStyle = getColor(cell);
+    // con.fillStyle = getColor(cell);
+    con.fillStyle = 'green';
     con.strokeStyle = 'none';
     con.fill();
     con.closePath();
