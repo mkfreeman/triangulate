@@ -5,26 +5,10 @@ var BLUR_RADIUS = 0;
 var NUM_POINTS = 1000;
 var img;
 
-// Get triangle centers
-var getSites = function() {
-    return d3
-        .range(NUM_POINTS)
-        .map(function(d) {
-            return [
-                Math.random() * width,
-                Math.random() * height
-            ];
-        });
-}
-var sites = getSites();
-
 // Function to build -- after image is uploaded
 var build = function() {
     // Select image
     img = document.getElementById('my-img');
-    img.height = height;
-    // img.width = width;
-    console.log('img build ', img)
 
     // Make Canvas elements (for photos)
     canvases.forEach(makeCanvas)
@@ -33,7 +17,8 @@ var build = function() {
     $('.ele-container').append('<span>&#x2192;</span>')
 
     // Blur Canvases
-    drawBlur()
+    drawBlur();
+
     // Append svgs (for triangles)
     appendCanvases();
     canvases.map(drawTriangle);
@@ -106,20 +91,41 @@ var appendCanvases = function() {
         })
 }
 
+// Function to get color from the triangle
+var getColor = function(d, c) {
+    var x = 0;
+    var y = 0;
+    d.forEach(function(dd) {
+        x += dd[0];
+        y += dd[1];
+    })
+    x = x / 3;
+    y = y / 3;
+    var pixelData = document.getElementById('heroCanvas')
+        .getContext('2d')
+        .getImageData(x, y, 1, 1)
+        .data;
+    return 'rgba(' + pixelData.toString() + ')';
+}
 // Function to draw a cell
-function drawCell(cell) {
-    if (!cell) return false;
-    context.moveTo(cell[0][0], cell[0][1]);
+function drawCell(cell, con) {
+    if (!cell || !con) return false;
+    con.beginPath();
+    con.moveTo(cell[0][0], cell[0][1]);
     for (var j = 1, m = cell.length; j < m; ++j) {
-        context.lineTo(cell[j][0], cell[j][1]);
+        con.lineTo(cell[j][0], cell[j][1]);
     }
-    context.closePath();
+    con.closePath();
+    con.fillStyle = getColor(cell);
+    con.strokeStyle = 'none';
+    con.fill();
+    // con.stroke();
     return true;
 }
 // Function to draw triangles
 var drawTriangle = function(can) {
     // var voronoi = d3.voronoi();
-    var sites = d3.range(100)
+    var sites = d3.range(NUM_POINTS)
         .map(function(d) {
             return [Math.random() * width, Math.random() * height];
         });
@@ -134,34 +140,13 @@ var drawTriangle = function(can) {
         links = diagram.links(),
         polygons = diagram.triangles();
 
-    var canvas = d3.select("#can-" + can.id);
+    var canvas = document.getElementById("can-" + can.id);
     var context = canvas.getContext("2d")
+    context.clearRect(0, 0, canvas.width, canvas.height);
 
-    context.clearRect(0, 0, width, height);
-    context.beginPath();
-    drawCell(polygons[0]);
-    context.fillStyle = "#f00";
-    context.fill();
 
-    context.beginPath();
-    for (var i = 0, n = polygons.length; i < n; ++i) drawCell(polygons[i]);
-    context.strokeStyle = "#000";
-    context.stroke();
-
-    // var triangles = d3
-    //     .select('#svg-' + can.id + ' g')
-    //     .selectAll("path")
-    //     .data(voronoi.triangles(sites))
-
-    // triangles
-    //     .enter()
-    //     .append('path')
-    //     .merge(triangles)
-    //     .call(drawPath, can.id);
-
-    // triangles
-    //     .exit()
-    //     .remove();
+    // Draw paths!
+    for (var i = 0, n = polygons.length; i < n; ++i) drawCell(polygons[i], context);
 };
 
 // Change events
@@ -170,31 +155,16 @@ $('#num-points input').val(NUM_POINTS)
 $('#blur-size input').on('change', function(value) {
     BLUR_RADIUS = this.value;
     drawBlur();
-    d3
-        .select('#svg-heroCanvas')
-        .selectAll('path')
-        .call(drawPath, 'heroCanvas')
+    canvases.map(drawTriangle)
 });
 
 // Number of triangle points
 $('#num-points input').on('change', function(value) {
     NUM_POINTS = this.value;
-    sites = getSites();
+    // sites = getSites();
     canvases.map(drawTriangle)
 });
 
-
-// $('#file').on('click', function() {
-//     // Get rid of background images
-//     setTimeout(function() {
-//         $('.image-background').animate({
-//             'opacity': 0
-//         }, 1000, function() {
-//             $(this).remove()
-//         });
-//     }, 1000)
-
-// })
 // File uploader
 $("#file").change(function() {
     // New file reader
