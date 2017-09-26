@@ -2,7 +2,7 @@
 var height = 500;
 var width = 500;
 var BLUR_RADIUS = 0;
-var NUM_POINTS = 100;
+var NUM_POINTS = 500;
 var img;
 
 // Function to build -- after image is uploaded
@@ -83,8 +83,6 @@ var getColor = function(d, c) {
         .getImageData(x, y, 1, 1)
         .data;
     var color = 'rgba(' + pixelData[0] + ',' + pixelData[1] + ',' + pixelData[2] + ',' + pixelData[3] + ')';
-    var text = $("<text>").text(color);
-    $('.intro').append(text);
     return color;
 }
 // Function to draw a cell
