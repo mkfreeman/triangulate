@@ -115,10 +115,11 @@ function drawCell(cell, con) {
     for (var j = 1, m = cell.length; j < m; ++j) {
         con.lineTo(cell[j][0], cell[j][1]);
     }
-    con.closePath();
+
     con.fillStyle = getColor(cell);
     con.strokeStyle = 'none';
     con.fill();
+    con.closePath();
     // con.stroke();
     return true;
 }
