@@ -129,7 +129,7 @@ nav .button-collapse {
     }
 }
 
-.btn {
+.upload-button {
     width: 100%;
 }
 
@@ -163,6 +163,14 @@ footer {
 
 .input-field {
     margin-top: 0px;
+}
+
+#download {
+    color: white;
+}
+
+#controls {
+    padding-bottom: 20px;
 }
 
 

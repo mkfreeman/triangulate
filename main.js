@@ -1,6 +1,6 @@
 // Main.js Global variables
-var height = 500;
-var width = 500;
+var height;
+var width;
 var BLUR_RADIUS = 0;
 var NUM_POINTS = 500;
 var img;
@@ -9,12 +9,19 @@ var img;
 var build = function() {
     // Select image
     img = document.getElementById('my-img');
+    var innerWidth = $(window).innerWidth()
+    width = innerWidth < 700 ? innerWidth * .9 : innerWidth * .4;
+    img.width = width;
+    height = img.height;
 
     // Make Canvas elements (for photos)
     canvases.forEach(makeCanvas)
 
     // Append arrow
-    $('.ele-container').append('<span>&#x2192;</span>')
+    if (innerWidth > 700) {
+        $('.ele-container').append('<span>&#x2192;</span>')
+    }
+
 
     // Blur Canvases
     drawBlur();

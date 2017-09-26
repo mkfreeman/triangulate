@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta charset="utf-8">
 <script src="./lib/jquery.min.js"></script>
 <script src="./lib/stackblur.js"></script>
@@ -18,9 +19,9 @@
     <nav>
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo">Triangulate</a>
-            <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons">menu</i></a>
-            <div class="side-nav" id="mobile-demo">
-                <form>
+            <!-- <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons">menu</i></a> -->
+            <!-- <div class="side-nav" id="mobile-demo"> -->
+            <!-- <form>
                     <p class="form-section">Controls</p>
                     <p id="blur-size" class="range-field">
                         <label for="blur-input">Blur</label>
@@ -32,11 +33,11 @@
                     </p>
                     <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
                     </p>
-                </form>
-            </div>
+                </form> -->
+            <!-- </div> -->
         </div>
     </nav>
-    <div class="intro">
+    <div class="container intro">
         <h2>Make triangle designs out of your photos.</h2>
         <h3 class="subheader">(because it was once cool design)</h3>
     </div>
@@ -44,7 +45,7 @@
         <!-- <input id="file-mobile" type="file" accept="image/*" capture="camera"> -->
 
         <div class="file-field input-field">
-            <div class="btn">
+            <div class="btn upload-button">
                 <span>Upload a File</span>
                 <input type="file" id="file" accept="image/*">
             </div>
@@ -66,14 +67,27 @@
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ok</a>
         </div>
     </div>
-    <!-- <div class="image-background">
-        <img src="./imgs/mountains.png" height=400 />
-        <span>&#x2192;</span>
-        <img src="./imgs/triangle-mountains.png" height=400 />
-    </div> -->
-    <a id="download">Download as image</a>
-
     <div class="ele-container"></div>
+
+    <!-- Controls -->
+    <div class="container" id="controls">
+        <form>
+            <p class="form-section">Customize</p>
+            <p id="blur-size" class="range-field">
+                <label for="blur-input">Blur</label>
+                <input id="blur-input" type="range" min="0" max="100" />
+            </p>
+            <p id="num-points" class="range-field">
+                <label for="points-input">Num. Triangles</label>
+                <input id="points-input" type="range" min="10" max="5000" />
+            </p>
+            <button class="btn"><a id="download">Download as image</a></button>
+            <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
+            </p>
+            <br/>
+        </form>
+
+    </div>
     <footer>
 
         <div class="footer-copyright">
