@@ -20,6 +20,9 @@ var build = function() {
     // Append arrow
     if (innerWidth > 700) {
         $('.ele-container').append('<span>&#x2192;</span>')
+        $('.upload-text').text('Upload an Image');
+    } else {
+        $('.upload-text').text('Take Photo');
     }
 
 
