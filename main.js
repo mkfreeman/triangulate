@@ -35,7 +35,7 @@ var build = function() {
     // Blur Canvases
     drawBlur()
     // Append svgs (for triangles)
-    appendSvgs();
+    appendCanvases();
     canvases.map(drawTriangle);
 };
 
@@ -92,39 +92,76 @@ var drawPath = function(tri, can) {
             return 'rgba(' + pixelData.toString() + ')';
         });
 }
-var appendSvgs = function() {
+var appendCanvases = function() {
     canvases
         .forEach(function(can) {
             d3
                 .select('.ele-container')
-                .append('svg')
+                .append('canvas')
                 .attr('width', width)
                 .attr('height', height)
-                .attr('id', 'svg-' + can.id)
-                .append("g")
+                .attr('id', 'can-' + can.id)
                 .attr("class", "triangles " + can.id)
 
         })
 }
 
+// Function to draw a cell
+function drawCell(cell) {
+    if (!cell) return false;
+    context.moveTo(cell[0][0], cell[0][1]);
+    for (var j = 1, m = cell.length; j < m; ++j) {
+        context.lineTo(cell[j][0], cell[j][1]);
+    }
+    context.closePath();
+    return true;
+}
 // Function to draw triangles
 var drawTriangle = function(can) {
-    var voronoi = d3.voronoi();
+    // var voronoi = d3.voronoi();
+    var sites = d3.range(100)
+        .map(function(d) {
+            return [Math.random() * width, Math.random() * height];
+        });
 
-    var triangles = d3
-        .select('#svg-' + can.id + ' g')
-        .selectAll("path")
-        .data(voronoi.triangles(sites))
+    var voronoi = d3.voronoi()
+        .extent([
+            [-1, -1],
+            [width + 1, height + 1]
+        ]);
 
-    triangles
-        .enter()
-        .append('path')
-        .merge(triangles)
-        .call(drawPath, can.id);
+    var diagram = voronoi(sites),
+        links = diagram.links(),
+        polygons = diagram.triangles();
 
-    triangles
-        .exit()
-        .remove();
+    var canvas = d3.select("#can-" + can.id);
+    var context = canvas.getContext("2d")
+
+    context.clearRect(0, 0, width, height);
+    context.beginPath();
+    drawCell(polygons[0]);
+    context.fillStyle = "#f00";
+    context.fill();
+
+    context.beginPath();
+    for (var i = 0, n = polygons.length; i < n; ++i) drawCell(polygons[i]);
+    context.strokeStyle = "#000";
+    context.stroke();
+
+    // var triangles = d3
+    //     .select('#svg-' + can.id + ' g')
+    //     .selectAll("path")
+    //     .data(voronoi.triangles(sites))
+
+    // triangles
+    //     .enter()
+    //     .append('path')
+    //     .merge(triangles)
+    //     .call(drawPath, can.id);
+
+    // triangles
+    //     .exit()
+    //     .remove();
 };
 
 // Change events
