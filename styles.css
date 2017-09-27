@@ -173,6 +173,15 @@ footer {
     padding-bottom: 20px;
 }
 
+label {
+    font-size: 1.1em;
+}
+
+.noUi-target.noUi-ltr.noUi-horizontal {
+    margin-bottom: 20px;
+    margin-top: 3px;
+}
+
 
 /* div.upload {
     text-align: center;

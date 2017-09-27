@@ -20,7 +20,7 @@ var build = function() {
     // Append arrow
     if (innerWidth > 700) {
         $('.ele-container').append('<span>&#x2192;</span>')
-        $('.upload-text').text('Upload an Image');
+        $('.upload-text').text('Upload Image');
     } else {
         $('.upload-text').text('Take Photo');
     }
@@ -57,6 +57,7 @@ var makeCanvas = function(can) {
 }
 // canvases.forEach(makeCanvas) Blur the canvas
 var drawBlur = function() {
+    $('#blur-slider-label').text("Blur: " + BLUR_RADIUS)
     var canvas = document.getElementById('heroCanvas');
     canvas
         .getContext('2d')
@@ -151,7 +152,6 @@ $('#blur-size input').on('change', function(value) {
 // Number of triangle points
 $('#num-points input').on('change', function(value) {
     NUM_POINTS = this.value;
-    // sites = getSites();
     canvases.map(drawTriangle)
 });
 
@@ -196,9 +196,43 @@ document.getElementById('download').addEventListener('click', function() {
     downloadCanvas(this, 'can-heroCanvas', 'triangle-image.png');
 }, false);
 
+var blurSlider = document.getElementById('blur-slider');
+var pointsSlider = document.getElementById('points-slider');
+noUiSlider.create(blurSlider, {
+    start: BLUR_RADIUS,
+    animate: false,
+    step: 1,
+    range: {
+        min: 0,
+        max: 100
+    }
+});
+blurSlider.noUiSlider.on('set', function(value) {
+    BLUR_RADIUS = Math.floor(value);
+    drawBlur();
+    canvases.map(drawTriangle)
+});
+
+noUiSlider.create(pointsSlider, {
+    start: NUM_POINTS,
+    animate: false,
+    step: 1,
+    range: {
+        min: 10,
+        max: 10000
+    }
+});
+
+pointsSlider.noUiSlider.on('set', function(value) {
+    NUM_POINTS = Math.floor(value);
+    $('#points-slider-label').text('Num. Triangles: ' + NUM_POINTS);
+    canvases.map(drawTriangle)
+});
+
 // Wait for image to load
 $(window).on("load", function() {
     build();
     $('.modal').modal();
 });
 $(".button-collapse").sideNav();
+$('#points-slider-label').text('Num. Triangles: ' + NUM_POINTS);

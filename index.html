@@ -8,6 +8,9 @@
 <link rel="stylesheet" href="./lib/materialize.min.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <link rel="stylesheet" href="styles.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.css" />
+
 <!-- Compiled and minified JavaScript -->
 <script src="./lib/materialize.js"></script>
 
@@ -61,7 +64,7 @@
             <h4>Triangulate</h4>
             <p>This project uses a <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a> to randomly sample points from an image to construct an abstracted representation of it. It was built
                 based on
-                <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. </p>
+                <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. See <a href="https://github.com/mkfreeman/triangulate" target="_blank">code</a> on GitHub</p>
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ok</a>
@@ -73,14 +76,10 @@
     <div class="container" id="controls">
         <form>
             <p class="form-section">Customize</p>
-            <p id="blur-size" class="range-field">
-                <label for="blur-input">Blur</label>
-                <input id="blur-input" type="range" min="0" max="100" />
-            </p>
-            <p id="num-points" class="range-field">
-                <label for="points-input">Num. Triangles</label>
-                <input id="points-input" type="range" min="10" max="5000" />
-            </p>
+            <label for="blur-slider" id="blur-slider-label"></label>
+            <div id="blur-slider"></div>
+            <label for="points-slider" id="points-slider-label"></label>
+            <div id="points-slider"></div>
             <button class="btn"><a id="download">Download as image</a></button>
             <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
             </p>
@@ -92,7 +91,7 @@
 
         <div class="footer-copyright">
             <div class="container">
-                © 2017 Copyright Michael Freeman
+                © 2017 Copyright <a href="http://mfviz.com/" target="_blank">Michael Freeman</a>
                 <a class="right" target="_blank" href="http://twitter.com/mf_viz">@mf_viz</a>
             </div>
         </div>
