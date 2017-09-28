@@ -6,24 +6,24 @@ var NUM_POINTS = 500;
 var img;
 var voronoi;
 
-
 // Function to build -- after image is uploaded
-var build = function() {
+var build = function () {
     // Select image
     img = document.getElementById('my-img');
     var innerWidth = $(window).innerWidth();
-    width = innerWidth < 700 ?
-        innerWidth * 0.9 :
-        innerWidth * 0.4;
+    width = innerWidth < 700
+        ? innerWidth * 0.9
+        : innerWidth * 0.4;
     img.width = width;
     height = img.height;
-
 
     // Define voronoi function
     voronoi = d3
         .voronoi()
         .extent([
-            [-1, -1],
+            [
+                -1, -1
+            ],
             [
                 width + 1,
                 height + 1
@@ -49,13 +49,15 @@ var build = function() {
 };
 
 // Canvases to draw
-var canvases = [{
-    id: 'heroCanvas',
-    className: 'hero'
-}];
+var canvases = [
+    {
+        id: 'heroCanvas',
+        className: 'hero'
+    }
+];
 
 // Function to make Canvas elements
-var makeCanvas = function(can) {
+var makeCanvas = function (can) {
     // Create canvas
     var canvas = document.createElement('canvas');
     canvas.id = can.id;
@@ -73,7 +75,7 @@ var makeCanvas = function(can) {
 }
 
 // Blur the initial image
-var drawBlur = function() {
+var drawBlur = function () {
     $('#blur-slider-label').text("Blur: " + BLUR_RADIUS);
     var canvas = document.getElementById('heroCanvas');
     canvas
@@ -83,9 +85,9 @@ var drawBlur = function() {
 };
 
 // Append canvas elements to draw in
-var appendCanvases = function() {
+var appendCanvases = function () {
     canvases
-        .forEach(function(can) {
+        .forEach(function (can) {
             d3
                 .select('.ele-container')
                 .append('canvas')
@@ -98,11 +100,11 @@ var appendCanvases = function() {
 };
 
 // Function to get color from the triangle
-var getColor = function(d, c) {
+var getColor = function (d, c) {
     // Get triangle center
     var x = 0;
     var y = 0;
-    d.forEach(function(dd) {
+    d.forEach(function (dd) {
         x += dd[0];
         y += dd[1];
     });
@@ -120,10 +122,10 @@ var getColor = function(d, c) {
 };
 
 // Function to draw a cell
-var drawCell = function(cell, con) {
-    if (!cell || !con)
+var drawCell = function (cell, con) {
+    if (!cell || !con) 
         return false;
-
+    
     // Draw path
     con.beginPath();
     con.moveTo(cell[0][0], cell[0][1]);
@@ -133,18 +135,20 @@ var drawCell = function(cell, con) {
 
     // Fill path
     con.fillStyle = getColor(cell);
-    con.strokeStyle = 'none';
+    con.strokeStyle = '#d3d3d3';
+    con.lineWidth = .5;
     con.fill();
+    con.stroke();
     con.closePath();
     return true;
 }
 
 // Function to draw triangles
-var drawTriangle = function(can) {
+var drawTriangle = function (can) {
     // Sample points
     var sites = d3
         .range(NUM_POINTS)
-        .map(function(d) {
+        .map(function (d) {
             return [
                 Math.random() * width,
                 Math.random() * height

@@ -1,33 +1,18 @@
-.triangles {
-    fill: none;
-}
-
-.links {
-    stroke: #000;
-}
-
-.sites {
-    fill: #000;
-    stroke: #fff;
-}
-
-.triangles .primary {
-    fill: #f00;
-}
-
-.links .primary {
-    stroke: #fff;
-}
-
-.sites :first-child {
-    fill: #fff;
-}
-
 #my-img {
     opacity: 0;
     position: fixed;
     pointer-events: none;
     z-index: -999;
+}
+
+.image-background {
+    font-size: 25px;
+    text-align: center;
+}
+
+.image-background span {
+    position: relative;
+    top: -150px;
 }
 
 #slide-out {
@@ -59,28 +44,11 @@
     text-align: center;
 }
 
-nav {
-    line-height: inherit;
-}
-
-.side-nav {
-    padding: 20px;
-}
-
 h2 {
     font-weight: 100;
     margin-bottom: 6px;
     font-size: 1.5em;
-}
-
-.image-background {
-    font-size: 25px;
-    text-align: center;
-}
-
-.image-background span {
-    position: relative;
-    top: -150px;
+    font-family: sans-serif;
 }
 
 h3 {
@@ -152,6 +120,7 @@ footer {
     background-color: white;
     position: fixed;
     bottom: 0px;
+    z-index: 9999;
 }
 
 .footer-copyright {
@@ -181,18 +150,3 @@ label {
     margin-bottom: 20px;
     margin-top: 3px;
 }
-
-
-/* div.upload {
-    text-align: center;
-}
-
-.upload div {
-    background-color: #9C4C4C;
-    padding: 10px;
-    border-radius: 100px;
-    display: inline-block;
-    color: white; */
-
-
-/* } */
