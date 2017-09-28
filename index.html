@@ -10,33 +10,41 @@
             dataLayer.push(arguments)
         };
         gtag('js', new Date());
-
         gtag('config', 'UA-49431863-4');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <script src="./lib/jquery.min.js"></script>
-    <script src="./lib/stackblur.js"></script>
+
+    <!-- Twitter and Facebook images -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@nytimes">
     <meta name="twitter:creator" content="@mf_viz">
     <meta name="twitter:title" content="Triangulate">
-    <meta name="twitter:description" content="Add Triangle Design to Triangles">
+    <meta name="twitter:description" content="Add Triangle Design to Images">
     <meta name="twitter:image" content="http://mfviz.com/triangulate/imgs/triangle-mountains.png">
+    <meta property="og:site_name" content="Triangulate" />
+    <meta property="og:title" content="Triangulate" />
+    <meta property="og:description" content="Add Triangle Design to Images" />
+    <meta property="og:image" content="http://mfviz.com/triangulate/imgs/triangle-mountains.png">
+    <meta property="og:url" content="http://mfviz.com/triangulate/">
 
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="./lib/materialize.min.css">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.css" />
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="./lib/materialize.js"></script>
-
-
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.js"></script>
+    <script src="./lib/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script src="./lib/stackblur.js"></script>
     <script src="./lib/d3.v4.min.js"></script>
 
+    <!-- JavaScript -->
+    <script src="./main.js"></script>
+    <script src="./controls.js"></script>
 </head>
 
 <body>
@@ -44,22 +52,6 @@
     <nav>
         <div class="nav-wrapper">
             <a href="#!" class="brand-logo">Triangulate</a>
-            <!-- <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons">menu</i></a> -->
-            <!-- <div class="side-nav" id="mobile-demo"> -->
-            <!-- <form>
-                    <p class="form-section">Controls</p>
-                    <p id="blur-size" class="range-field">
-                        <label for="blur-input">Blur</label>
-                        <input id="blur-input" type="range" min="0" max="100" />
-                    </p>
-                    <p id="num-points" class="range-field">
-                        <label for="points-input">Num. Triangles</label>
-                        <input id="points-input" type="range" min="10" max="5000" />
-                    </p>
-                    <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
-                    </p>
-                </form> -->
-            <!-- </div> -->
         </div>
     </nav>
     <div class="container intro">
@@ -67,8 +59,6 @@
         <h3 class="subheader">(because it was once cool design)</h3>
     </div>
     <div class="button-wrapper">
-        <!-- <input id="file-mobile" type="file" accept="image/*" capture="camera"> -->
-
         <div class="file-field input-field">
             <div class="btn upload-button">
                 <span class="upload-text"></span>
@@ -119,4 +109,3 @@
         </div>
     </footer>
 </body>
-<script src="./main.js"></script>
