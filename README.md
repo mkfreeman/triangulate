@@ -5,7 +5,7 @@ Some examples:
 
 ![mountain photo](imgs/triangle-mountains.png)
 
-![bird](imgs/bird.png)
+![bird](imgs/bird-img.png)
 
 ![Freeman photo](imgs/freeman-triangle.png)
 
