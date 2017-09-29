@@ -5,6 +5,7 @@ var BLUR_RADIUS = 0;
 var NUM_POINTS = 500;
 var img;
 var voronoi;
+console.log('test')
 
 // Function to build -- after image is uploaded
 var build = function () {
@@ -72,16 +73,15 @@ var makeCanvas = function (can) {
     document
         .getElementsByClassName('ele-container')[0]
         .appendChild(canvas);
-}
+};
 
 // Blur the initial image
 var drawBlur = function () {
-    $('#blur-slider-label').text("Blur: " + BLUR_RADIUS);
+    // $('#blur-slider-label').text("Blur: " + BLUR_RADIUS);
     var canvas = document.getElementById('heroCanvas');
-    canvas
-        .getContext('2d')
-        .drawImage(img, 0, 0, width, height);
-    stackBlurCanvasRGBA('heroCanvas', 0, 0, width, height, BLUR_RADIUS);
+    var context = canvas.getContext('2d')
+    context.filter = 'blur(' + BLUR_RADIUS + 'px)';
+    context.drawImage(img, 0, 0, width, height);
 };
 
 // Append canvas elements to draw in
@@ -138,7 +138,9 @@ var drawCell = function (cell, con) {
     con.strokeStyle = '#d3d3d3';
     con.lineWidth = .5;
     con.fill();
-    con.stroke();
+    if (con.fillStyle != '#ffffff') {
+        con.stroke();
+    }
     con.closePath();
     return true;
 }

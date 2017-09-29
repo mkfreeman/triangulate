@@ -1,4 +1,7 @@
-// Change events
+// Change events Test if safari for compatibility
+var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
+    return p.toString() === "[object SafariRemoteNotification]";
+})(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 $(function () {
     // File uploader
     $("#file")
@@ -47,7 +50,7 @@ $(function () {
         step: 1,
         range: {
             min: 0,
-            max: 100
+            max: 30
         }
     });
 
@@ -56,13 +59,16 @@ $(function () {
         .on('set', function (value) {
             BLUR_RADIUS = Math.floor(value);
             drawBlur();
-            canvases.map(drawTriangle)
+            canvases.map(drawTriangle);
         });
 
     blurSlider
         .noUiSlider
         .on('update', function (value) {
-            $('#blur-slider-label').text('Blur: ' + Math.floor(value));
+            var text = isSafari
+                ? 'Blur: not supported on Safari. Try Chrome/Firefox.'
+                : 'Blur: ' + Math.floor(value);
+            $('#blur-slider-label').text(text);
         });
 
     // Number of triangles slider
