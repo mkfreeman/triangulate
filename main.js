@@ -96,7 +96,7 @@ var drawBlur = function () {
         .getContext('2d')
         .drawImage(img, 0, 0, width, height);
     console.log(c, width, height, BLUR_RADIUS);
-    StackBlur.canvasRGBA(c, 0, 0, width, height, BLUR_RADIUS);
+    StackBlur.canvasRGB(c, 0, 0, width, height, BLUR_RADIUS);
 };
 
 // Append canvas elements to draw in
