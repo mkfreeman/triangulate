@@ -1,7 +1,3 @@
-// Change events Test if safari for compatibility
-var isSafari = /constructor/i.test(window.HTMLElement) || (function (p) {
-    return p.toString() === "[object SafariRemoteNotification]";
-})(!window['safari'] || (typeof safari !== 'undefined' && safari.pushNotification));
 $(function () {
     // File uploader
     $("#file")
@@ -65,10 +61,7 @@ $(function () {
     blurSlider
         .noUiSlider
         .on('update', function (value) {
-            var text = isSafari
-                ? 'Blur: not supported on Safari. Try Chrome/Firefox.'
-                : 'Blur: ' + Math.floor(value);
-            $('#blur-slider-label').text(text);
+            $('#blur-slider-label').text('Blur: ' + Math.floor(value));
         });
 
     // Number of triangles slider
