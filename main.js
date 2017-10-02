@@ -91,11 +91,12 @@ var makeCanvas = function (can) {
 
 // Blur the initial image
 var drawBlur = function () {
-    var canvas = document.getElementById('heroCanvas');
-    canvas
+    var c = document.getElementById('heroCanvas');
+    c
         .getContext('2d')
         .drawImage(img, 0, 0, width, height);
-    StackBlur.canvasRGBA(canvas, 0, 0, width, height, BLUR_RADIUS);
+    console.log(c, width, height, BLUR_RADIUS);
+    StackBlur.canvasRGBA(c, 0, 0, width, height, BLUR_RADIUS);
 };
 
 // Append canvas elements to draw in
