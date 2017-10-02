@@ -20,12 +20,20 @@ var getSites = function () {
 
 // Function to build -- after image is uploaded
 var build = function () {
+    // Set zoom to 100%
+    var scale = 'scale(1)';
+    document.body.style.webkitTransform = scale; // Chrome, Opera, Safari
+    document.body.style.msTransform = scale; // IE 9
+    document.body.style.transform = scale; // General
+
     // Select image
     img = document.getElementById('my-img');
-    var innerWidth = $(window).innerWidth();
-    width = innerWidth < 700
-        ? innerWidth * 0.9
-        : innerWidth * 0.4;
+    // var innerWidth = $(window).innerWidth();
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    width = w < 700
+        ? w * 0.9
+        : w * 0.4;
     img.width = width;
     height = img.height;
 
