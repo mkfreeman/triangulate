@@ -111,8 +111,11 @@ nav .button-collapse {
 
 .form-section,
 .modal-trigger {
-    color: rgba(0, 0, 0, 0.77);
     font-size: x-large;
+}
+
+.modal-trigger:hover {
+    text-decoration: underline;
 }
 
 footer {

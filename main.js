@@ -5,7 +5,18 @@ var BLUR_RADIUS = 0;
 var NUM_POINTS = 500;
 var img;
 var voronoi;
-console.log('test')
+var sites;
+// Sample points
+var getSites = function () {
+    return d3
+        .range(NUM_POINTS)
+        .map(function (d) {
+            return [
+                Math.random() * width,
+                Math.random() * height
+            ];
+        });
+};
 
 // Function to build -- after image is uploaded
 var build = function () {
@@ -30,6 +41,9 @@ var build = function () {
                 height + 1
             ]
         ]);
+
+    // Set (initial) sites
+    sites = getSites();
     // Make Canvas elements (for photos)
     canvases.forEach(makeCanvas);
 
@@ -143,20 +157,10 @@ var drawCell = function (cell, con) {
     }
     con.closePath();
     return true;
-}
+};
 
 // Function to draw triangles
 var drawTriangle = function (can) {
-    // Sample points
-    var sites = d3
-        .range(NUM_POINTS)
-        .map(function (d) {
-            return [
-                Math.random() * width,
-                Math.random() * height
-            ];
-        });
-
     var polygons = voronoi(sites).triangles();
 
     // Clear canvas
@@ -168,5 +172,4 @@ var drawTriangle = function (can) {
     for (var i = 0, n = polygons.length; i < n; ++i) {
         drawCell(polygons[i], context);
     }
-
 };

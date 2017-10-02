@@ -86,6 +86,7 @@ $(function () {
         .noUiSlider
         .on('set', function (value) {
             NUM_POINTS = Math.floor(value);
+            sites = getSites();
             canvases.map(drawTriangle);
         });
 
