@@ -19,23 +19,6 @@
     padding: 20px;
 }
 
-.hero {
-    &__background {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-    }
-    &__title {
-        position: relative;
-        z-index: 2;
-        color: #fff;
-        text-align: center;
-    }
-}
-
 .ele-container {
     text-align: center;
 }
@@ -152,4 +135,27 @@ label {
 .noUi-target.noUi-ltr.noUi-horizontal {
     margin-bottom: 20px;
     margin-top: 3px;
+}
+
+.hero {
+    position: relative;
+    /* width: 100%; */
+    padding: 2em 0;
+}
+
+.hero__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero__title {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    font-size: 5em;
+    color: white;
 }
