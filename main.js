@@ -7,10 +7,10 @@ var img;
 var voronoi;
 var sites;
 // Sample points
-var getSites = function () {
+var getSites = function() {
     return d3
         .range(NUM_POINTS)
-        .map(function (d) {
+        .map(function(d) {
             return [
                 Math.random() * width,
                 Math.random() * height
@@ -19,21 +19,15 @@ var getSites = function () {
 };
 
 // Function to build -- after image is uploaded
-var build = function () {
-    // Set zoom to 100%
-    var scale = 'scale(1)';
-    document.body.style.webkitTransform = scale; // Chrome, Opera, Safari
-    document.body.style.msTransform = scale; // IE 9
-    document.body.style.transform = scale; // General
-
+var build = function() {
     // Select image
     img = document.getElementById('my-img');
     // var innerWidth = $(window).innerWidth();
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    width = w < 700
-        ? Math.floor(w * 0.9)
-        : Math.floor(w * 0.4);
+    width = w < 700 ?
+        Math.floor(w * 0.9) :
+        Math.floor(w * 0.4);
     img.width = width;
     height = img.height;
 
@@ -41,9 +35,7 @@ var build = function () {
     voronoi = d3
         .voronoi()
         .extent([
-            [
-                -1, -1
-            ],
+            [-1, -1],
             [
                 width + 1,
                 height + 1
@@ -72,15 +64,13 @@ var build = function () {
 };
 
 // Canvases to draw
-var canvases = [
-    {
-        id: 'heroCanvas',
-        className: 'hero'
-    }
-];
+var canvases = [{
+    id: 'heroCanvas',
+    className: 'hero'
+}];
 
 // Function to make Canvas elements
-var makeCanvas = function (can) {
+var makeCanvas = function(can) {
     // Create canvas
     var canvas = document.createElement('canvas');
     canvas.id = can.id;
@@ -98,7 +88,7 @@ var makeCanvas = function (can) {
 };
 
 // Blur the initial image
-var drawBlur = function () {
+var drawBlur = function() {
     var c = document.getElementById('heroCanvas');
     c
         .getContext('2d')
@@ -108,9 +98,9 @@ var drawBlur = function () {
 };
 
 // Append canvas elements to draw in
-var appendCanvases = function () {
+var appendCanvases = function() {
     canvases
-        .forEach(function (can) {
+        .forEach(function(can) {
             d3
                 .select('.ele-container')
                 .append('canvas')
@@ -123,11 +113,11 @@ var appendCanvases = function () {
 };
 
 // Function to get color from the triangle
-var getColor = function (d, c) {
+var getColor = function(d, c) {
     // Get triangle center
     var x = 0;
     var y = 0;
-    d.forEach(function (dd) {
+    d.forEach(function(dd) {
         x += dd[0];
         y += dd[1];
     });
@@ -145,10 +135,10 @@ var getColor = function (d, c) {
 };
 
 // Function to draw a cell
-var drawCell = function (cell, con) {
-    if (!cell || !con) 
+var drawCell = function(cell, con) {
+    if (!cell || !con)
         return false;
-    
+
     // Draw path
     con.beginPath();
     con.moveTo(cell[0][0], cell[0][1]);
@@ -169,7 +159,7 @@ var drawCell = function (cell, con) {
 };
 
 // Function to draw triangles
-var drawTriangle = function (can) {
+var drawTriangle = function(can) {
     var polygons = voronoi(sites).triangles();
 
     // Clear canvas
