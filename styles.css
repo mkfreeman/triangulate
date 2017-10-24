@@ -159,3 +159,18 @@ label {
     font-size: 5em;
     color: white;
 }
+
+#type-slider {
+	width: 50px;
+}
+
+#border-slider {
+	width: 50px;
+}
+#smoothType-slider {
+	width: 100px;
+}
+
+#colorType-slider {
+	width: 50px;
+}
