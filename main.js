@@ -27,7 +27,7 @@ var finalImageOutOfDate = true;
 // 3. Get the voronoi sites (getSites)
 // 4. Extract the image data for sampling
 // 5. Smooth the voronoi diagram
-// 6. Build the final image (triangles or polygons)
+// 6. Build the final image (triangles, polygons, or dots)
 //
 // The goal of the above state variables is to keep track
 // of what things need to be recomputed yet still provide
@@ -61,7 +61,7 @@ var build = function() {
 	}
 	
 	if (finalImageOutOfDate) {
-		canvases.map(drawTriangle);
+		canvases.map(drawFinalImage);
 	}
 };
 
@@ -88,8 +88,7 @@ var updateImage = function() {
                 width + 1,
                 height + 1
             ]
-        ]);	
-		
+        ]);
 		
 	// Make Canvas elements (for photos)
     canvases.forEach(makeCanvas);
@@ -290,17 +289,14 @@ var getAverageColor = function(c, p) {
 		r += imageBuffer8[offset];
 		g += imageBuffer8[offset+1];
 		b += imageBuffer8[offset+2]; 
-		a += imageBuffer8[offset+3];
-		//console.log(makeColorString(r,g,b,a));
+		a += imageBuffer8[offset+3];		
 	});
 	
-	//console.log('done');
 	r /= (2*p.length);
 	g /= (2*p.length);
 	b /= (2*p.length);
 	a /= (2*p.length);
-	var color = makeColorString(Math.round(r),Math.round(g),Math.round(b),Math.round(a));
-	//console.log(color);
+	var color = makeColorString(Math.round(r),Math.round(g),Math.round(b),Math.round(a));	
 	return color;
 }
 
@@ -315,66 +311,18 @@ var getColor = function(d) {
 	return getAverageColor(centroid, d);
 };
 
-var smoothLinks = function(sites, diagram) {
-	var context = document.getElementById('heroCanvas').getContext('2d');
+var getDotColor = function(pt, r) {
+    if (COLOR_TYPE == 0)
+        return getColorAtPos(pt);
+  	
+    var pt1 = [pt[0]+r, pt[1]];
+    var pt2 = [pt[0]-r, pt[1]];
+    var pt3 = [pt[0], pt[1]+r];
+    var pt4 = [pt[0], pt[1]-r];
+    var pts = [pt1, pt2, pt3, pt4];
 
-	var totalWeights = [];	
-	var newx = [];	
-	var newy = [];	
-	sites.forEach(function(site) {
-		totalWeights.push(0.0);
-		newx.push(0.0);
-		newy.push(0.0);
-	});
-
-	
-	diagram.edges.forEach(function(edge) {
-		//console.log(edge);
-		//console.log(edge.left.index +","+edge.length);
-
-		if (typeof edge.right !== 'undefined') {
-
-			var weight = getWeight(context, edge.right.data[0], edge.right.data[1], edge.left.data[0], edge.left.data[1]);
-			
-			var l = edge.left.index;
-			var r = edge.right.index;
-			newx[l] += edge.right.data[0]*weight;
-			newy[l] += edge.right.data[1]*weight;
-			totalWeights[l] += weight;
-			newx[r] += edge.left.data[0]*weight;
-			newy[r] += edge.left.data[1]*weight;
-			totalWeights[r] += weight;
-		}
-		else
-		{
-			var weight0 = 0.5*getWeight(context, edge[0][0], edge[0][1], edge.left.data[0], edge.left.data[1]);
-			var weight1 = 0.5*getWeight(context, edge[1][0], edge[1][1], edge.left.data[0], edge.left.data[1]);
-			var l = edge.left.index;
-			
-			newx[l] += edge[0][0]*weight0 + edge[1][0]*weight1;
-			newy[l] += edge[0][1]*weight0 + edge[1][1]*weight1;
-			totalWeights[l] += weight0+weight1;
-		}
-	});
-
-	
-	for (var i = 0, n = newx.length; i < n; ++i){
-		//console.log(newx[i]+","+newy[i] + ","+totalWeights[i]);
-	}
-	
-	for (var i = 0, n = newx.length; i < n; ++i) {
-		newx[i] /= totalWeights[i];
-		newy[i] /= totalWeights[i];
-		//console.log(newx[i]+","+newy[i] + ","+totalWeights[i]);
-	}		
-		
-	for (var i = 0, n = newx.length; i < n; ++i){
-		sites[i][0] = newx[i];
-		sites[i][1] = newy[i];
-		//console.log(newx[i]+","+newy[i]);
-	}
-    
-}
+    return getAverageColor(pt, pts);    
+};
 
 // several functions below are utilties for the various smoothing methods
 var polygonArea = function(polygon) {
@@ -526,25 +474,98 @@ var drawCell = function(cell, con) {
     return true;
 };
 
+var getDotRadii = function(sites, diagram) {
+
+    // first compute the distance to the nearest
+    // and furthest Voronoi neighbors
+	var minDist = [];
+    var maxDist = [];
+	var radii = [];	
+	sites.forEach(function(site) {
+		minDist.push(width+height);
+        maxDist.push(0.0);
+        radii.push(0.0);
+	});
+    
+	diagram.edges.forEach(function(edge) {        
+        if (typeof edge.right !== 'undefined') {
+            var l = edge.left.index;            
+			var r = edge.right.index;
+            var dx = edge.right.data[0] - edge.left.data[0];
+            var dy = edge.right.data[1] - edge.left.data[1];            
+            var dist = Math.sqrt(dx*dx+dy*dy); 
+            minDist[l] = Math.min(minDist[l], dist);
+            minDist[r] = Math.min(minDist[r], dist);
+            maxDist[l] = Math.max(maxDist[l], dist);
+            maxDist[r] = Math.max(maxDist[r], dist);
+		}
+	});
+
+    // Dot radii are selected so that they don't overlap
+    // (i.e., they must be less than minDist[i]/2.0.
+    // Moreover, we use the distance to the furthest neighbor
+    // to decide how much space to leave... if the points are
+    // roughly uniformly spaced, we only cover roughly 1/3 the
+    // distance but the max distance is further, we choose a radius
+    // close to half the min distance in attempt to leave less blank
+    // whitespace in the image. 
+    //
+    // The constants below (2.05 and 3.05 / 1.0) were selected based
+    // on what I thought looked ok on a couple images but maybe this
+    // is something that needs to be exposed.
+    for (var i = 0, n = radii.length; i < n; ++i) {
+        var ratio = maxDist[i]/minDist[i];
+        if (ratio > 2.0)
+            radii[i] = minDist[i]/2.05;
+        else {
+            radii[i] = minDist[i]/(3.05 - 1.0*(ratio-1.0));
+        }
+    }
+    
+    return radii;
+}
+
+// Function to draw a cell
+var drawDot = function(site, radius, con) {
+    var color = getDotColor(site, radius);
+    
+    con.beginPath();
+    con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
+    con.closePath();
+    con.fillStyle = color;
+    con.fill();
+    con.lineWidth = 0;   
+}
+
 // Function to draw triangles
-var drawTriangle = function(can) {	
-	var polygons;
-	if (ELEMENT_TYPE == 0) {
-		polygons = voronoi(smoothedSites).triangles();
-	}
-	else if (ELEMENT_TYPE == 1) {
-		polygons = voronoi(smoothedSites).polygons();
-	}
-	
+var drawFinalImage = function(can) {	
+
     // Clear canvas
     var canvas = document.getElementById("can-" + can.id);
     var context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
+    
+    if (ELEMENT_TYPE == 2) {
+        // draw the stippled image
+        radii = getDotRadii(smoothedSites, voronoi(smoothedSites));
+        for (var i = 0, n = smoothedSites.length; i < n; ++i) {
+            drawDot(smoothedSites[i], radii[i], context);
+        }
+    } else {
+        var polygons;
+        if (ELEMENT_TYPE == 0) {
+            // get the Delaunay triangles
+            polygons = voronoi(smoothedSites).triangles();
+        }
+        else if (ELEMENT_TYPE == 1) {
+            // get the Voronoi polygons
+            polygons = voronoi(smoothedSites).polygons();
+        }
 
-    // Draw paths!
-    for (var i = 0, n = polygons.length; i < n; ++i) {
-        drawCell(polygons[i], context);
-    }
-	
+        for (var i = 0, n = polygons.length; i < n; ++i) {
+            drawCell(polygons[i], context);
+        }
+	}
+    
 	finalImageOutOfDate = false;
 };

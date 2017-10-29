@@ -123,7 +123,7 @@ $(function () {
         step: 1,
         range: {
             min: 0,
-            max: 1
+            max: 2
         }
     });
 
@@ -138,7 +138,9 @@ $(function () {
     var getTypeString = function(value) {
         if (value == 0)
             return 'Triangle';
-        return 'Polygon';
+        if (value == 1)
+            return 'Polygon';
+        return 'Dot';
     };    
         
     typeSlider
