@@ -34,6 +34,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" />
 
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.js"></script>
@@ -49,28 +50,95 @@
 </head>
 
 <body>
+    <div id="header-wrapper">
+        <h1>Triangulate</h1>
+    </div>
     <img id="my-img" src="./imgs/mountains.png"></img>
-    <nav>
-        <div class="nav-wrapper">
-            <a href="#!" class="brand-logo">Triangulate</a>
+    <ul id="slide-out" class="side-nav fixed">
+        <!-- Controls -->
+        <div id="controls">
+            <form>
+                <section>
+                    <div class="button-wrapper">
+                        <div class="file-field input-field">
+                            <div class="btn upload-button">
+                                <span class="upload-text"></span>
+                                <input type="file" id="file" accept="image/*">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <div>
+                        <h2>Image Options</h2>
+                    </div>
+                    <hr/>
+                    <div class="input-field">
+                        <label>Choose a pattern</label>
+                        <select id="type-select-menu">                            
+                                    <option selected value="0">Triangles</option>
+                                    <option value="1">Polygons</option>
+                                    <option value="2">Circles</option>
+                                  </select>
+                    </div>
+                    <div class="switch">
+                        <label>Lines</label>
+                        <div class="switch"><label>Off<input type = "checkbox" id="lines" checked>
+                                   <span class = "lever"></span>On</label>
+                        </div>
+                    </div>
+                    <p>
+                        <label>Color</label><br/>
+                        <input value="centroid" checked name="color" type="radio" id="test1" />
+                        <label for="test1">Centroid</label>
+                        <input value="average" name="color" type="radio" id="test2" />
+                        <label for="test2">Average</label>
+                    </p>
+                    <label for="type-slider" id="type-slider-label"></label>
+                    <div id="type-slider" max-width="50px"></div>
+                    <label for="points-slider" id="points-slider-label"></label>
+                    <div id="points-slider"></div>
+                </section>
+                <section>
+                    <div>
+                        <h2>Smoothing Options</h2>
+                    </div>
+                    <hr/>
+                    <label for="resample-slider" id="resample-slider-label"></label>
+                    <div id="resample-slider"></div>
+                    <label for="smooth-slider" id="smooth-slider-label"></label>
+                    <div id="smooth-slider"></div>
+                    <div class="input-field">
+                        <label>Smoothing Algorithm</label>
+                        <select id="smooth-select-menu">                            
+                                        <option selected value="0">Lloyd</option>
+                                        <option value="1">Laplacian</option>
+                                        <option value="2">Polygon Vertex Average</option>
+                                      </select>
+                    </div>
+                    <label for="blur-slider" id="blur-slider-label"></label>
+                    <div id="blur-slider"></div>
+                    <label for="border-slider" id="border-slider-label"></label>
+                    <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
+                    </p>
+                    <br/>
+                </section>
+            </form>
+
         </div>
-    </nav>
-    <div class="container intro">
+    </ul>
+    <!-- </nav> -->
+
+    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+
+    <!-- <div class="container intro">
         <h2>Make triangle designs from photos</h2>
         <h3 class="subheader">(because it was once cool design)</h3>
-    </div>
-    <div class="button-wrapper">
-        <div class="file-field input-field">
-            <div class="btn upload-button">
-                <span class="upload-text"></span>
-                <input type="file" id="file" accept="image/*">
-            </div>
-            <div class="file-path-wrapper">
-                <input class="file-path validate" type="text">
-            </div>
-        </div>
-    </div>
-	
+    </div> -->
+
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
         <div class="modal-content">
@@ -85,37 +153,13 @@
     </div>
     <div class="ele-container"></div>
 
-	<div class="button-wrapper">
-	    <button class="btn"><a id="download">Download as image</a></button>	
-	</div>
-	
-    <!-- Controls -->
-    <div class="container" id="controls">
-        <form>
-            <p class="form-section">Customize</p>
-			<label for="type-slider" id="type-slider-label"></label>
-            <div id="type-slider" max-width="50px"></div>
-            <label for="points-slider" id="points-slider-label"></label>
-            <div id="points-slider"></div>
-			<label for="resample-slider" id="resample-slider-label"></label>
-            <div id="resample-slider"></div>
-            <label for="smooth-slider" id="smooth-slider-label"></label>
-            <div id="smooth-slider"></div>
-            <label for="smoothType-slider" id="smoothType-slider-label"></label>
-            <div id="smoothType-slider"></div>
-			<label for="colorType-slider" id="colorType-slider-label"></label>
-            <div id="colorType-slider"></div>
-            <label for="blur-slider" id="blur-slider-label"></label>
-            <div id="blur-slider"></div>
-			<label for="border-slider" id="border-slider-label"></label>
-            <div id="border-slider"></div>
-			<label for="my-select" id="my-select-label"></label>
-            <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
-            </p>
-            <br/>
-        </form>
+    <!-- <div class="button-wrapper">
+        <button class="btn"><a id="download">Download as image</a></button>
+    </div> -->
+    <a id="download">
+        <i class="fa fa-arrow-circle-down fa-4x" aria-hidden="true"></i>
+    </a>
 
-    </div>
     <footer>
 
         <div class="footer-copyright">

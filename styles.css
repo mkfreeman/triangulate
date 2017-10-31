@@ -21,6 +21,7 @@
 
 .ele-container {
     text-align: center;
+    margin-left: 300px;
 }
 
 .intro {
@@ -32,6 +33,7 @@ h2 {
     margin-bottom: 6px;
     font-size: 1.5em;
     font-family: sans-serif;
+    margin-top: 0px;
 }
 
 h3 {
@@ -121,11 +123,17 @@ footer {
 }
 
 #download {
-    color: white;
+    color: black;
+    position: fixed;
+    opacity: .3;
+    right: 20px;
+    bottom: 40px;
+    cursor: pointer;
 }
 
 #controls {
-    padding-bottom: 20px;
+    padding-bottom: 40px;
+    margin-top: 100px;
 }
 
 label {
@@ -140,7 +148,6 @@ label {
 .hero {
     position: relative;
     /* width: 100%; */
-    padding: 2em 0;
 }
 
 .hero__background {
@@ -161,16 +168,93 @@ label {
 }
 
 #type-slider {
-	width: 100px;
+    width: 100px;
 }
 
 #border-slider {
-	width: 50px;
+    width: 50px;
 }
+
 #smoothType-slider {
-	width: 100px;
+    width: 100px;
 }
 
 #colorType-slider {
-	width: 50px;
+    width: 50px;
+}
+
+#controls {
+    line-height: 33px;
+}
+
+#controls .switch {
+    line-height: 20px;
+}
+
+#controls select {
+    line-height: inherit;
+}
+
+.input-field label {
+    top: -27px;
+    left: 0;
+}
+
+.input-field input {
+    color: #26a69a;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: 300;
+}
+
+#sidenav-overlay {
+    display: none;
+    pointer-events: none;
+}
+
+.side-nav {
+    transform: translateX(0%) !important;
+    /* margin-top: 100px; */
+}
+
+#header-wrapper {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 300px;
+    z-index: 1000;
+    background-color: white;
+    border-bottom: 1px solid #d3d3d3;
+    text-align: center;
+}
+
+#heroCanvas {
+    position: absolute;
+    opacity: 0;
+    -webkit-transition: opacity 1s;
+    /* Safari */
+    transition: opacity 1s;
+    z-index: 999;
+}
+
+#heroCanvas:hover {
+    opacity: 1;
+    -webkit-transition: opacity 1s;
+    /* Safari */
+    transition: opacity 1s;
+}
+
+#controls section {
+    margin-top: 30px;
+}
+
+hr {
+    margin-bottom: 30px;
+}
+
+[type="radio"]+label:before,
+[type="radio"]+label:after {
+    left: 12px;
 }
