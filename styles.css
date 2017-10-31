@@ -133,7 +133,7 @@ footer {
 
 #controls {
     padding-bottom: 40px;
-    margin-top: 100px;
+    margin-top: 108px;
 }
 
 label {
@@ -196,7 +196,7 @@ label {
 }
 
 .input-field label {
-    top: -27px;
+    top: -30px;
     left: 0;
 }
 
@@ -257,4 +257,13 @@ hr {
 [type="radio"]+label:before,
 [type="radio"]+label:after {
     left: 12px;
+}
+
+#header-wrapper p {
+    opacity: .3;
+    margin-top: 0px;
+}
+
+#header-wrapper h1 {
+    margin-bottom: 0px;
 }

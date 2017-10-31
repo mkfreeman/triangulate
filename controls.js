@@ -95,7 +95,7 @@ $(function () {
     pointsSlider
         .noUiSlider
         .on('update', function (value) {
-            $('#points-slider-label').text('Num. Cells: ' + Math.floor(value));
+            $('#points-slider-label').text('# of points: ' + Math.floor(value));
         });
 
     var smoothSlider = document.getElementById('smooth-slider');
@@ -195,7 +195,7 @@ $(function () {
     resampleSlider
         .noUiSlider
         .on('update', function (value) {
-            $('#resample-slider-label').text('Num. Resamples: ' + Math.floor(value));
+            $('#resample-slider-label').text('# of Resamples: ' + Math.floor(value));
         });
 
     // Wait for image to load
@@ -203,5 +203,5 @@ $(function () {
         build();
         $('.modal').modal();
     });
-    $('#points-slider-label').text('Num. Cells: ' + NUM_POINTS);
+    $('#points-slider-label').text('# of Cells: ' + NUM_POINTS);
 });
