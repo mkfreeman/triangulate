@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
     // Initialize collapse button
     $(".button-collapse").sideNav();
     $('.button-collapse').sideNav('show');
@@ -6,24 +6,24 @@ $(function () {
     $('select').material_select();
 
     // File uploader
-    $("#file").change(function () {
+    $("#file").change(function() {
         // New file reader
         var reader = new FileReader();
         // Empty the container -- a little lazy
         $('.ele-container').empty();
         $('canvas').remove();
-        reader.onloadend = function (e) {
+        reader.onloadend = function(e) {
             img = $('#my-img');
             img.attr('src', e.target.result);
-            img.one("load", function () {
+            img.one("load", function() {
                 imageOutOfDate = true;
                 build();
             })
-                .each(function () {
-                    if (this.complete) 
+                .each(function() {
+                    if (this.complete)
                         $(this).load();
-                    }
-                );
+                }
+            );
         };
         reader.readAsDataURL(this.files[0]);
     });
@@ -40,7 +40,7 @@ $(function () {
     // Download
     document
         .getElementById('download')
-        .addEventListener('click', function () {
+        .addEventListener('click', function() {
             console.log('click!', this)
             downloadCanvas(this, 'can-heroCanvas', 'triangle-image.png');
         }, false);
@@ -60,7 +60,7 @@ $(function () {
 
     blurSlider
         .noUiSlider
-        .on('set', function (value) {
+        .on('set', function(value) {
             BLUR_RADIUS = Math.floor(value);
             blurOutOfDate = true;
             build();
@@ -68,7 +68,7 @@ $(function () {
 
     blurSlider
         .noUiSlider
-        .on('update', function (value) {
+        .on('update', function(value) {
             $('#blur-slider-label').text('Blur: ' + Math.floor(value));
         });
 
@@ -86,7 +86,7 @@ $(function () {
 
     pointsSlider
         .noUiSlider
-        .on('set', function (value) {
+        .on('set', function(value) {
             NUM_POINTS = Math.floor(value);
             sitesOutOfDate = true;
             build();
@@ -94,7 +94,7 @@ $(function () {
 
     pointsSlider
         .noUiSlider
-        .on('update', function (value) {
+        .on('update', function(value) {
             $('#points-slider-label').text('# of points: ' + Math.floor(value));
         });
 
@@ -111,7 +111,7 @@ $(function () {
 
     smoothSlider
         .noUiSlider
-        .on('set', function (value) {
+        .on('set', function(value) {
             SMOOTH_ITERATIONS = Math.floor(value);
             smoothingOutOfDate = true;
             build();
@@ -119,33 +119,33 @@ $(function () {
 
     smoothSlider
         .noUiSlider
-        .on('update', function (value) {
+        .on('update', function(value) {
             $('#smooth-slider-label').text('Smoothing Iterations: ' + Math.floor(value));
         });
 
-    $("#type-select-menu").on('change', function (value) {
+    $("#type-select-menu").on('change', function(value) {
         console.log('value', this.value);
         ELEMENT_TYPE = Number(this.value);
         finalImageOutOfDate = true;
         build();
     })
 
-    $("#smooth-select-menu").on('change', function (value) {
+    $("#smooth-select-menu").on('change', function(value) {
         SMOOTH_TYPE = this.value;
         smoothingOutOfDate = true;
         build();
     })
 
-    var getTypeString = function (value) {
-        if (value == 0) 
+    var getTypeString = function(value) {
+        if (value == 0)
             return 'Triangle';
-        if (value == 1) 
+        if (value == 1)
             return 'Polygon';
         return 'Dot';
     };
 
     // Lines
-    $('#lines').on('change', function (value) {
+    $('#lines').on('change', function(value) {
         console.log(value, this.value,)
         let val = $(this).prop('checked') == false
             ? 0
@@ -155,14 +155,14 @@ $(function () {
         build();
     })
 
-    var getEnabledString = function (value) {
-        if (value == 0) 
+    var getEnabledString = function(value) {
+        if (value == 0)
             return 'Off';
         return 'On';
     };
 
     // Colors
-    $("input:radio[name=color]").on('change', function (value) {
+    $("input:radio[name=color]").on('change', function(value) {
         console.log(value)
         COLOR_TYPE = this.value != 'average'
             ? 0
@@ -186,7 +186,7 @@ $(function () {
 
     resampleSlider
         .noUiSlider
-        .on('set', function (value) {
+        .on('set', function(value) {
             NUM_RESAMPLE = Math.floor(value);
             sitesOutOfDate = true;
             build();
@@ -194,12 +194,12 @@ $(function () {
 
     resampleSlider
         .noUiSlider
-        .on('update', function (value) {
+        .on('update', function(value) {
             $('#resample-slider-label').text('# of Resamples: ' + Math.floor(value));
         });
 
     // Wait for image to load
-    $(window).on("load", function () {
+    $(window).on("load", function() {
         build();
         $('.modal').modal();
     });
