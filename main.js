@@ -82,7 +82,9 @@ var updateImage = function() {
 	// 0); var h = Math.max(document.documentElement.clientHeight,
 	// window.innerHeight || 0);
 	var wrapper = document.getElementsByClassName('ele-container')[0];
-	var w = window.innerWidth - 300;
+	var widthOffset = window.innerWidth < 992 ? 225 : 300;
+	console.log('width offset', widthOffset)
+	var w = window.innerWidth - widthOffset;
 	var h = window.innerHeight - 100;
 	console.log(w, h)
 	// width = w < 700 				? Math.floor(w * 0.9) 				: Math.floor(w * .5); img.width

@@ -52,7 +52,7 @@
 <body>
     <div id="header-wrapper">
         <h1>Triangulate</h1>
-        <p>Create geometric patterns of images</p>
+        <p>Geometric patterns of images</p>
     </div>
     <div id="img-container"></div>
     <ul id="slide-out" class="side-nav fixed">
@@ -78,7 +78,7 @@
                     </div>
                     <hr/>
                     <div class="input-field">
-                        <label>Choose a pattern</label>
+                        <label class="control-label">Choose a pattern</label>
                         <select id="type-select-menu">                            
                                     <option selected value="0">Triangles</option>
                                     <option value="1">Polygons</option>
@@ -86,60 +86,59 @@
                                   </select>
                     </div>
                     <div class="switch">
-                        <label>Lines</label>
+                        <label class="control-label">Lines</label>
                         <div class="switch"><label>Off<input type = "checkbox" id="lines" checked>
                                    <span class = "lever"></span>On</label>
                         </div>
                     </div>
                     <p>
-                        <label>Color</label><br/>
+                        <label class="control-label">Color</label><br/>
                         <input value="centroid" checked name="color" type="radio" id="test1" />
                         <label for="test1">Centroid</label>
                         <input value="average" name="color" type="radio" id="test2" />
                         <label for="test2">Average</label>
                     </p>
-                    <label for="type-slider" id="type-slider-label"></label>
-                    <div id="type-slider" max-width="50px"></div>
-                    <label for="points-slider" id="points-slider-label"></label>
-                    <div id="points-slider"></div>
+                    <label class="control-label" for="points-slider" id="points-slider-label"></label>
+                    <div class="slider-wrapper">
+                        <div id="points-slider"></div>
+                    </div>
                 </section>
                 <section>
                     <div>
                         <h2>Smoothing Options</h2>
                     </div>
                     <hr/>
-                    <label for="resample-slider" id="resample-slider-label"></label>
-                    <div id="resample-slider"></div>
-                    <label for="smooth-slider" id="smooth-slider-label"></label>
-                    <div id="smooth-slider"></div>
-                    <div class="input-field">
-                        <label>Smoothing Algorithm</label>
+                    <label class="control-label" for="resample-slider" id="resample-slider-label"></label>
+                    <div class="slider-wrapper">
+                        <div id="resample-slider"></div>
+                    </div>                
+                    <label class="control-label" for="smooth-slider" id="smooth-slider-label"></label>
+                    <div class="slider-wrapper">
+                        <div id="smooth-slider"></div>
+                    </div>
+                    <div class="input-field" id="algorithm-select">
+                        <label class="control-label">Smoothing Algorithm</label>
                         <select id="smooth-select-menu">                            
                                         <option selected value="0">Lloyd</option>
                                         <option value="1">Laplacian</option>
                                         <option value="2">Polygon Vertex Average</option>
                                       </select>
                     </div>
-                    <label for="blur-slider" id="blur-slider-label"></label>
-                    <div id="blur-slider"></div>
-                    <label for="border-slider" id="border-slider-label"></label>
-                    <p class="form-section"> <a class="modal-trigger" href="#modal1">About</a>
+                    <label class="control-label" for="blur-slider" id="blur-slider-label"></label>
+                    <div class="slider-wrapper">
+                        <div id="blur-slider"></div>
+                    </div>                                        
+                    <hr/>                    
+                    <p class="form-section" id="about"> <a class="modal-trigger" href="#modal1">About</a>
                     </p>
                     <br/>
                 </section>
             </form>
-
         </div>
     </ul>
     <!-- </nav> -->
 
     <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
-
-    <!-- <div class="container intro">
-        <h2>Make triangle designs from photos</h2>
-        <h3 class="subheader">(because it was once cool design)</h3>
-    </div> -->
-
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
         <div class="modal-content">
@@ -152,6 +151,7 @@
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ok</a>
         </div>
     </div>
+
     <!-- Modal Structure -->
     <div id="modal2" class="modal">
         <div class="modal-content">
@@ -160,9 +160,6 @@
     </div>
     <div class="ele-container"></div>
 
-    <!-- <div class="button-wrapper">
-        <button class="btn"><a id="download">Download as image</a></button>
-    </div> -->
     <a id="download">
         <i class="fa fa-arrow-circle-down fa-4x" aria-hidden="true"></i>
     </a>

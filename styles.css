@@ -48,7 +48,7 @@ h3 {
 }
 
 .file-field {
-    width: 200px;
+    width: 225px;
     display: inline-block;
 }
 
@@ -73,14 +73,6 @@ nav .button-collapse {
 
 #sidenav-overlay {
     background-color: rgba(0, 0, 0, 0);
-}
-
-@media only screen and (max-width: 992px) {
-    nav .brand-logo {
-        left: 0%;
-        -webkit-transform: translateX(0%);
-        transform: translateX(0%);
-    }
 }
 
 .upload-button {
@@ -257,9 +249,13 @@ hr {
 
 [type="radio"]+label:before,
 [type="radio"]+label:after {
-    left: 12px;
+    left: -3px;
 }
-
+[type="radio"]:not(:checked)+label,
+[type="radio"]:checked+label {
+    padding-left:22px;
+    padding-right:20px;
+}
 #header-wrapper p {
     opacity: .3;
     margin-top: 0px;
@@ -267,4 +263,72 @@ hr {
 
 #header-wrapper h1 {
     margin-bottom: 0px;
+}
+
+.control-label {
+    color:#5f5e5e !important;
+}
+
+.slider-wrapper {
+    padding-left:5%;
+    width:90%;
+    text-align: center;
+}
+
+#algorithm-select {
+    padding-top:9px;
+}
+
+#algorithm-select > label.control-label {
+    top:-20px;
+}
+
+#about {
+ 
+    margin-top:-15px;
+}
+
+#about a {
+    padding:0px;
+}
+@media only screen and (max-width: 992px) {
+    nav .brand-logo {
+        left: 0%;
+        -webkit-transform: translateX(0%);
+        transform: translateX(0%);
+    }
+
+    h1 {
+        font-size:1.5rem !important;
+        margin-top:3px;
+    }
+    #header-wrapper p {
+        margin-bottom:0px;
+    }
+
+    #controls {
+        margin-top: 38px;
+    }
+    input.file-path.validate {
+        margin-bottom:0px;
+    }
+
+    #controls section {
+        margin-top: 20px;
+    }
+
+    .side-nav {
+        width:225px;
+    }
+    #header-wrapper {
+        width:225px;
+    }
+
+    .file-field.input-field {
+        width:auto;
+    }
+    .ele-container {
+        text-align: center;
+        margin-left: 225px;        
+    }
 }
