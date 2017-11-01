@@ -33,9 +33,17 @@ var finalImageOutOfDate = true;
 // be recomputed yet still provide a single entry point to the main computation
 // pipeline (build).
 //
+
+// Function to add image
+var addImage = function() {
+	$('<img id="my-img" src="./imgs/mountains.png">').load(function() {
+		$(this).appendTo('#img-container');
+		build();
+	});
+}
+
 // Function to build -- after image is uploaded
 var build = function() {
-
 	if (imageOutOfDate) {
 		// update the image on the canvas
 		updateImage();
@@ -69,13 +77,12 @@ var build = function() {
 // Update the input image
 //
 var updateImage = function() {
-	// Select image
 	img = document.getElementById('my-img');
 	// var w = Math.max(document.documentElement.clientWidth, window.innerWidth ||
 	// 0); var h = Math.max(document.documentElement.clientHeight,
 	// window.innerHeight || 0);
 	var wrapper = document.getElementsByClassName('ele-container')[0];
-	var w = wrapper.offsetWidth;
+	var w = window.innerWidth - 300;
 	var h = window.innerHeight - 100;
 	console.log(w, h)
 	// width = w < 700 				? Math.floor(w * 0.9) 				: Math.floor(w * .5); img.width
