@@ -1,8 +1,9 @@
 $(function() {
     // Initialize collapse button
-    // $(".button-collapse").sideNav();
-    $('.button-collapse').sideNav('show');
-    $('.collapsible').collapsible();
+    $(".button-collapse").sideNav();
+    $(".button-collapse").sideNav('show');
+    // $('#slide-out').sideNav('show');
+    // $('.collapsible').collapsible('show');
     $('select').material_select();
 
     // File uploader
@@ -217,12 +218,14 @@ $(function() {
     // Wait for image to load
     $(window).on("load", function() {
         $('.modal').modal();
-        if (window.matchMedia("(orientation: portrait)").matches) {
-            $("#modal2").modal('open');
-        } else {
-            addImage();
-        }
+        // if (window.matchMedia("(orientation: portrait)").matches) {
+        //     $("#modal2").modal('open');
+        // } else {
+        addImage();
+        // }
 
     });
+
+
     $('#points-slider-label').text('# of Cells: ' + NUM_POINTS);
 });

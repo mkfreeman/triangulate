@@ -65,12 +65,18 @@ nav .brand-logo {
     top: 10px;
 }
 
-nav .button-collapse {
+.button-collapse {
     position: absolute;
     left: 0px;
     top: 0px;
+    display:none;
 }
 
+.button-collapse i{
+    font-size: 34px;
+    padding-top: 4px;
+    cursor:pointer;
+}
 #sidenav-overlay {
     background-color: rgba(0, 0, 0, 0);
 }
@@ -208,7 +214,7 @@ h1 {
 }
 
 .side-nav {
-    transform: translateX(0%) !important;
+    /* transform: translateX(0%) !important; */
     /* margin-top: 100px; */
 }
 
@@ -229,7 +235,6 @@ h1 {
     -webkit-transition: opacity 1s;
     /* Safari */
     transition: opacity 1s;
-    z-index: 999;
 }
 
 #heroCanvas:hover {
@@ -321,7 +326,7 @@ hr {
         width:225px;
     }
     #header-wrapper {
-        width:225px;
+        width:100%;
     }
 
     .file-field.input-field {
@@ -329,6 +334,18 @@ hr {
     }
     .ele-container {
         text-align: center;
-        margin-left: 225px;        
+        margin-left: 0px;  
+        margin-top:10px;      
+    }
+    .side-nav {
+        opacity:.8;
+    }
+    .button-collapse {
+        display:block;
+    }
+
+    #sidenav-overlay {
+        display: block;
+        pointer-events: all;
     }
 }

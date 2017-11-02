@@ -39,6 +39,7 @@
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/10.1.0/nouislider.js"></script>
     <script src="./lib/jquery.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
     <script src="./lib/d3.v4.min.js"></script>
     <script src="./lib/stackblur.js"></script>
@@ -53,9 +54,10 @@
     <div id="header-wrapper">
         <h1>Triangulate</h1>
         <p>Geometric patterns of images</p>
+        <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons md-48">menu</i></a>
     </div>
     <div id="img-container"></div>
-    <ul id="slide-out" class="side-nav fixed">
+    <ul id="slide-out" class="side-nav collapsable">
         <!-- Controls -->
         <div id="controls">
             <form>
@@ -138,7 +140,7 @@
     </ul>
     <!-- </nav> -->
 
-    <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
+    
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
         <div class="modal-content">

@@ -36,7 +36,9 @@ var finalImageOutOfDate = true;
 
 // Function to add image
 var addImage = function() {
-	$('<img id="my-img" src="./imgs/mountains.png">').load(function() {
+	console.log("add image")
+	$('<img id="my-img" src="./imgs/mountains.png">').on('load', function() {
+		console.log('test')
 		$(this).appendTo('#img-container');
 		build();
 	});
@@ -82,7 +84,7 @@ var updateImage = function() {
 	// 0); var h = Math.max(document.documentElement.clientHeight,
 	// window.innerHeight || 0);
 	var wrapper = document.getElementsByClassName('ele-container')[0];
-	var widthOffset = window.innerWidth < 992 ? 225 : 300;
+	var widthOffset = window.innerWidth < 992 ? 0 : 300;
 	console.log('width offset', widthOffset)
 	var w = window.innerWidth - widthOffset;
 	var h = window.innerHeight - 100;
