@@ -2,8 +2,6 @@ $(function() {
     // Initialize collapse button
     $(".button-collapse").sideNav();
     $(".button-collapse").sideNav('show');
-    // $('#slide-out').sideNav('show');
-    // $('.collapsible').collapsible('show');
     $('select').material_select();
 
     // File uploader
@@ -199,31 +197,10 @@ $(function() {
             $('#resample-slider-label').text('# of Resamples: ' + Math.floor(value));
         });
 
-    // Orientation change event
-    $(window).on("orientationchange", function(event) {
-        $("#modal2").modal('close');
-        setTimeout(function() {
-            console.log('timeout')
-            if (window.matchMedia("(orientation: portrait)").matches) {
-                // you're in PORTRAIT mode
-                console.log('still in portrait')
-            // $('body').append("text")
-            //     .text('Please rotate sideways to landscape mode')
-            } else {
-                console.log('build')
-                addImage();
-            }
-        }, 500)
-    });
     // Wait for image to load
     $(window).on("load", function() {
         $('.modal').modal();
-        // if (window.matchMedia("(orientation: portrait)").matches) {
-        //     $("#modal2").modal('open');
-        // } else {
         addImage();
-        // }
-
     });
 
 

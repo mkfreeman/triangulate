@@ -38,7 +38,6 @@ var finalImageOutOfDate = true;
 var addImage = function() {
 	console.log("add image")
 	$('<img id="my-img" src="./imgs/mountains.png">').on('load', function() {
-		console.log('test')
 		$(this).appendTo('#img-container');
 		build();
 	});
@@ -80,17 +79,12 @@ var build = function() {
 //
 var updateImage = function() {
 	img = document.getElementById('my-img');
-	// var w = Math.max(document.documentElement.clientWidth, window.innerWidth ||
-	// 0); var h = Math.max(document.documentElement.clientHeight,
-	// window.innerHeight || 0);
 	var wrapper = document.getElementsByClassName('ele-container')[0];
 	var widthOffset = window.innerWidth < 992 ? 0 : 300;
-	console.log('width offset', widthOffset)
 	var w = window.innerWidth - widthOffset;
 	var h = window.innerHeight - 100;
-	console.log(w, h)
-	// width = w < 700 				? Math.floor(w * 0.9) 				: Math.floor(w * .5); img.width
-	// = width; height = img.height; Maximize area of photo
+
+	// Maximize area of photo
 	let imageRatio = img.width / img.height;
 	let screenRatio = w / h;
 	if (imageRatio > screenRatio) {
