@@ -237,7 +237,7 @@ h1 {
     transition: opacity 1s;
 }
 
-#heroCanvas:hover {
+#heroCanvas:hover, #heroCanvas:active {
     opacity: 1;
     -webkit-transition: opacity 1s;
     /* Safari */
