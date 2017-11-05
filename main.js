@@ -80,9 +80,9 @@ var build = function() {
 var updateImage = function() {
 	img = document.getElementById('my-img');
 	var wrapper = document.getElementsByClassName('ele-container')[0];
-	var widthOffset = window.innerWidth < 992 ? 0 : 300;
-	var w = window.innerWidth - widthOffset;
-	var h = window.innerHeight - 100;
+	var widthOffset = document.documentElement.clientWidth < 992 ? 0 : 300;
+	var w = document.documentElement.clientWidth - widthOffset;
+	var h = document.documentElement.clientHeight - 10;
 
 	// Maximize area of photo
 	let imageRatio = img.width / img.height;
