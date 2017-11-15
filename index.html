@@ -92,6 +92,17 @@
                                    <span class = "lever"></span>On</label>
                         </div>
                     </div>
+
+                    <label class="control-label" for="points-slider" id="points-slider-label"></label>
+                    <div class="slider-wrapper">
+                        <div id="points-slider"></div>
+                    </div>
+                </section>
+                <section>
+                    <div>
+                        <h2>Color Options</h2>
+                    </div>
+                    <hr id="color-hr" />
                     <p>
                         <label class="control-label">Color</label><br/>
                         <input value="centroid" checked name="color" type="radio" id="test1" />
@@ -105,19 +116,15 @@
                                    <span class = "lever"></span>On</label>
                         </div>
                     </div>
-                    <label class="control-label" for="threshold-slider" id="threshold-slider-label">Black/White Threshold</label>
-                    <div class="slider-wrapper">
-                        <div id="threshold-slider"></div>
-                    </div>
                     <div class="switch">
                         <label class="control-label">Invert Black/White</label>
-                        <div class="switch"><label>Off<input type = "checkbox" id="invert">
+                        <div class="switch"><label>Off<input disabled type = "checkbox" id="invert">
                                    <span class = "lever"></span>On</label>
                         </div>
                     </div>
-                    <label class="control-label" for="points-slider" id="points-slider-label"></label>
+                    <label class="control-label" for="threshold-slider" id="threshold-slider-label">Black/White Threshold</label>
                     <div class="slider-wrapper">
-                        <div id="points-slider"></div>
+                        <div id="threshold-slider"></div>
                     </div>
                 </section>
                 <section>
@@ -128,7 +135,7 @@
                     <label class="control-label" for="resample-slider" id="resample-slider-label"></label>
                     <div class="slider-wrapper">
                         <div id="resample-slider"></div>
-                    </div>                
+                    </div>
                     <label class="control-label" for="smooth-slider" id="smooth-slider-label"></label>
                     <div class="slider-wrapper">
                         <div id="smooth-slider"></div>
@@ -144,8 +151,8 @@
                     <label class="control-label" for="blur-slider" id="blur-slider-label"></label>
                     <div class="slider-wrapper">
                         <div id="blur-slider"></div>
-                    </div>                                        
-                    <hr/>                    
+                    </div>
+                    <hr/>
                     <p class="form-section" id="about"> <a class="modal-trigger" href="#modal1">About</a>
                     </p>
                     <br/>
@@ -155,14 +162,15 @@
     </ul>
     <!-- </nav> -->
 
-    
+
     <!-- Modal Structure -->
     <div id="modal1" class="modal">
         <div class="modal-content">
             <h4>Triangulate</h4>
             <p>This project uses a <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a> to randomly sample points from an image to construct an abstracted representation of it. It was built
                 based on
-                <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. See <a href="https://github.com/mkfreeman/triangulate" target="_blank">code</a> on GitHub.</p> Hexagon, circle, and smoothing functionality built by <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank">Alex Rand</a>.
+                <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. See <a href="https://github.com/mkfreeman/triangulate" target="_blank">code</a> on GitHub.</p>
+            Hexagon, circle, and smoothing functionality built by <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank">Alex Rand</a>.
         </div>
         <div class="modal-footer">
             <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">ok</a>

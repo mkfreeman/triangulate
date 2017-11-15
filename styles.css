@@ -69,14 +69,15 @@ nav .brand-logo {
     position: absolute;
     left: 0px;
     top: 0px;
-    display:none;
+    display: none;
 }
 
-.button-collapse i{
+.button-collapse i {
     font-size: 34px;
     padding-top: 4px;
-    cursor:pointer;
+    cursor: pointer;
 }
+
 #sidenav-overlay {
     background-color: rgba(0, 0, 0, 0);
 }
@@ -188,6 +189,7 @@ label {
 
 #controls .switch {
     line-height: 20px;
+    margin-bottom: 10px;
 }
 
 #controls select {
@@ -237,7 +239,8 @@ h1 {
     transition: opacity 1s;
 }
 
-#heroCanvas:hover, #heroCanvas:active {
+#heroCanvas:hover,
+#heroCanvas:active {
     opacity: 1;
     -webkit-transition: opacity 1s;
     /* Safari */
@@ -252,15 +255,21 @@ hr {
     margin-bottom: 30px;
 }
 
+#color-hr {
+    margin-bottom: 0px;
+}
+
 [type="radio"]+label:before,
 [type="radio"]+label:after {
     left: -3px;
 }
+
 [type="radio"]:not(:checked)+label,
 [type="radio"]:checked+label {
-    padding-left:22px;
-    padding-right:20px;
+    padding-left: 22px;
+    padding-right: 20px;
 }
+
 #header-wrapper p {
     opacity: .3;
     margin-top: 0px;
@@ -271,79 +280,89 @@ hr {
 }
 
 .control-label {
-    color:#5f5e5e !important;
+    color: #5f5e5e !important;
 }
 
 .slider-wrapper {
-    padding-left:5%;
-    width:90%;
+    padding-left: 5%;
+    width: 90%;
     text-align: center;
 }
 
 #algorithm-select {
-    padding-top:9px;
+    padding-top: 9px;
 }
 
-#algorithm-select > label.control-label {
-    top:-20px;
+#algorithm-select>label.control-label {
+    top: -20px;
 }
 
 #about {
- 
-    margin-top:-15px;
+    margin-top: -15px;
 }
 
 #about a {
-    padding:0px;
+    padding: 0px;
 }
+
+
+/* Fix menu on large screens */
+
+@media only screen and (min-width: 992px) {
+    #slide-out {
+        transform: translateX(0%) !important;
+    }
+}
+
+
+/* Mobile settings*/
+
 @media only screen and (max-width: 992px) {
     nav .brand-logo {
         left: 0%;
         -webkit-transform: translateX(0%);
         transform: translateX(0%);
     }
-
     h1 {
-        font-size:1.5rem !important;
-        margin-top:3px;
+        font-size: 1.5rem !important;
+        margin-top: 3px;
     }
     #header-wrapper p {
-        margin-bottom:0px;
+        margin-bottom: 0px;
     }
-
     #controls {
         margin-top: 38px;
     }
     input.file-path.validate {
-        margin-bottom:0px;
+        margin-bottom: 0px;
     }
-
     #controls section {
         margin-top: 20px;
     }
-
     .side-nav {
-        width:225px;
+        width: 225px;
     }
     #header-wrapper {
-        width:100%;
+        width: 100%;
     }
-
+    #slide-out {
+        padding: 20px;
+        transform: inherit;
+    }
     .file-field.input-field {
-        width:auto;
+        width: auto;
     }
     .ele-container {
         text-align: center;
-        margin-left: 0px;  
-        margin-top:10px;      
+        margin-left: 0px;
+        margin-top: 10px;
     }
     .side-nav {
-        opacity:.8;
+        opacity: .8;
     }
     .button-collapse {
-        display:block;
+        display: block;
     }
-
     #sidenav-overlay {
         display: block;
         pointer-events: all;

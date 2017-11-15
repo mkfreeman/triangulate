@@ -79,7 +79,7 @@ $(function() {
         step: 1,
         range: {
             min: 10,
-            max: 10000
+            max: 20000
         }
     });
 
@@ -104,8 +104,8 @@ $(function() {
         animate: false,
         step: 1,
         range: {
-            min: 50,
-            max: 200
+            min: 0,
+            max: 250
         }
     });
 
@@ -115,7 +115,9 @@ $(function() {
             THRESHOLD = Math.floor(value);
             finalImageOutOfDate = true;
             build();
-        });
+        })
+    thresholdSlider.setAttribute('disabled', true);
+
     // Smoother
     var smoothSlider = document.getElementById('smooth-slider');
     noUiSlider.create(smoothSlider, {
@@ -178,6 +180,18 @@ $(function() {
         let val = $(this).prop('checked') == false
             ? 0
             : 1;
+        // Disable/enable other black and white options        
+        var disabled = $(this).prop('checked') == false ? true : false;
+        if (disabled == true) {
+            $('#invert').prop('disabled', true);
+            $('#invert').prop('checked', false);
+            thresholdSlider.setAttribute('disabled', true);
+            INVERT = 0;
+        } else {
+            $('#invert').prop('disabled', false);
+            thresholdSlider.removeAttribute('disabled');
+        }
+
         BLACK_WHITE = val;
         finalImageOutOfDate = true;
         build();
