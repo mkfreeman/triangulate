@@ -145,7 +145,6 @@ $(function() {
 
     // Lines
     $('#lines').on('change', function(value) {
-        console.log(value, this.value,)
         let val = $(this).prop('checked') == false
             ? 0
             : 1;
@@ -154,6 +153,25 @@ $(function() {
         build();
     })
 
+    // Black and white
+    $('#black-white').on('change', function(value) {
+        let val = $(this).prop('checked') == false
+            ? 0
+            : 1;
+        BLACK_WHITE = val;
+        finalImageOutOfDate = true;
+        build();
+    })
+
+    // Black and white
+    $('#invert').on('change', function(value) {
+        let val = $(this).prop('checked') == false
+            ? 0
+            : 1;
+        INVERT = val;
+        finalImageOutOfDate = true;
+        build();
+    })
     var getEnabledString = function(value) {
         if (value == 0)
             return 'Off';

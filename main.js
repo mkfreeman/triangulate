@@ -9,6 +9,8 @@ var ELEMENT_TYPE = 0;
 var BORDER_LINES = 1;
 var SMOOTH_TYPE = 0;
 var COLOR_TYPE = 0;
+var BLACK_WHITE = 0;
+var INVERT = 0;
 var img;
 var voronoi;
 var sites;
@@ -311,6 +313,12 @@ var getColorAtPos = function(pt) {
 	// Get color
 	var offset = getImageOffset(pt);
 	var color = makeColorString(imageBuffer8[offset], imageBuffer8[offset + 1], imageBuffer8[offset + 2], imageBuffer8[offset + 3]);
+	// Calculate luminence
+	if (BLACK_WHITE == 1) {
+		var y = 0.2126 * imageBuffer8[offset] + 0.7152 * imageBuffer8[offset + 1] + 0.0722 * imageBuffer8[offset + 2]
+		var test = INVERT == 0 ? y < 128 : y > 128
+		var color = test ? 'black' : 'white'
+	}
 	return color;
 }
 
@@ -338,6 +346,11 @@ var getAverageColor = function(c, p) {
 	b /= (2 * p.length);
 	a /= (2 * p.length);
 	var color = makeColorString(Math.round(r), Math.round(g), Math.round(b), Math.round(a));
+	if (BLACK_WHITE == 1) {
+		var y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+		var test = INVERT == 0 ? y < 128 : y > 128
+		var color = test ? 'black' : 'white'
+	}
 	return color;
 }
 
