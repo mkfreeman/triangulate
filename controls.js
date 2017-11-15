@@ -97,6 +97,26 @@ $(function() {
             $('#points-slider-label').text('# of points: ' + Math.floor(value));
         });
 
+    // Number of triangles slider
+    var thresholdSlider = document.getElementById('threshold-slider');
+    noUiSlider.create(thresholdSlider, {
+        start: THRESHOLD,
+        animate: false,
+        step: 1,
+        range: {
+            min: 50,
+            max: 200
+        }
+    });
+
+    thresholdSlider
+        .noUiSlider
+        .on('set', function(value) {
+            THRESHOLD = Math.floor(value);
+            finalImageOutOfDate = true;
+            build();
+        });
+    // Smoother
     var smoothSlider = document.getElementById('smooth-slider');
     noUiSlider.create(smoothSlider, {
         start: SMOOTH_ITERATIONS,

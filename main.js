@@ -10,6 +10,7 @@ var BORDER_LINES = 1;
 var SMOOTH_TYPE = 0;
 var COLOR_TYPE = 0;
 var BLACK_WHITE = 0;
+var THRESHOLD = 128;
 var INVERT = 0;
 var img;
 var voronoi;
@@ -316,7 +317,7 @@ var getColorAtPos = function(pt) {
 	// Calculate luminence
 	if (BLACK_WHITE == 1) {
 		var y = 0.2126 * imageBuffer8[offset] + 0.7152 * imageBuffer8[offset + 1] + 0.0722 * imageBuffer8[offset + 2]
-		var test = INVERT == 0 ? y < 128 : y > 128
+		var test = INVERT == 0 ? y < THRESHOLD : y > THRESHOLD
 		var color = test ? 'black' : 'white'
 	}
 	return color;
@@ -348,7 +349,7 @@ var getAverageColor = function(c, p) {
 	var color = makeColorString(Math.round(r), Math.round(g), Math.round(b), Math.round(a));
 	if (BLACK_WHITE == 1) {
 		var y = 0.2126 * r + 0.7152 * g + 0.0722 * b
-		var test = INVERT == 0 ? y < 128 : y > 128
+		var test = INVERT == 0 ? y < THRESHOLD : y > THRESHOLD
 		var color = test ? 'black' : 'white'
 	}
 	return color;
