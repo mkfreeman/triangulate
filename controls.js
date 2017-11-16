@@ -141,7 +141,7 @@ $(function() {
     smoothSlider
         .noUiSlider
         .on('update', function(value) {
-            $('#smooth-slider-label').text('Smoothing Iterations: ' + Math.floor(value));
+            $('#smooth-slider-label').text('Re-sample to Distribute Points : ' + Math.floor(value));
         });
 
     $("#type-select-menu").on('change', function(value) {
@@ -246,7 +246,7 @@ $(function() {
     resampleSlider
         .noUiSlider
         .on('update', function(value) {
-            $('#resample-slider-label').text('# of Resamples: ' + Math.floor(value));
+            $('#resample-slider-label').text('Resample for Contrast: ' + Math.floor(value));
         });
 
     // Wait for image to load
