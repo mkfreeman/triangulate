@@ -11,6 +11,8 @@ var SMOOTH_TYPE = 0;
 var COLOR_TYPE = 0;
 var BLACK_WHITE = 0;
 var THRESHOLD = 128;
+var FIT_TO_SCREEN = true;
+var originalSize;
 var INVERT = 0;
 var img;
 var voronoi;
@@ -37,11 +39,29 @@ var finalImageOutOfDate = true;
 // pipeline (build).
 //
 
+// Download button
+function downloadCanvas(link, canvasId, filename) {
+	var canvas = document.getElementById(canvasId);
+
+	// Convert to blob and download
+	canvas.toBlob(function(blob) {
+		url = URL.createObjectURL(blob);
+		link.href = url;
+		link.download = filename;
+	});
+}
+
+
 // Function to add image
 var addImage = function() {
 	console.log("add image")
 	$('<img id="my-img" src="./imgs/mountains.png">').on('load', function() {
 		$(this).appendTo('#img-container');
+		// cache original size
+		originalSize = {
+			width: document.getElementById('my-img').width,
+			height: document.getElementById('my-img').height
+		}
 		build();
 	});
 }
@@ -75,6 +95,13 @@ var build = function() {
 	if (finalImageOutOfDate) {
 		canvases.map(drawFinalImage);
 	}
+
+	// Set download for updated image
+	// Wait for it to load...?
+	setTimeout(function() {
+		downloadCanvas(document.getElementById('download'), 'can-heroCanvas', 'triangle-image.png');
+	}, 300)
+
 };
 
 //
@@ -86,16 +113,20 @@ var updateImage = function() {
 	var widthOffset = document.documentElement.clientWidth < 992 ? 0 : 300;
 	var w = document.documentElement.clientWidth - widthOffset;
 	var h = document.documentElement.clientHeight - 10;
-
-	// Maximize area of photo
-	let imageRatio = img.width / img.height;
-	let screenRatio = w / h;
-	if (imageRatio > screenRatio) {
-		img.width = width = w;
-		height = img.height;
+	if (FIT_TO_SCREEN == true) {
+		// Maximize area of photo
+		let imageRatio = img.width / img.height;
+		let screenRatio = w / h;
+		if (imageRatio > screenRatio) {
+			img.width = width = w;
+			height = img.height;
+		} else {
+			img.height = height = h;
+			width = img.width;
+		}
 	} else {
-		img.height = height = h;
-		width = img.width;
+		height = originalSize.height;
+		width = originalSize.width;
 	}
 
 	// Define voronoi function
@@ -239,10 +270,23 @@ var canvases = [
 
 // Function to make Canvas elements
 var makeCanvas = function(can) {
-	// Create canvas
-	var canvas = document.createElement('canvas');
-	canvas.id = can.id;
-	canvas.className += can.className;
+	// Create canvas, if it doesn't exist
+	var canvas;
+	if (document.getElementById(can.id) == null) {
+		console.log('new canvas!')
+		canvas = document.createElement('canvas');
+		canvas.id = can.id;
+		canvas.className += can.className;
+
+		// Append
+		document
+			.getElementsByClassName('ele-container')[0]
+			.appendChild(canvas);
+	} else {
+		canvas = document.getElementById(can.id)
+	}
+
+
 	canvas.width = width;
 	canvas.height = height;
 
@@ -250,9 +294,7 @@ var makeCanvas = function(can) {
 	canvas
 		.getContext('2d')
 		.drawImage(img, 0, 0, width, height);
-	document
-		.getElementsByClassName('ele-container')[0]
-		.appendChild(canvas);
+
 };
 
 // Blur the initial image
@@ -270,16 +312,19 @@ var drawBlur = function() {
 
 // Append canvas elements to draw in
 var appendCanvases = function() {
-	canvases
-		.forEach(function(can) {
-			d3
-				.select('.ele-container')
-				.append('canvas')
-				.attr('width', width)
-				.attr('height', height)
-				.attr('id', 'can-' + can.id)
-				.attr("class", "triangles " + can.id);
+	var drawingContainers = d3.select('.ele-container').selectAll('.triangles').data(canvases)
 
+	drawingContainers.enter()
+		.append('canvas')
+		.merge(drawingContainers)
+		.attr('width', width)
+		.attr('height', height)
+		.attr('id', function(d) {
+			console.log('append  ', d.id)
+			return 'can-' + d.id
+		})
+		.attr("class", function(d) {
+			return 'triangles ' + d.id
 		});
 };
 
@@ -608,7 +653,7 @@ var drawDot = function(site, radius, con) {
 
 // Function to draw triangles
 var drawFinalImage = function(can) {
-
+	console.log('draw final image', can.id)
 	// Clear canvas
 	var canvas = document.getElementById("can-" + can.id);
 	var context = canvas.getContext("2d");

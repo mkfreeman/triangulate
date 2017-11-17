@@ -12,9 +12,17 @@ $(function() {
         $('.ele-container').empty();
         $('canvas').remove();
         reader.onloadend = function(e) {
-            img = $('#my-img');
+            img = $('#my-img')
+                .removeAttr('width')
+                .removeAttr('height');
             img.attr('src', e.target.result);
             img.one("load", function() {
+                // cache original size
+                originalSize = {
+                    width: document.getElementById('my-img').width,
+                    height: document.getElementById('my-img').height
+                }
+                console.log('original size ', originalSize)
                 imageOutOfDate = true;
                 build();
             })
@@ -27,22 +35,6 @@ $(function() {
         reader.readAsDataURL(this.files[0]);
     });
 
-    // Download button
-    function downloadCanvas(link, canvasId, filename) {
-        console.log('download canvas!')
-        link.href = document
-            .getElementById(canvasId)
-            .toDataURL();
-        link.download = filename;
-    }
-
-    // Download
-    document
-        .getElementById('download')
-        .addEventListener('click', function() {
-            console.log('click!', this)
-            downloadCanvas(this, 'can-heroCanvas', 'triangle-image.png');
-        }, false);
 
     // Blur slider
     var blurSlider = document.getElementById('blur-slider');
@@ -221,7 +213,16 @@ $(function() {
         finalImageOutOfDate = true;
         console.log('color type', COLOR_TYPE)
         build();
+    })
 
+    // Size
+    $("input:radio[name=size]").on('change', function(value) {
+        FIT_TO_SCREEN = this.value != 'original'
+            ? true
+            : false;
+        imageOutOfDate = true;
+        // console.log('color type', COLOR_TYPE)
+        build();
     })
 
     var resampleSlider = document.getElementById('resample-slider');
@@ -251,6 +252,7 @@ $(function() {
 
     // Wait for image to load
     $(window).on("load", function() {
+        // Get original image size        
         $('.modal').modal();
         addImage();
     });
