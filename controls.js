@@ -250,6 +250,32 @@ $(function() {
             $('#resample-slider-label').text('Resample for Contrast: ' + Math.floor(value));
         });
 
+
+    var blendSlider = document.getElementById('blend-slider');
+    noUiSlider.create(blendSlider, {
+        start: NUM_BLEND,
+        animate: false,
+        step: 1,
+        range: {
+            min: 0,
+            max: 100
+        }
+    });
+
+    blendSlider
+        .noUiSlider
+        .on('set', function(value) {
+            NUM_BLEND = Math.floor(value);
+            finalImageOutOfDate = true;
+            build();
+        });
+
+    blendSlider
+        .noUiSlider
+        .on('update', function(value) {
+            $('#blend-slider-label').text('Blend Image: ' + Math.floor(value) + '%');
+        });
+                
     // Wait for image to load
     $(window).on("load", function() {
         // Get original image size        
