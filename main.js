@@ -334,22 +334,6 @@ var appendCanvases = function() {
 var getPixelDataAtPos = function(x, y, i) {
 	return imageBuffer8[4 * (x + y * width) + i];
 }
-var getWeight = function(context, x1, y1, x2, y2) {
-	return 1;
-
-	var x1f = Math.floor(x1);
-	var y1f = Math.floor(y1);
-	var x2f = Math.floor(x2);
-	var y2f = Math.floor(y2);
-
-	var diffr = getPixelDataAtPos(x1f, y1f, 0) - getPixelDataAtPos(x2f, y2f, 0);
-	var diffb = getPixelDataAtPos(x1f, y1f, 1) - getPixelDataAtPos(x2f, y2f, 1);
-	var diffg = getPixelDataAtPos(x1f, y1f, 2) - getPixelDataAtPos(x2f, y2f, 2);
-	console.log('wh ' + width + ' ' + height);
-	console.log(x1f + ' ' + x2f + ' ' + y1f + ' ' + y2f + ' ' + diffr + ' ' + diffg);
-
-	return Math.abs(diffr) + Math.abs(diffb) + Math.abs(diffg) + 1;
-}
 
 var makeColorString = function(r, g, b, a) {
 	return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
@@ -707,8 +691,6 @@ var drawFinalImage = function(can) {
 			// get the Voronoi polygons
 			polygons = voronoi(smoothedSites).polygons();
 		}
-
-        //console.log(polygons);
         
 		for (var i = 0, n = polygons.length; i < n; ++i) {
 			drawCell(polygons[i], context);
