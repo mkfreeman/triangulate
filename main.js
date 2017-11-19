@@ -14,6 +14,7 @@ var THRESHOLD = 128;
 var FIT_TO_SCREEN = true;
 var originalSize;
 var INVERT = 0;
+var NUM_BLEND = 0;
 var img;
 var voronoi;
 var sites;
@@ -333,22 +334,6 @@ var appendCanvases = function() {
 var getPixelDataAtPos = function(x, y, i) {
 	return imageBuffer8[4 * (x + y * width) + i];
 }
-var getWeight = function(context, x1, y1, x2, y2) {
-	return 1;
-
-	var x1f = Math.floor(x1);
-	var y1f = Math.floor(y1);
-	var x2f = Math.floor(x2);
-	var y2f = Math.floor(y2);
-
-	var diffr = getPixelDataAtPos(x1f, y1f, 0) - getPixelDataAtPos(x2f, y2f, 0);
-	var diffb = getPixelDataAtPos(x1f, y1f, 1) - getPixelDataAtPos(x2f, y2f, 1);
-	var diffg = getPixelDataAtPos(x1f, y1f, 2) - getPixelDataAtPos(x2f, y2f, 2);
-	console.log('wh ' + width + ' ' + height);
-	console.log(x1f + ' ' + x2f + ' ' + y1f + ' ' + y2f + ' ' + diffr + ' ' + diffg);
-
-	return Math.abs(diffr) + Math.abs(diffb) + Math.abs(diffg) + 1;
-}
 
 var makeColorString = function(r, g, b, a) {
 	return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
@@ -574,13 +559,8 @@ var drawCell = function(cell, con) {
 	// Fill path
 	var color = getColor(cell);
 	con.fillStyle = color;
-	if (BORDER_LINES == 1) {
-		con.strokeStyle = '#d3d3d3';
-		con.lineWidth = .5;
-	} else {
-		con.strokeStyle = color;
-		con.lineWidth = 1.25;
-	}
+    con.strokeStyle = color;
+	con.lineWidth = 1.25;	
 	con.fill();
 	if (con.fillStyle != '#ffffff') {
 		con.stroke();
@@ -588,6 +568,25 @@ var drawCell = function(cell, con) {
 	con.closePath();
 	return true;
 };
+
+// Function to draw a cell
+var drawLines = function(cell, con) {
+	if (!cell || !con)
+		return false;
+
+	// Draw path
+	con.beginPath();
+	con.moveTo(cell[0][0], cell[0][1]);
+	for (var j = 1, m = cell.length; j < m; ++j) {
+		con.lineTo(cell[j][0], cell[j][1]);
+	}
+    con.strokeStyle = '#d3d3d3';
+    con.lineWidth = .5;
+	con.stroke();
+	con.closePath();
+	return true;
+};
+
 
 var getDotRadii = function(sites, diagram) {
 
@@ -647,8 +646,23 @@ var drawDot = function(site, radius, con) {
 	con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
 	con.closePath();
 	con.fillStyle = color;
-	con.fill();
+    con.strokeStyle = color;
 	con.lineWidth = 0;
+    con.fill();
+}
+
+// blend in the original image
+var blendOriginalImage = function(context) {
+    if (NUM_BLEND == 0)
+        return;
+    
+    var imageData = context.getImageData(0, 0, width, height);
+    var data = imageData.data;
+    
+    for (var i = 0; i < data.length; i += 1) {
+        data[i] = ((100-NUM_BLEND)*data[i] + NUM_BLEND*imageBuffer8[i])/100;
+    }
+    context.putImageData(imageData, 0, 0);    
 }
 
 // Function to draw triangles
@@ -665,6 +679,9 @@ var drawFinalImage = function(can) {
 		for (var i = 0, n = smoothedSites.length; i < n; ++i) {
 			drawDot(smoothedSites[i], radii[i], context);
 		}
+        
+        blendOriginalImage(context);
+        
 	} else {
 		var polygons;
 		if (ELEMENT_TYPE == 0) {
@@ -674,11 +691,19 @@ var drawFinalImage = function(can) {
 			// get the Voronoi polygons
 			polygons = voronoi(smoothedSites).polygons();
 		}
-
+        
 		for (var i = 0, n = polygons.length; i < n; ++i) {
 			drawCell(polygons[i], context);
 		}
-	}
 
+        blendOriginalImage(context);
+        
+        if (BORDER_LINES == 1) {
+            for (var i = 0, n = polygons.length; i < n; ++i) {
+                drawLines(polygons[i], context);
+            }
+        }
+	}  
+    
 	finalImageOutOfDate = false;
 };
