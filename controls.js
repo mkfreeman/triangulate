@@ -4,36 +4,32 @@ $(function() {
     $(".button-collapse").sideNav('show');
     $('select').material_select();
 
-    // File uploader
-    $("#file").change(function() {
-        // New file reader
-        var reader = new FileReader();
-        // Empty the container -- a little lazy
-        $('.ele-container').empty();
-        $('canvas').remove();
-        reader.onloadend = function(e) {
-            img = $('#my-img')
-                .removeAttr('width')
-                .removeAttr('height');
-            img.attr('src', e.target.result);
-            img.one("load", function() {
-                // cache original size
+    // Load image
+    document.getElementById('file').onchange = function(e) {
+        console.log("file chage!")
+        var loadingImage = loadImage(
+            e.target.files[0],
+            function(img) {
+                console.log('img', img);
+                // Empty the container -- a little lazy
+                $('.ele-container').empty();
+                $('#img-container').empty();
+                $('canvas').remove();
+                img.id = "my-img";
+                document.getElementById('img-container').appendChild(img);
                 originalSize = {
                     width: document.getElementById('my-img').width,
                     height: document.getElementById('my-img').height
-                }
-                console.log('original size ', originalSize)
+                };
                 imageOutOfDate = true;
                 build();
-            })
-                .each(function() {
-                    if (this.complete)
-                        $(this).load();
-                }
-            );
-        };
-        reader.readAsDataURL(this.files[0]);
-    });
+            },
+            {
+                orientation: true,
+                canvas: true
+            }
+        );
+    };
 
 
     // Blur slider
@@ -275,7 +271,7 @@ $(function() {
         .on('update', function(value) {
             $('#blend-slider-label').text('Blend Image: ' + Math.floor(value) + '%');
         });
-                
+
     // Wait for image to load
     $(window).on("load", function() {
         // Get original image size        
