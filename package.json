@@ -1,0 +1,20 @@
+{
+  "name": "triangulate",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "1.0.17"
+  },
+  "dependencies": {
+    "material-ui": "^0.19.4",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "react-tap-event-plugin": "^3.0.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
