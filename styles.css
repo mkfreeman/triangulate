@@ -1,8 +1,17 @@
+body {
+    overflow: auto !important;
+}
+
 #my-img {
     opacity: 0;
     position: fixed;
     pointer-events: none;
     z-index: -999;
+}
+
+#img-container {
+    position: absolute;
+    overflow: hidden;
 }
 
 .image-background {
@@ -231,7 +240,8 @@ h1 {
     text-align: center;
 }
 
-#heroCanvas {
+#heroCanvas,
+#rawCanvas {
     position: absolute;
     opacity: 0;
     -webkit-transition: opacity 1s;

@@ -4,26 +4,30 @@ $(function() {
     $(".button-collapse").sideNav('show');
     $('select').material_select();
 
+    // Function to load image
+    function GetImage(img) {
+        console.log('img', img);
+        // Empty the container -- a little lazy
+        $('.ele-container').empty();
+        $('#img-container').empty();
+        $('canvas').remove();
+        img.id = "rawCanvas";
+        img.className += "hero";
+        document.getElementById('img-container').appendChild(img);
+        originalSize = {
+            width: document.getElementById('rawCanvas').width,
+            height: document.getElementById('rawCanvas').height
+        };
+        // console.log(img.getContext('2d').getImageData(0, 0, 100, 100))
+        imageOutOfDate = true;
+        build();
+    }
     // Load image
     document.getElementById('file').onchange = function(e) {
         console.log("file chage!")
         var loadingImage = loadImage(
             e.target.files[0],
-            function(img) {
-                console.log('img', img);
-                // Empty the container -- a little lazy
-                $('.ele-container').empty();
-                $('#img-container').empty();
-                $('canvas').remove();
-                img.id = "my-img";
-                document.getElementById('img-container').appendChild(img);
-                originalSize = {
-                    width: document.getElementById('my-img').width,
-                    height: document.getElementById('my-img').height
-                };
-                imageOutOfDate = true;
-                build();
-            },
+            GetImage,
             {
                 orientation: true,
                 canvas: true
@@ -276,7 +280,16 @@ $(function() {
     $(window).on("load", function() {
         // Get original image size        
         $('.modal').modal();
-        addImage();
+        loadImage(
+            './imgs/mountains.png',
+            GetImage,
+            {
+                orientation: true,
+                canvas: true
+            }
+        );
+    // LoadImage('./imgs/mountains.png')
+    // addImage();
     });
 
 

@@ -12,6 +12,7 @@ var COLOR_TYPE = 0;
 var BLACK_WHITE = 0;
 var THRESHOLD = 128;
 var FIT_TO_SCREEN = true;
+var SCALE = 1;
 var originalSize;
 var INVERT = 0;
 var NUM_BLEND = 0;
@@ -56,15 +57,15 @@ function downloadCanvas(link, canvasId, filename) {
 // Function to add image
 var addImage = function() {
 	console.log("add image")
-	$('<img id="my-img" src="./imgs/mountains.png">').on('load', function() {
-		$(this).appendTo('#img-container');
-		// cache original size
-		originalSize = {
-			width: document.getElementById('my-img').width,
-			height: document.getElementById('my-img').height
-		}
-		build();
-	});
+// $('<img id="my-img" src="./imgs/mountains.png">').on('load', function() {
+// 	$(this).appendTo('#img-container');
+// 	// cache original size
+// 	originalSize = {
+// 		width: document.getElementById('my-img').width,
+// 		height: document.getElementById('my-img').height
+// 	}
+// 	build();
+// });
 }
 
 // Function to build -- after image is uploaded
@@ -109,26 +110,36 @@ var build = function() {
 // Update the input image
 //
 var updateImage = function() {
-	img = document.getElementById('my-img');
+
+	img = document.getElementById('rawCanvas');
+	console.log('update image', img)
+	console.log(img.height, img.width)
 	var wrapper = document.getElementsByClassName('ele-container')[0];
 	var widthOffset = document.documentElement.clientWidth < 992 ? 0 : 300;
-	var w = document.documentElement.clientWidth - widthOffset;
-	var h = document.documentElement.clientHeight - 10;
+	var w = Math.floor(document.documentElement.clientWidth - widthOffset);
+	var h = Math.floor(document.documentElement.clientHeight - 10);
 	if (FIT_TO_SCREEN == true) {
 		// Maximize area of photo
 		let imageRatio = img.width / img.height;
 		let screenRatio = w / h;
+		SCALE = Math.min(w / img.width, h / img.height)
 		if (imageRatio > screenRatio) {
-			img.width = width = w;
-			height = img.height;
+			width = Math.floor(w);
+			height = Math.floor(img.height * SCALE);
 		} else {
-			img.height = height = h;
-			width = img.width;
+			height = Math.floor(h);
+			width = Math.floor(img.width * SCALE);
 		}
 	} else {
 		height = originalSize.height;
 		width = originalSize.width;
 	}
+
+	// Make Canvas elements (for photos)
+	console.log(document.getElementById('rawCanvas').getContext('2d').getImageData(0, 0, 100, 100))
+	canvases.forEach(function(d) {
+		makeCanvas(d, document.getElementById('rawCanvas'))
+	});
 
 	// Define voronoi function
 	voronoi = d3
@@ -142,9 +153,6 @@ var updateImage = function() {
 				height + 1
 			]
 		]);
-
-	// Make Canvas elements (for photos)
-	canvases.forEach(makeCanvas);
 
 	// Append arrow on large screens
 	if (innerWidth > 700) {
@@ -270,7 +278,7 @@ var canvases = [
 ];
 
 // Function to make Canvas elements
-var makeCanvas = function(can) {
+var makeCanvas = function(can, srcImg) {
 	// Create canvas, if it doesn't exist
 	var canvas;
 	if (document.getElementById(can.id) == null) {
@@ -292,10 +300,15 @@ var makeCanvas = function(can) {
 	canvas.height = height;
 
 	// Draw image
-	canvas
-		.getContext('2d')
-		.drawImage(img, 0, 0, width, height);
 
+	var ctx = srcImg.getContext('2d')
+	console.log(width, height)
+	var original = ctx.getImageData(0, 0, width, height);
+
+	var ctx = canvas
+		.getContext('2d')
+	// ctx.scale(SCALE, SCALE);
+	ctx.drawImage(img, 0, 0, width, height);
 };
 
 // Blur the initial image
@@ -326,7 +339,8 @@ var appendCanvases = function() {
 		})
 		.attr("class", function(d) {
 			return 'triangles ' + d.id
-		});
+		})
+// .attr('scale', [5, 5])
 };
 
 // Get specific data out of the image buffer for a particular pixel (x,y) and
@@ -559,8 +573,8 @@ var drawCell = function(cell, con) {
 	// Fill path
 	var color = getColor(cell);
 	con.fillStyle = color;
-    con.strokeStyle = color;
-	con.lineWidth = 1.25;	
+	con.strokeStyle = color;
+	con.lineWidth = 1.25;
 	con.fill();
 	if (con.fillStyle != '#ffffff') {
 		con.stroke();
@@ -580,8 +594,8 @@ var drawLines = function(cell, con) {
 	for (var j = 1, m = cell.length; j < m; ++j) {
 		con.lineTo(cell[j][0], cell[j][1]);
 	}
-    con.strokeStyle = '#d3d3d3';
-    con.lineWidth = .5;
+	con.strokeStyle = '#d3d3d3';
+	con.lineWidth = .5;
 	con.stroke();
 	con.closePath();
 	return true;
@@ -646,23 +660,23 @@ var drawDot = function(site, radius, con) {
 	con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
 	con.closePath();
 	con.fillStyle = color;
-    con.strokeStyle = color;
+	con.strokeStyle = color;
 	con.lineWidth = 0;
-    con.fill();
+	con.fill();
 }
 
 // blend in the original image
 var blendOriginalImage = function(context) {
-    if (NUM_BLEND == 0)
-        return;
-    
-    var imageData = context.getImageData(0, 0, width, height);
-    var data = imageData.data;
-    
-    for (var i = 0; i < data.length; i += 1) {
-        data[i] = ((100-NUM_BLEND)*data[i] + NUM_BLEND*imageBuffer8[i])/100;
-    }
-    context.putImageData(imageData, 0, 0);    
+	if (NUM_BLEND == 0)
+		return;
+
+	var imageData = context.getImageData(0, 0, width, height);
+	var data = imageData.data;
+
+	for (var i = 0; i < data.length; i += 1) {
+		data[i] = ((100 - NUM_BLEND) * data[i] + NUM_BLEND * imageBuffer8[i]) / 100;
+	}
+	context.putImageData(imageData, 0, 0);
 }
 
 // Function to draw triangles
@@ -671,6 +685,7 @@ var drawFinalImage = function(can) {
 	// Clear canvas
 	var canvas = document.getElementById("can-" + can.id);
 	var context = canvas.getContext("2d");
+	// context.scale(.5, .5)
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	if (ELEMENT_TYPE == 2) {
@@ -679,9 +694,9 @@ var drawFinalImage = function(can) {
 		for (var i = 0, n = smoothedSites.length; i < n; ++i) {
 			drawDot(smoothedSites[i], radii[i], context);
 		}
-        
-        blendOriginalImage(context);
-        
+
+		blendOriginalImage(context);
+
 	} else {
 		var polygons;
 		if (ELEMENT_TYPE == 0) {
@@ -691,19 +706,19 @@ var drawFinalImage = function(can) {
 			// get the Voronoi polygons
 			polygons = voronoi(smoothedSites).polygons();
 		}
-        
+
 		for (var i = 0, n = polygons.length; i < n; ++i) {
 			drawCell(polygons[i], context);
 		}
 
-        blendOriginalImage(context);
-        
-        if (BORDER_LINES == 1) {
-            for (var i = 0, n = polygons.length; i < n; ++i) {
-                drawLines(polygons[i], context);
-            }
-        }
-	}  
-    
+		blendOriginalImage(context);
+
+		if (BORDER_LINES == 1) {
+			for (var i = 0, n = polygons.length; i < n; ++i) {
+				drawLines(polygons[i], context);
+			}
+		}
+	}
+
 	finalImageOutOfDate = false;
 };
