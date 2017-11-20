@@ -6,7 +6,6 @@ $(function() {
 
     // Function to load image
     function GetImage(img) {
-        console.log('img', img);
         // Empty the container -- a little lazy
         $('.ele-container').empty();
         $('#img-container').empty();
@@ -18,13 +17,11 @@ $(function() {
             width: document.getElementById('rawCanvas').width,
             height: document.getElementById('rawCanvas').height
         };
-        // console.log(img.getContext('2d').getImageData(0, 0, 100, 100))
         imageOutOfDate = true;
         build();
     }
     // Load image
     document.getElementById('file').onchange = function(e) {
-        console.log("file chage!")
         var loadingImage = loadImage(
             e.target.files[0],
             GetImage,
@@ -137,7 +134,6 @@ $(function() {
         });
 
     $("#type-select-menu").on('change', function(value) {
-        console.log('value', this.value);
         ELEMENT_TYPE = Number(this.value);
         finalImageOutOfDate = true;
         build();
@@ -206,12 +202,10 @@ $(function() {
 
     // Colors
     $("input:radio[name=color]").on('change', function(value) {
-        console.log(value)
         COLOR_TYPE = this.value != 'average'
             ? 0
             : 1;
         finalImageOutOfDate = true;
-        console.log('color type', COLOR_TYPE)
         build();
     })
 
@@ -221,7 +215,6 @@ $(function() {
             ? true
             : false;
         imageOutOfDate = true;
-        // console.log('color type', COLOR_TYPE)
         build();
     })
 
@@ -288,8 +281,6 @@ $(function() {
                 canvas: true
             }
         );
-    // LoadImage('./imgs/mountains.png')
-    // addImage();
     });
 
 
