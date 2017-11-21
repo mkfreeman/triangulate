@@ -1,19 +1,13 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ControlPanel from './ControlPanel';
 import ControlSettings from './ControlSettings';
 import Resampler from './Resampler';
 import CustomCanvas from './CustomCanvas';
+import Utilities from './Utilities';
 
-const sampler = new Resampler(100, 100)
-    .setVoronoi()
-    .getSites();
 
-const polygons = sampler
-    .voronoi(sampler.sites)
-    .polygons();;
-console.log('polygons!', polygons)
 class App extends Component {
     constructor(props) {
         super(props);
@@ -30,12 +24,15 @@ class App extends Component {
             contrast: 0,
             distribute: 0,
             algorithm: 'lloyd',
-            blur: 0
+            blur: 0,
+            srcCanvas: null,
+            width: window.innerWidth - 300,
+            height: window.innerHeight,
+            originalSize: {}
         }
 
     }
     inputChangeHandler(event, id, newValue) {
-        console.log(event, id, newValue)
         let obj = {};
         obj[id] = newValue;
         this.setState(obj);
@@ -57,35 +54,45 @@ class App extends Component {
             width: ele.width,
             height: ele.height
         };
-        this.setState({originalSize: originalSize});
+        this.setState({
+            originalSize: originalSize,
+            srcCanvas: ele
+        });
     }
     render() {
+        // Compute utilites to pass to CustomCanvas
+        // Redefine these (as a component?) so it only updates when inputs update
+        let sampler = new Resampler(this.state.originalSize.width, this.state.originalSize.height, this.state.numPoints)
+            .setVoronoi()
+            .getSites();
+
+        // Redefine these (as a component?) so it only updates when inputs update
+        let polygons = sampler
+            .voronoi(sampler.sites)
+            .polygons();
+
+        let utilities = this.state.srcCanvas == null ? null : new Utilities(this.state.srcCanvas, this.state.originalSize.width, this.state.originalSize.height, this.state.colorType, this.state.blackWhite, this.state.invert, this.state.threshold);
         return (
             <MuiThemeProvider>
+              <div>
                 <div>
-                    <div>
-                        <ControlPanel
-                            controls={ControlSettings}
-                            status={this.state}
-                            disabled={!this.state.blackWhite}
-                            handleImage={this
-                            .handleImage
-                            .bind(this)}
-                            update={this
-                            .inputChangeHandler
-                            .bind(this)}/>
-                    </div>
-                    {/* original image */}
-                    <div
-                        id="originalImage"
-                        ref={(input) => {
-                        this.textInput = input;
-                    }}/>
-                    <CustomCanvas polygons={polygons}/>
+                  <ControlPanel controls={ ControlSettings } status={ this.state } disabled={ !this.state.blackWhite } handleImage={ this
+                                                                                                                                         .handleImage
+                                                                                                                                         .bind(this) } update={ this
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .inputChangeHandler
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                    .bind(this) }
+                  />
                 </div>
+                <div id="originalImage" ref={ (input) => {
+                                                  this.textInput = input;
+                                              } } />
+                { this.state.srcCanvas !== null &&
+                  <CustomCanvas width={ this.state.originalSize.width } height={ this.state.originalSize.height } utilities={ utilities } polygons={ polygons } /> }
+              </div>
             </MuiThemeProvider>
         )
     }
-};
+}
+;
 
 export default App;

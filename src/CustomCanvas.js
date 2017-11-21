@@ -1,29 +1,43 @@
 // CustomCanvas
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class CustomCanvas extends Component {
     constructor(props) {
         super(props)
     }
+
+    updateCanvas() {
+        const ctx = this.refs.canvas.getContext('2d');
+        ctx.clearRect(0, 0, this.props.width, this.props.height);
+
+        for (var i = 0, n = this.props.polygons.length; i < n; ++i) {
+            this.drawCell(this.props.polygons[i], ctx);
+        }
+    }
+
     componentDidMount() {
-        this.drawCanvas();
+        this.updateCanvas();
+    }
+
+    componentWillUpdate() {
+        console.log('new props!')
+        this.updateCanvas();
     }
     drawCell(cell, con) {
-        if (!cell || !con) 
+        if (!cell || !con)
             return false;
-        
+
         // Draw path
         con.beginPath();
         con.moveTo(cell[0][0], cell[0][1]);
         for (var j = 1, m = cell.length; j < m; ++j) {
             con.lineTo(cell[j][0], cell[j][1]);
-            console.log('start rawing!', con)
         }
 
         // Fill path var color = getColor(cell);
-        var color = 'black';
+        var color = this.props.utilities.getColor(cell);
         con.fillStyle = color;
-        con.strokeStyle = color;
+        con.strokeStyle = 'black';
         con.lineWidth = 1.25;
         con.fill();
         if (con.fillStyle != '#ffffff') {
@@ -32,23 +46,10 @@ class CustomCanvas extends Component {
         con.closePath();
         return true;
     }
-    drawCanvas() {
-        let ctx = this
-            .canvas
-            .getContext('2d');
-        console.log('ctx', ctx)
-        for (var i = 0, n = this.props.polygons.length; i < n; ++i) {
-            console.log('draw ', this.props.polygons[i])
-            this.drawCell(this.props.polygons[i], ctx);
-        }
-    }
     render() {
-        return <canvas
-            width={1000}
-            height={1000}
-            ref={(input) => {
-            this.canvas = input;
-        }}/>
+        return (
+            <canvas ref="canvas" width={ this.props.width } height={ this.props.height } style={ { marginLeft: "300px" } } />
+            );
     }
 }
 
