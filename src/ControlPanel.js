@@ -9,7 +9,8 @@ import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import Toggle from 'material-ui/Toggle';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-
+const loadImage = require('../node_modules/blueimp-load-image/js/load-image.all.min.js')
+console.log('load image', loadImage)
 let styles = {
     slider: {
         marginTop: '0px'
@@ -25,11 +26,25 @@ class ControlPanel extends Component {
         }
     }
     handleModal() {
-        let open = this.state.modalOpen == true
+        let open = this.state.modalOpen === true
             ? false
             : true;
         this.setState({modalOpen: open})
 
+    }
+    uploadFile(e) {
+        console.log('event ', e.target.files[0],)
+        loadImage(e.target.files[0], function (img) {
+            console.log('img ', img);
+            img.id = "rawCanvas";
+            img.className += "hero";
+            this
+                .props
+                .handleImage(img)
+        }.bind(this), {
+            orientation: true,
+            canvas: true
+        });
     }
     // handleModalClose() {     this.setState({modalOpen: value}) }
     render() {
@@ -37,120 +52,86 @@ class ControlPanel extends Component {
         return (
             <div>
                 <Drawer open={this.state.open}>
-                    <h3>Image Options</h3>
-                    <hr/>
-                    <SelectField
-                        floatingLabelText="Select Shape"
-                        value={this.props.type}
-                        style={{
-                        width: "100%"
-                    }}
-                        onChange={(e, key, val) => this.props.update(e, "type", val)}>
-                        {this
-                            .props
-                            .typeOptions
-                            .map(function (d) {
-                                return (<MenuItem key={"type-" + d.id} value={d.id} primaryText={d.label}/>)
-                            })}
-                    </SelectField>
-                    <label># of Points: {this.props.numPoints}</label>
-                    <Slider
-                        id="numPoints"
-                        min={this.props.numPointsSettings.min}
-                        max={this.props.numPointsSettings.max}
-                        step={this.props.numPointsSettings.step}
-                        onChange={(e, val) => this.props.update(e, "numPoints", val)}
-                        defaultValue={this.props.numPoints}
-                        sliderStyle={styles.slider}/>
-                    <Checkbox
-                        checked={this.props.fitToScreen}
-                        label="Fit Image To Screen"
-                        onCheck={(e, val) => this.props.update(e, "fitToScreen", val)}/>
-                    <Checkbox
-                        checked={this.props.showLines}
-                        label="Show Polygon Outlines"
-                        onCheck={(e, val) => this.props.update(e, "showLines", val)}/>
-                    <label>Blend Original Image: {this.props.blend}%</label>
-                    <Slider
-                        min={this.props.blendSettings.min}
-                        max={this.props.blendSettings.max}
-                        step={this.props.blendSettings.step}
-                        onChange={(e, val) => this.props.update(e, "blend", val)}
-                        defaultValue={this.props.blend}
-                        sliderStyle={styles.slider}/>
-                    <h3>Color Options</h3>
-                    <hr/>
-                    <RadioButtonGroup name="fillColor" defaultSelected={this.props.fillColor}>
-                        {this
-                            .props
-                            .fillColorOptions
-                            .map(function (d) {
-                                return (<RadioButton key={"color-" + d.id} value={d.id} label={d.label}/>)
-                            })}
-                    </RadioButtonGroup>
-                    <Toggle
-                        label="Black and White"
-                        style={styles.toggle}
-                        toggled={this.props.blackWhite}
-                        onToggle={(e, val) => this.props.update(e, "blackWhite", val)}/>
-                    <Toggle
-                        label="Invert Black and White"
-                        style={styles.toggle}
-                        toggled={this.props.invert}
-                        disabled={!this.props.blackWhite}
-                        onToggle={(e, val) => this.props.update(e, "invert", val)}/>
-                    <label>Black/White Threshold: {this.props.threshold}</label>
-                    <Slider
-                        min={this.props.thresholdSettings.min}
-                        max={this.props.thresholdSettings.max}
-                        step={this.props.thresholdSettings.step}
-                        onChange={(e, val) => this.props.update(e, "threshold", val)}
-                        defaultValue={this.props.threshold}
-                        disabled={!this.props.blackWhite}
-                        sliderStyle={styles.slider}/>
-                    <h3>Smoothing Options</h3>
-                    <hr/>
-                    <label>Resample for Contrast: {this.props.contrast}
-                        &nbsp;times</label>
-                    <Slider
-                        min={this.props.contrastSettings.min}
-                        max={this.props.contrastSettings.max}
-                        step={this.props.contrastSettings.step}
-                        onChange={(e, val) => this.props.update(e, "contrast", val)}
-                        defaultValue={this.props.contrast}
-                        sliderStyle={styles.slider}/>
-                    <label>Resample to Distribute Points: {this.props.distribute}
-                        &nbsp;times</label>
-                    <Slider
-                        min={this.props.distributeSettings.min}
-                        max={this.props.distributeSettings.max}
-                        step={this.props.distributeSettings.step}
-                        onChange={(e, val) => this.props.update(e, "distribute", val)}
-                        defaultValue={this.props.distribute}
-                        sliderStyle={styles.slider}/>
-                    <SelectField
-                        floatingLabelText="Smoothing Algorithm"
-                        value={this.props.algorithm}
-                        style={{
-                        width: "100%"
-                    }}
-                        onChange={(e, key, val) => this.props.update(e, "algorithm", val)}>
-                        {this
-                            .props
-                            .algorithmOptions
-                            .map(function (d) {
-                                return (<MenuItem key={"algorithm-" + d.id} value={d.id} primaryText={d.label}/>)
-                            })}
-                    </SelectField>
-                    <label>Blur Original Image: {this.props.blur}
-                        %</label>
-                    <Slider
-                        min={this.props.blurSettings.min}
-                        max={this.props.blurSettings.max}
-                        step={this.props.blurSettings.step}
-                        onChange={(e, val) => this.props.update(e, "blur", val)}
-                        defaultValue={this.props.blur}
-                        sliderStyle={styles.slider}/>
+                    <RaisedButton containerElement='label' label='Upload File'>
+                        <input
+                            onChange={this
+                            .uploadFile
+                            .bind(this)}
+                            type="file"
+                            style={{
+                            display: 'none'
+                        }}/>
+                    </RaisedButton>
+                    {this
+                        .props
+                        .controls
+                        .map(function (control) {
+                            switch (control.type) {
+                                case 'select':
+                                    return <SelectField
+                                        floatingLabelText={control.label}
+                                        value={this.props.status[control.id]}
+                                        style={{
+                                        width: "100%"
+                                    }}
+                                        onChange={(e, key, val) => this.props.update(e, control.id, val)}>
+                                        {control
+                                            .options
+                                            .map(function (d) {
+                                                return (<MenuItem key={control.id + '-' + d.id} value={d.id} primaryText={d.label}/>)
+                                            })}
+                                    </SelectField>
+                                    break;
+                                case 'header':
+                                    return <div>
+                                        <h3>{control.label}</h3>
+                                        <hr/>
+                                    </div>
+                                    break;
+                                case 'slider':
+                                    return <div>
+                                        <label>{control.getLabel(this.props.status[control.id])}</label>
+                                        <Slider
+                                            id={control.id}
+                                            min={control.min}
+                                            max={control.max}
+                                            step={control.step}
+                                            disabled={control.getDisabled === undefined
+                                            ? false
+                                            : control.getDisabled(this.props.disabled)}
+                                            onChange={(e, val) => this.props.update(e, control.id, val)}
+                                            defaultValue={this.props.status[control.id]}
+                                            sliderStyle={styles.slider}/>
+                                    </div>
+                                    break;
+                                case 'checkbox':
+                                    return <Checkbox
+                                        checked={this.props.status[control.id]}
+                                        label={control.label}
+                                        onCheck={(e, val) => this.props.update(e, control.id, val)}/>
+                                    break;
+                                case 'radio':
+                                    return <RadioButtonGroup
+                                        name={control.id}
+                                        defaultSelected={this.props.status[control.id]}>
+                                        {control
+                                            .options
+                                            .map(function (d) {
+                                                return (<RadioButton key={control.id + "-" + d.id} value={d.id} label={d.label}/>)
+                                            })}
+                                    </RadioButtonGroup>
+                                    break;
+                                case 'toggle':
+                                    return <Toggle
+                                        label={control.label}
+                                        style={styles.toggle}
+                                        toggled={this.props.status[control.id]}
+                                        disabled={control.getDisabled === undefined
+                                        ? false
+                                        : control.getDisabled(this.props.disabled)}
+                                        onToggle={(e, val) => this.props.update(e, control.id, val)}/>
+                            }
+                        }.bind(this))}
                     <RaisedButton
                         label="About"
                         onClick={this

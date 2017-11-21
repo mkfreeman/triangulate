@@ -1,80 +1,21 @@
 import React, {Component} from 'react';
 import './App.css';
-import ControlPanel from './ControlPanel';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import ControlPanel from './ControlPanel';
+import ControlSettings from './ControlSettings';
+import Resampler from './Resampler';
 
-const settings = {
-    numPointsSlider: {
-        min: 10,
-        max: 20000,
-        step: 1
-    },
-    blendSlider: {
-        min: 0,
-        max: 100,
-        step: 1
-    },
-    thresholdSlider: {
-        min: 50,
-        max: 250,
-        step: 1
-    },
-    contrastSlider: {
-        min: 0,
-        max: 200,
-        step: 1
-    },
-    distributeSlider: {
-        min: 0,
-        max: 200,
-        step: 1
-    },
-    blurSlider: {
-        min: 0,
-        max: 100,
-        step: 1
-    },
-    typeOptions: [
-        {
-            id: "points",
-            label: "Points"
-        }, {
-            id: "triangles",
-            label: "Triangles"
-        }, {
-            id: "polygons",
-            label: "Polygons"
-        }
-    ],
-    algorithmOptions: [
-        {
-            id: "lloyd",
-            label: "Lloyd"
-        }, {
-            id: "vertex",
-            label: "Polygon Vertex"
-        }, {
-            id: "laplacian",
-            label: "Laplacian"
-        }
-    ],
-    fillColorOptions: [
-        {
-            id: "centroid",
-            label: "Center Color"
-        }, {
-            id: "average",
-            label: "Average Color"
-        }
-    ]
-};
-
+const sampler = new Resampler(100, 100)
+    .setVoronoi()
+    .getSites();
+const polygons = sampler.voronoi(sampler.sites);
+console.log('polygons!', polygons)
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
             numPoints: 1000,
-            type: 'triangles',
+            shape: 'triangles',
             fitToScreen: true,
             showLines: true,
             blend: 50,
@@ -95,37 +36,47 @@ class App extends Component {
         obj[id] = newValue;
         this.setState(obj);
     }
+    handleImage(img, size) {
+        // Remove child element assuming elm is the element
+        while (this.textInput.firstChild) {
+            this
+                .textInput
+                .removeChild(this.textInput.firstChild);
+        }
+        this
+            .textInput
+            .appendChild(img);
+
+        // Store original size
+        let ele = document.getElementById(img.id)
+        let originalSize = {
+            width: ele.width,
+            height: ele.height
+        };
+        this.setState({originalSize: originalSize});
+    }
     render() {
         return (
             <MuiThemeProvider>
                 <div>
-                    <ControlPanel
-                        numPoints={this.state.numPoints}
-                        type={this.state.type}
-                        blur={this.state.blur}
-                        fillColor={this.state.fillColor}
-                        blackWhite={this.state.blackWhite}
-                        invert={this.state.invert}
-                        contrast={this.state.contrast}
-                        distribute={this.state.distribute}
-                        threshold={this.state.threshold}
-                        fitToScreen={this.state.fitToScreen}
-                        showLines={this.state.showLines}
-                        blend={this.state.blend}
-                        algorithm={this.state.algorithm}
-                        numPointsSettings={settings.numPointsSlider}
-                        thresholdSettings={settings.thresholdSlider}
-                        contrastSettings={settings.contrastSlider}
-                        distributeSettings={settings.distributeSlider}
-                        blendSettings={settings.blendSlider}
-                        blurSettings={settings.blurSlider}
-                        update={this
-                        .inputChangeHandler
-                        .bind(this)}
-                        typeOptions={settings.typeOptions}
-                        fillColorOptions={settings.fillColorOptions}
-                        algorithmOptions={settings.algorithmOptions}/>
-                    <p>test</p>
+                    <div>
+                        <ControlPanel
+                            controls={ControlSettings}
+                            status={this.state}
+                            disabled={!this.state.blackWhite}
+                            handleImage={this
+                            .handleImage
+                            .bind(this)}
+                            update={this
+                            .inputChangeHandler
+                            .bind(this)}/>
+                    </div>
+                    {/* original image */}
+                    <div
+                        id="originalImage"
+                        ref={(input) => {
+                        this.textInput = input;
+                    }}/>
                 </div>
             </MuiThemeProvider>
         )
