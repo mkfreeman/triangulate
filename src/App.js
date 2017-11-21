@@ -4,11 +4,15 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import ControlPanel from './ControlPanel';
 import ControlSettings from './ControlSettings';
 import Resampler from './Resampler';
+import CustomCanvas from './CustomCanvas';
 
 const sampler = new Resampler(100, 100)
     .setVoronoi()
     .getSites();
-const polygons = sampler.voronoi(sampler.sites);
+
+const polygons = sampler
+    .voronoi(sampler.sites)
+    .polygons();;
 console.log('polygons!', polygons)
 class App extends Component {
     constructor(props) {
@@ -77,6 +81,7 @@ class App extends Component {
                         ref={(input) => {
                         this.textInput = input;
                     }}/>
+                    <CustomCanvas polygons={polygons}/>
                 </div>
             </MuiThemeProvider>
         )
