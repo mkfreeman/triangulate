@@ -24,6 +24,11 @@ class ControlPanel extends Component {
             modalOpen: false
         }
     }
+
+    componentDidMount() {
+        this.uploadFile('./imgs/mountains.png')
+    }
+
     handleModal() {
         let open = this.state.modalOpen === true
             ? false
@@ -33,8 +38,8 @@ class ControlPanel extends Component {
         })
 
     }
-    uploadFile(e) {
-        loadImage(e.target.files[0], function(img) {
+    uploadFile(file) {
+        loadImage(file, function(img) {
             img.id = "rawCanvas";
             img.className += "hero";
             this
@@ -51,9 +56,7 @@ class ControlPanel extends Component {
             <div>
               <Drawer open={ this.state.open }>
                 <RaisedButton containerElement='label' label='Upload File'>
-                  <input onChange={ this
-                                        .uploadFile
-                                        .bind(this) } type="file" style={ { display: 'none' } } />
+                  <input onChange={ (e) => this.uploadFile(e.target.files[0]) } type="file" style={ { display: 'none' } } />
                 </RaisedButton>
                 { this
                       .props
@@ -61,7 +64,7 @@ class ControlPanel extends Component {
                       .map(function(control) {
                           switch (control.type) {
                               case 'select':
-                                  return <SelectField floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ { width: "100%" } } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
+                                  return <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ { width: "100%" } } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
                                            { control
                                                  .options
                                                  .map(function(d) {
@@ -80,17 +83,17 @@ class ControlPanel extends Component {
                                            <label>
                                              { control.getLabel(this.props.status[control.id]) }
                                            </label>
-                                           <Slider id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
-                                                                                                                                              ? false
-                                                                                                                                              : control.getDisabled(this.props.disabled) } onChange={ (e, val) => this.props.update(e, control.id, val) }
-                                             defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
+                                           <Slider key={ control.id } id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
+                                                                                                                                                                 ? false
+                                                                                                                                                                 : control.getDisabled(this.props.disabled) }
+                                             onChange={ (e, val) => this.props.update(e, control.id, val) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
                                          </div>
                                   break;
                               case 'checkbox':
-                                  return <Checkbox checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
+                                  return <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
                                   break;
                               case 'radio':
-                                  return <RadioButtonGroup name={ control.id } defaultSelected={ this.props.status[control.id] }>
+                                  return <RadioButtonGroup key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] }>
                                            { control
                                                  .options
                                                  .map(function(d) {
@@ -99,9 +102,10 @@ class ControlPanel extends Component {
                                          </RadioButtonGroup>
                                   break;
                               case 'toggle':
-                                  return <Toggle label={ control.label } style={ styles.toggle } toggled={ this.props.status[control.id] } disabled={ control.getDisabled === undefined
-                                                                                                                               ? false
-                                                                                                                               : control.getDisabled(this.props.disabled) } onToggle={ (e, val) => this.props.update(e, control.id, val) } />
+                                  return <Toggle key={ control.id } label={ control.label } style={ styles.toggle } toggled={ this.props.status[control.id] } disabled={ control.getDisabled === undefined
+                                                                                                                                                  ? false
+                                                                                                                                                  : control.getDisabled(this.props.disabled) } onToggle={ (e, val) => this.props.update(e, control.id, val) }
+                                         />
                           }
                       }.bind(this)) }
                 <RaisedButton label="About" onClick={ this

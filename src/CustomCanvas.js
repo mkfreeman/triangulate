@@ -19,8 +19,7 @@ class CustomCanvas extends Component {
         this.updateCanvas();
     }
 
-    componentWillUpdate() {
-        console.log('new props!')
+    componentDidUpdate() {
         this.updateCanvas();
     }
     drawCell(cell, con) {
@@ -36,9 +35,9 @@ class CustomCanvas extends Component {
 
         // Fill path var color = getColor(cell);
         var color = this.props.utilities.getColor(cell);
+        con.strokeStyle = this.props.utilities.showLines == true ? 'black' : color;
         con.fillStyle = color;
-        con.strokeStyle = 'black';
-        con.lineWidth = 1.25;
+        con.lineWidth = 0;
         con.fill();
         if (con.fillStyle != '#ffffff') {
             con.stroke();

@@ -7,7 +7,9 @@ import Resampler from './Resampler';
 import CustomCanvas from './CustomCanvas';
 import Utilities from './Utilities';
 
-
+const utilities = new Utilities();
+const resampler = new Resampler();
+console.log('resampler', resampler)
 class App extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +17,7 @@ class App extends Component {
             numPoints: 1000,
             shape: 'triangles',
             fitToScreen: true,
-            showLines: true,
+            showLines: false,
             blend: 50,
             fillColor: "average",
             blackWhite: false,
@@ -28,9 +30,10 @@ class App extends Component {
             srcCanvas: null,
             width: window.innerWidth - 300,
             height: window.innerHeight,
-            originalSize: {}
+            originalSize: {},
+            sampler: null,
+            polygons: null
         }
-
     }
     inputChangeHandler(event, id, newValue) {
         let obj = {};
@@ -59,19 +62,32 @@ class App extends Component {
             srcCanvas: ele
         });
     }
+    // componentDidMount() {
+    //     resampler.setVoronoi()
+    //         .getSites();
+    // }
+
     render() {
         // Compute utilites to pass to CustomCanvas
         // Redefine these (as a component?) so it only updates when inputs update
-        let sampler = new Resampler(this.state.originalSize.width, this.state.originalSize.height, this.state.numPoints)
-            .setVoronoi()
-            .getSites();
+
+        // let sampler = new resampler(this.state.originalSize.width, this.state.originalSize.height, this.state.numPoints)
+        //     .setVoronoi()
+        //     .getSites();
 
         // Redefine these (as a component?) so it only updates when inputs update
-        let polygons = sampler
-            .voronoi(sampler.sites)
-            .polygons();
 
-        let utilities = this.state.srcCanvas == null ? null : new Utilities(this.state.srcCanvas, this.state.originalSize.width, this.state.originalSize.height, this.state.colorType, this.state.blackWhite, this.state.invert, this.state.threshold);
+        resampler.updateValue('height', this.state.originalSize.height)
+            .updateValue('width', this.state.width)
+            .updateValue('numPoints', this.state.numPoints);
+
+        let polygons = resampler.voronoi == null ? null :
+            resampler.voronoi(resampler.sites)
+                .polygons();
+
+        // Set utilities options
+        utilities.setOptions(this.state)
+        if (this.state.srcCanvas) utilities.setSrcCanvas(this.state.srcCanvas)
         return (
             <MuiThemeProvider>
               <div>

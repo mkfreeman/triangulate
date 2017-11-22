@@ -28,7 +28,7 @@ const ControlSettings = [
         getLabel: (num) => "# of Points: " + num,
         min: 10,
         max: 20000,
-        step: 1
+        step: 100
     }, {
         id: 'fitToScreen',
         label: "Fit Image To Screen",

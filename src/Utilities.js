@@ -1,14 +1,20 @@
 // Utilities
 
 class Utilities {
-    constructor(srcCanvas, width, height, colorType, blackWhite, invert, threshold) {
-        this.width = width || 1000;
-        this.height = height || 1000;
-        this.colorType = colorType || 'average';
-        this.blackWhite = blackWhite || false;
-        this.invert = invert || false;
-        this.threshold = threshold || 178;
+    constructor() {
+        // this.width = width || 1000;
+        // this.height = height || 1000;
+        // this.colorType = colorType || 'average';
+        // this.showLines = showLines;
+        // this.blackWhite = blackWhite || false;
+        // this.invert = invert || false;
+        // this.threshold = threshold || 178;
+    }
+    setOptions(options) {
+        Object.keys(options).map((d) => this[d] = options[d]);
+    }
 
+    setSrcCanvas(srcCanvas) {
         // Store canvas data
         let context = srcCanvas.getContext('2d');
         let canvasData = context.getImageData(0, 0, this.width, this.height);
