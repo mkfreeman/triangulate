@@ -448,9 +448,9 @@ var getPolygonCentroids = function(polygons) {
     });
 }
 
-var getLaplacianSmoothedSites = function(sites, diagram) {
+var getLaplacianSmoothedSites = function(diagram) {
     var tmpSites = getEmptySitesArray();
-    var totalWeights = sites.map(function(s) {
+    var totalWeights = tmpSites.map(function(s) {
         return 0.0;
     });
 
@@ -571,7 +571,7 @@ var smoothSites = function() {
 			newSites = getPolygonCentroids(polygons);
 		} else if (SMOOTH_TYPE == 1) {
 			var diagram = voronoi(newSites);
-			newSites = getLaplacianSmoothedSites(newSites, diagram);
+			newSites = getLaplacianSmoothedSites(diagram);
 		} else if (SMOOTH_TYPE == 2) {
 			var polygons = voronoi(newSites).polygons();
 			newSites = getPolygonVertexAverages(polygons);
