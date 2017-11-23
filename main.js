@@ -180,22 +180,20 @@ var imageDiffSq = function(off1, off2) {
 // when resampling to get more vertices near parts of the image with more
 // variation.
 var approximateGradient = function(pt, d) {
-    var off = getImageOffset(pt);
-    var offpx = getImageOffset([
-        pt[0] + d,
-        pt[1]
-    ]);
-    var offmx = getImageOffset([
-        pt[0] - d,
-        pt[1]
-    ]);
-    var offpy = getImageOffset([
-        pt[0], pt[1] + 5
-    ]);
-    var offmy = getImageOffset([
-        pt[0], pt[1] - 5
-    ]);
-    return imageDiffSq(offpx, off) + imageDiffSq(offmx, off) + imageDiffSq(offpy, off) + imageDiffSq(offmy, off);
+	var off = getImageOffset(pt);
+	var offpx = getImageOffset([
+		pt[0] + d, pt[1]
+	]);
+	var offmx = getImageOffset([
+		pt[0] - d, pt[1]
+	]);
+	var offpy = getImageOffset([
+		pt[0], pt[1] + d
+	]);
+	var offmy = getImageOffset([
+		pt[0], pt[1] - d
+	]);
+	return imageDiffSq(offpx, off) + imageDiffSq(offmx, off) + imageDiffSq(offpy, off) + imageDiffSq(offmy, off);
 }
 
 //
@@ -504,38 +502,88 @@ var getPolygonVertexAverages = function(polygons) {
     });
 }
 
+// Update sites using a weighted Lloyd's algorithm. By using
+// image contrast as the weight, this method tends to snap
+// sites to edges in the image and can give a really high
+// quality (i.e., less abstract) result for the triangle or
+// dot based images.
+var getWeightedSites = function(inputSites, weights) {
+
+    // initialize the result to contain the original sites so that
+    // if a polygon contains no weight, then the site doesn't move
+    var weightedCentroidData = inputSites.map(function(d) {
+			return [inputSites[0], inputSites[1] , 0.0]; 
+		});
+        
+    var diagram = voronoi(inputSites);
+    
+    // Perform the weighted centroid calculation by integrating over 
+    // the entire image and accumulating the integral for the relevant
+    // polygon.
+    for (var iW =0; iW < width; ++iW) {
+        for (var iH=0; iH < height; ++iH) {            
+            var site = diagram.find(iW, iH).index; // find which polygon contains this pixel
+            var weight = weights[iW*height+iH];
+            if (weight > 0.0) {
+                if (weightedCentroidData[site][2] == 0.0) {
+                    weightedCentroidData[site][0] = weight*iW;
+                    weightedCentroidData[site][1] = weight*iH;                    
+                } else {
+                    weightedCentroidData[site][0] += weight*iW;
+                    weightedCentroidData[site][1] += weight*iH;
+                }
+                weightedCentroidData[site][2] += weight;
+            }
+        }
+    }
+
+    // compute the weighted centroids and return
+    return weightedCentroidData.map(function(d) {            
+			return [d[0]/d[2], d[1]/d[2]];
+		});  
+}
 //
 // Smooth the Voronoi diagram via one of several (albeit similar) methods: Lloyd
 // iteration (moving sites to polygon centroids), Laplacian smoothing (moving
 // sites to the average of their neighboring sites) and "Polygon vertex average"
 // which moves a site to the average of the vertices of the Voronoi polygon.
 //
-var smoothSites = function() {
-
-    var newSites = getEmptySitesArray();
-    for (var i = 0; i < sites.length; ++i) {
-        newSites[i][0] = sites[i][0];
-        newSites[i][1] = sites[i][1];
-    }
-
-    for (var i = 0; i < SMOOTH_ITERATIONS; ++i) {
-
-        if (SMOOTH_TYPE == 0) {
-            var polygons = voronoi(newSites).polygons();
-            newSites = getPolygonCentroids(polygons);
-        } else if (SMOOTH_TYPE == 1) {
-            var diagram = voronoi(newSites);
-            newSites = getLaplacianSmoothedSites(newSites, diagram);
-        } else if (SMOOTH_TYPE == 2) {
-            var polygons = voronoi(newSites).polygons();
-            newSites = getPolygonVertexAverages(polygons);
+var smoothSites = function() {    
+    var newSites = sites.map(function(s) { return s; });
+    
+    // Precompute smoothing weights since they don't change from iteration
+    // to iteration. We only need these in the "contrast weighted" smoothing
+    // mode but we could experiment with coming up with some different weights
+    // here in the future.
+    var weights = []; 
+    if (SMOOTH_TYPE == 3) {
+        for (var iW =0; iW < width; ++iW) {
+            for (var iH=0; iH < height; ++iH) {         
+                weights.push(approximateGradient([iW, iH], 1) + 1.0);
+            }
         }
     }
 
-    smoothingOutOfDate = false;
-    finalImageOutOfDate = true;
+	for (var i = 0; i < SMOOTH_ITERATIONS; ++i) {
 
-    return newSites;
+		if (SMOOTH_TYPE == 0) {
+			var polygons = voronoi(newSites).polygons();
+			newSites = getPolygonCentroids(polygons);
+		} else if (SMOOTH_TYPE == 1) {
+			var diagram = voronoi(newSites);
+			newSites = getLaplacianSmoothedSites(newSites, diagram);
+		} else if (SMOOTH_TYPE == 2) {
+			var polygons = voronoi(newSites).polygons();
+			newSites = getPolygonVertexAverages(polygons);
+		} else if (SMOOTH_TYPE == 3) {
+			newSites = getWeightedSites(newSites, weights);
+		}
+	}
+    
+	smoothingOutOfDate = false;
+	finalImageOutOfDate = true;
+
+	return newSites;
 }
 
 // Function to draw a cell
