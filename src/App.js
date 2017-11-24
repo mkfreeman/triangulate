@@ -22,13 +22,13 @@ class App extends Component {
             fillColor: "average",
             blackWhite: false,
             invert: false,
-            threshold: 178,
+            threshold: 110,
             contrast: 0,
             distribute: 0,
             algorithm: 'lloyd',
             blur: 0,
             srcCanvas: null,
-            width: window.innerWidth - 600,
+            width: window.innerWidth - 300,
             height: window.innerHeight,
             originalSize: {},
             sampler: null,
@@ -99,6 +99,7 @@ class App extends Component {
                 width = Math.floor(this.state.width);
                 height = Math.floor(this.state.originalSize.height * scale);
             } else {
+                console.log('keep height!')
                 height = Math.floor(this.state.height);
                 width = Math.floor(this.state.originalSize.width * scale);
             }
@@ -113,6 +114,7 @@ class App extends Component {
     }
 
     render() {
+        console.log('up[date app')
 
         // Dimensions
         let dims = this.getDimensions();
@@ -144,6 +146,10 @@ class App extends Component {
             <MuiThemeProvider>
               <div>
                 <div>
+                  <div id="title">
+                    <h1>Triangulate</h1>
+                    <p>Geometric patterns of images</p>
+                  </div>
                   <ControlPanel uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ !this.state.blackWhite } handleImage={ this
                                                                                                                                                                                    .handleImage
                                                                                                                                                                                    .bind(this) }

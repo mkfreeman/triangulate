@@ -40,7 +40,7 @@ const ControlSettings = [
     }, {
         id: 'blend',
         type: 'slider',
-        getLabel: (num) => "Blend Original Image:" + num + "%",
+        getLabel: (num) => "Blend Original Image: " + num + "%",
         min: 0,
         max: 100,
         step: 1
@@ -84,14 +84,14 @@ const ControlSettings = [
     }, {
         id: 'contrast',
         type: 'slider',
-        getLabel: (num) => "Re-sample for Contrast:" + num + "times",
+        getLabel: (num) => "Re-sample for Contrast: " + num + " times",
         min: 0,
         max: 200,
         step: 1
     }, {
         id: 'distribute',
         type: 'slider',
-        getLabel: (num) => "Re-sample to Distribute Points:" + num + "times",
+        getLabel: (num) => "Re-sample to Distribute Points: " + num + " times",
         min: 0,
         max: 200,
         step: 1

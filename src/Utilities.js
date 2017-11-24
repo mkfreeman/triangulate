@@ -49,7 +49,6 @@ class Utilities {
     }
     getColor(d) {
         var centroid = this.polygonCentroid(d);
-        console.log(this.fillColor)
         if (this.fillColor == 'centroid')
             return this.getColorAtPos(centroid);
 

@@ -10,10 +10,18 @@ import Toggle from 'material-ui/Toggle';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
 import './ControlPanel.css';
-let styles = {
+const styles = {
     slider: {
         marginTop: '0px',
         marginBottom: '20px'
+    },
+    radioGroup: {
+        marginTop: '10px',
+        marginBottom: '10px'
+    },
+    select: {
+        marginTop: '0px',
+        width: "100%"
     }
 };
 
@@ -53,7 +61,7 @@ class ControlPanel extends Component {
                         .map(function(control) {
                             switch (control.type) {
                                 case 'select':
-                                    return <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ { width: "100%" } } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
+                                    return <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ styles.select } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
                                              { control
                                                    .options
                                                    .map(function(d) {
@@ -82,7 +90,7 @@ class ControlPanel extends Component {
                                     return <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
                                     break;
                                 case 'radio':
-                                    return <RadioButtonGroup key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] }>
+                                    return <RadioButtonGroup onChange={ (e, val) => this.props.update(e, control.id, val) } key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ styles.radioGroup }>
                                              { control
                                                    .options
                                                    .map(function(d) {

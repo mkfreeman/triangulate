@@ -12,3 +12,28 @@
 #canvasCopy:hover {
     opacity:1;
 }
+
+
+/* Title header */
+#title {
+    text-align: center;
+    border-bottom:1px solid #d3d3d3;
+    padding-bottom:2px;
+    position:fixed;
+    top:0px;
+    left:0px;
+    width:256px;
+    z-index:99999;
+    background-color:white;
+}
+
+#title h1 {
+    font-weight:100;
+    font-size:2.5em;
+    margin-bottom:0px;
+}
+
+#title p {
+    margin: 0px;
+    opacity:.3;
+}
