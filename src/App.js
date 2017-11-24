@@ -152,8 +152,7 @@ class App extends Component {
                                  .bind(this) } />
                 </div>
                 <div id="originalImage" ref="originalImage" style={ { display: 'none' } } />
-                { /* <CanvasCopy ref="canvasCopy" width={ width } height={ height } srcCanvas={ this.state.srcCanvas } /> */ }
-                <canvas ref="canvasCopy" style={ { marginLeft: '300px' } } />
+                <canvas id="canvasCopy" ref="canvasCopy" style={ { marginLeft: '300px' } } />
                 { this.state.srcCanvas !== null &&
                   <CustomCanvas width={ width } height={ height } utilities={ utilities } polygons={ polygons } /> }
               </div>

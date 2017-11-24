@@ -6,7 +6,9 @@ class CustomCanvas extends Component {
         super(props)
     }
 
+    // Draw polygons on update
     updateCanvas() {
+        console.log('update canvas')
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
@@ -20,9 +22,9 @@ class CustomCanvas extends Component {
     }
 
     componentDidUpdate() {
-        console.log('update customcanvas')
         this.updateCanvas();
     }
+    // Function to draw cell
     drawCell(cell, con) {
         if (!cell || !con)
             return false;
@@ -36,7 +38,7 @@ class CustomCanvas extends Component {
 
         // Fill path var color = getColor(cell);
         var color = this.props.utilities.getColor(cell);
-        con.strokeStyle = this.props.utilities.showLines == true ? 'black' : color;
+        con.strokeStyle = this.props.utilities.showLines == true ? 'white' : color;
         con.fillStyle = color;
         con.lineWidth = 0;
         con.fill();

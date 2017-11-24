@@ -1,0 +1,14 @@
+/* App css */
+
+/* Original image: show on hover */
+#canvasCopy {
+    position: absolute;
+    opacity:0;
+    z-index: 999;
+    -webkit-transition: opacity 1s;
+    transition: opacity 1s;
+}
+
+#canvasCopy:hover {
+    opacity:1;
+}
