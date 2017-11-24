@@ -9,7 +9,6 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Toggle from 'material-ui/Toggle';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
-const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
 let styles = {
     slider: {
         marginTop: '0px'
@@ -25,9 +24,7 @@ class ControlPanel extends Component {
         }
     }
 
-    componentDidMount() {
-        this.uploadFile('./imgs/mountains.png')
-    }
+
 
     handleModal() {
         let open = this.state.modalOpen === true
@@ -38,25 +35,14 @@ class ControlPanel extends Component {
         })
 
     }
-    uploadFile(file) {
-        loadImage(file, function(img) {
-            img.id = "rawCanvas";
-            img.className += "hero";
-            this
-                .props
-                .handleImage(img)
-        }.bind(this), {
-            canvas: true,
-            orientation: true
-        });
-    }
+
     // handleModalClose() {     this.setState({modalOpen: value}) }
     render() {
         return (
             <div>
               <Drawer open={ this.state.open }>
                 <RaisedButton containerElement='label' label='Upload File'>
-                  <input onChange={ (e) => this.uploadFile(e.target.files[0]) } type="file" style={ { display: 'none' } } />
+                  <input onChange={ (e) => this.props.uploadFile(e.target.files[0]) } type="file" style={ { display: 'none' } } />
                 </RaisedButton>
                 { this
                       .props

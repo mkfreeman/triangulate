@@ -20,6 +20,7 @@ class CustomCanvas extends Component {
     }
 
     componentDidUpdate() {
+        console.log('update customcanvas')
         this.updateCanvas();
     }
     drawCell(cell, con) {

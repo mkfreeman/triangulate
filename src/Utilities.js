@@ -1,17 +1,9 @@
 // Utilities
 
 class Utilities {
-    constructor() {
-        // this.width = width || 1000;
-        // this.height = height || 1000;
-        // this.colorType = colorType || 'average';
-        // this.showLines = showLines;
-        // this.blackWhite = blackWhite || false;
-        // this.invert = invert || false;
-        // this.threshold = threshold || 178;
-    }
+    constructor() {}
     setOptions(options) {
-        Object.keys(options).map((d) => this[d] = options[d]);
+        Object.keys(options).forEach((d) => this[d] = options[d]);
     }
 
     setSrcCanvas(srcCanvas) {

@@ -9,10 +9,17 @@ class Resampler {
         this.numPoints = numPoints || 100;
     // this.setVoronoi().getSites()
     }
-    updateValue(prop, value) {
-        if (value == this[prop]) return this;
-        this[prop] = value;
-        this.setVoronoi().getSites()
+    updateValues(obj) {
+        let update = false;
+        Object.keys(obj).forEach(function(prop) {
+            if (obj[prop] === this[prop]) return;
+            this[prop] = obj[prop];
+            update = true;
+        }.bind(this))
+        if (update === true) {
+            console.log('update sites')
+            this.setVoronoi().getSites()
+        }
         return this;
     }
     setVoronoi() {
@@ -32,6 +39,7 @@ class Resampler {
     }
 
     getSites() {
+        console.log('get sites', this.width, this.height)
         this.sites = d3
             .range(this.numPoints)
             .map((d) => [
