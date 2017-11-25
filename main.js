@@ -19,12 +19,14 @@ var NUM_BLEND = 0;
 var img;
 var voronoi;
 var sites;
+var smoothingWeight;
 var smoothedSites;
 var imageBuffer8;
 
 var imageOutOfDate = true;
 var blurOutOfDate = true;
 var sitesOutOfDate = true;
+var smoothingWeightOutOfDate = true;
 var smoothingOutOfDate = true;
 var finalImageOutOfDate = true;
 
@@ -57,30 +59,48 @@ function downloadCanvas(link, canvasId, filename) {
 var build = function() {
     if (imageOutOfDate) {
         // update the image on the canvas
+        console.time('update image');
         updateImage();
+        console.timeEnd('update image');
     }
 
     if (blurOutOfDate) {
         // Blur Canvases
+        console.time('blur');
         drawBlur();
+        console.timeEnd('blur');
 
         // Get all the image data at once since getImageData() calls seem to be a little
         // slow -- it seems to be much faster this way.
+        console.time('get image');
         getAllImageData();
+        console.timeEnd('get image');
     }
 
     if (sitesOutOfDate) {
         // Set (initial) sites
+        console.time('get sites');
         sites = getSites();
+        console.timeEnd('get sites');
     }
 
+    if (smoothingWeightOutOfDate) {
+        console.time('smoothing weight');
+        smoothingWeight = getSmoothingWeight();
+        console.timeEnd('smoothing weight');
+    }
+    
     if (smoothingOutOfDate) {
         // smooth the sites
+        console.time('smooth');
         smoothedSites = smoothSites();
+        console.timeEnd('smooth');
     }
 
     if (finalImageOutOfDate) {
+        console.time('final image');
         canvases.map(drawFinalImage);
+        console.timeEnd('final image');
     }
 
     // Set download for updated image
@@ -153,11 +173,11 @@ var updateImage = function() {
     sitesOutOfDate = true;
 }
 
-// Given a point (pt = [x, y]) find the offset in the pixel array where the rgba
+// Given a point ([x1, y1]) find the offset in the pixel array where the rgba
 // data lives.
-var getImageOffset = function(pt) {
-    var x = Math.round(pt[0]);
-    var y = Math.round(pt[1]);
+var getImageOffset = function(x1, y1) {
+    var x = Math.round(x1);
+    var y = Math.round(y1);
     if (x < 0)
         x = 0;
     if (y < 0)
@@ -179,21 +199,12 @@ var imageDiffSq = function(off1, off2) {
 // Approximate the image gradient at a point in the input image, which is used
 // when resampling to get more vertices near parts of the image with more
 // variation.
-var approximateGradient = function(pt, d) {
-	var off = getImageOffset(pt);
-	var offpx = getImageOffset([
-		pt[0] + d, pt[1]
-	]);
-	var offmx = getImageOffset([
-		pt[0] - d, pt[1]
-	]);
-	var offpy = getImageOffset([
-		pt[0], pt[1] + d
-	]);
-	var offmy = getImageOffset([
-		pt[0], pt[1] - d
-	]);
-	return imageDiffSq(offpx, off) + imageDiffSq(offmx, off) + imageDiffSq(offpy, off) + imageDiffSq(offmy, off);
+var approximateGradient = function(x, y, d) {
+	var off = getImageOffset(x, y);
+	return imageDiffSq(getImageOffset(x + d, y), off) + 
+        imageDiffSq(getImageOffset(x - d, y), off) + 
+        imageDiffSq(getImageOffset(x, y + d), off) + 
+        imageDiffSq(getImageOffset(x, y - d), off);
 }
 
 //
@@ -211,21 +222,20 @@ var getSites = function() {
     return d3
         .range(NUM_POINTS)
         .map(function(d) {
-            var pt = [
-                Math.random() * width,
-                Math.random() * height
-            ];
-            var score = approximateGradient(pt, radius);
+            var x = Math.random() * width;
+            var y = Math.random() * height;
+            var score = approximateGradient(x, y, radius);
+            var newX, newY, newScore;
             for (var i = 0; i < NUM_RESAMPLE; ++i) {
-                var newPt = [
-                    Math.random() * width,
-                    Math.random() * height
-                ];
-                var newScore = approximateGradient(newPt, radius);
-                if (newScore > score)
-                    pt = newPt;
+                newX = Math.random() * width;
+                newY = Math.random() * height;
+                newScore = approximateGradient(newX, newY, radius)
+                if (newScore > score) {
+                    x = newX;
+                    y = newY;
+                }
             }
-            return pt;
+            return [x, y];
         });
 };
 
@@ -299,6 +309,7 @@ var drawBlur = function() {
     StackBlur.canvasRGB(c, 0, 0, width, height, BLUR_RADIUS);
 
     blurOutOfDate = false;
+    smoothingWeightOutOfDate = true;
     finalImageOutOfDate = true;
 
 };
@@ -334,7 +345,7 @@ var makeColorString = function(r, g, b, a) {
 // get color at a position in the image
 var getColorAtPos = function(pt) {
     // Get color
-    var offset = getImageOffset(pt);
+    var offset = getImageOffset(pt[0], pt[1]);
     var color = makeColorString(imageBuffer8[offset], imageBuffer8[offset + 1], imageBuffer8[offset + 2], imageBuffer8[offset + 3]);
     // Calculate luminence
     if (BLACK_WHITE == 1) {
@@ -350,14 +361,14 @@ var getAverageColor = function(c, p) {
     var g = 0;
     var b = 0;
     var a = 0;
-    var offset = getImageOffset(c);
+    var offset = getImageOffset(c[0], c[1]);
     r += p.length * imageBuffer8[offset];
     g += p.length * imageBuffer8[offset + 1];
     b += p.length * imageBuffer8[offset + 2];
     a += p.length * imageBuffer8[offset + 3];
 
     p.forEach(function(pt) {
-        offset = getImageOffset(pt);
+        offset = getImageOffset(pt[0], pt[1]);
         r += imageBuffer8[offset];
         g += imageBuffer8[offset + 1];
         b += imageBuffer8[offset + 2];
@@ -516,32 +527,85 @@ var getWeightedSites = function(inputSites, weights) {
 		});
         
     var diagram = voronoi(inputSites);
-    
+       
+    console.time('Accum');
     // Perform the weighted centroid calculation by integrating over 
     // the entire image and accumulating the integral for the relevant
     // polygon.
+    var site = 0;
+    var weight = 0;
+    var counter = 0;
     for (var iW =0; iW < width; ++iW) {
-        for (var iH=0; iH < height; ++iH) {            
-            var site = diagram.find(iW, iH).index; // find which polygon contains this pixel
-            var weight = weights[iW*height+iH];
-            if (weight > 0.0) {
-                if (weightedCentroidData[site][2] == 0.0) {
-                    weightedCentroidData[site][0] = weight*iW;
-                    weightedCentroidData[site][1] = weight*iH;                    
-                } else {
-                    weightedCentroidData[site][0] += weight*iW;
-                    weightedCentroidData[site][1] += weight*iH;
+        if (iW % 2 == 0) {
+            for (var iH=0; iH < height; ++iH) {            
+                weight = weights[counter];
+                ++counter; // note: counter = iW*height+iH; but this is a little faster?
+                if (weight > 0.0) {
+                    site = diagram.find(iW, iH).index; // find which polygon contains this pixels
+                    if (weightedCentroidData[site][2] == 0.0) {
+                        weightedCentroidData[site][0] = weight*iW;
+                        weightedCentroidData[site][1] = weight*iH;                    
+                    } else {
+                        weightedCentroidData[site][0] += weight*iW;
+                        weightedCentroidData[site][1] += weight*iH;
+                    }
+                    weightedCentroidData[site][2] += weight;
                 }
-                weightedCentroidData[site][2] += weight;
             }
-        }
+        } else {
+            for (var iH=height-1; iH >= 0; --iH) {            
+                weight = weights[counter];
+                ++counter; // note: counter = iW*height+iH; but this is a little faster?
+                if (weight > 0.0) {
+                    site = diagram.find(iW, iH).index; // find which polygon contains this pixel
+                    if (weightedCentroidData[site][2] == 0.0) {
+                        weightedCentroidData[site][0] = weight*iW;
+                        weightedCentroidData[site][1] = weight*iH;                    
+                    } else {
+                        weightedCentroidData[site][0] += weight*iW;
+                        weightedCentroidData[site][1] += weight*iH;
+                    }
+                    weightedCentroidData[site][2] += weight;
+                }
+            }
+        }        
     }
-
+    console.timeEnd('Accum');
     // compute the weighted centroids and return
     return weightedCentroidData.map(function(d) {            
 			return [d[0]/d[2], d[1]/d[2]];
 		});  
 }
+
+// Precompute smoothing weights since they don't change from iteration
+// to iteration. We only need these in the "contrast weighted" smoothing
+// mode but we could experiment with coming up with some different weights
+// here in the future.
+
+var getSmoothingWeight = function() {
+    console.time('Compute Weights');
+    var weights = []; 
+    if (SMOOTH_TYPE == 3) {
+        for (var iW =0; iW < width; ++iW) {
+            if (iW % 2  == 0) {
+                for (var iH=0; iH < height; ++iH) {         
+                    weights.push(approximateGradient(iW, iH, 1) + 1.0);
+                }
+            } else {
+                for (var iH=height-1; iH >= 0; --iH) {
+                    weights.push(approximateGradient(iW, iH, 1) + 1.0);
+                }
+            }
+        }        
+        // only need to redo the smoothing if we are using weighted smoothing
+        smoothingOutOfDate = true;
+    }
+    console.timeEnd('Compute Weights');
+
+    smoothingWeightOutOfDate = false;
+    return weights;
+}
+
 //
 // Smooth the Voronoi diagram via one of several (albeit similar) methods: Lloyd
 // iteration (moving sites to polygon centroids), Laplacian smoothing (moving
@@ -551,19 +615,6 @@ var getWeightedSites = function(inputSites, weights) {
 var smoothSites = function() {    
     var newSites = sites.map(function(s) { return s; });
     
-    // Precompute smoothing weights since they don't change from iteration
-    // to iteration. We only need these in the "contrast weighted" smoothing
-    // mode but we could experiment with coming up with some different weights
-    // here in the future.
-    var weights = []; 
-    if (SMOOTH_TYPE == 3) {
-        for (var iW =0; iW < width; ++iW) {
-            for (var iH=0; iH < height; ++iH) {         
-                weights.push(approximateGradient([iW, iH], 1) + 1.0);
-            }
-        }
-    }
-
 	for (var i = 0; i < SMOOTH_ITERATIONS; ++i) {
 
 		if (SMOOTH_TYPE == 0) {
@@ -576,7 +627,7 @@ var smoothSites = function() {
 			var polygons = voronoi(newSites).polygons();
 			newSites = getPolygonVertexAverages(polygons);
 		} else if (SMOOTH_TYPE == 3) {
-			newSites = getWeightedSites(newSites, weights);
+			newSites = getWeightedSites(newSites, smoothingWeight);
 		}
 	}
     

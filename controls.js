@@ -141,6 +141,7 @@ $(function() {
 
     $("#smooth-select-menu").on('change', function(value) {
         SMOOTH_TYPE = this.value;
+        smoothingWeightOutOfDate = true;
         smoothingOutOfDate = true;
         build();
     })
