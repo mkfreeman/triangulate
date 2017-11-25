@@ -46,7 +46,13 @@ class ControlPanel extends Component {
 
     }
 
-    // handleModalClose() {     this.setState({modalOpen: value}) }
+    // Handle slider change
+    handleSliderChange(key, val) {
+        console.log('slider change', key, val)
+        let obj = {}
+        obj[key] = val;
+        this.setState(obj);
+    }
     render() {
         return (
             <div>
@@ -83,7 +89,7 @@ class ControlPanel extends Component {
                                              <Slider key={ control.id } id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
                                                                                                                                                                    ? false
                                                                                                                                                                    : control.getDisabled(this.props.disabled) }
-                                               onChange={ (e, val) => this.props.update(e, control.id, val) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
+                                               onChange={ (e, val) => this.handleSliderChange(control.id, val) } onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
                                            </div>
                                     break;
                                 case 'checkbox':
