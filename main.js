@@ -224,15 +224,23 @@ var getSites = function() {
         .map(function(d) {
             var x = Math.random() * width;
             var y = Math.random() * height;
-            var score = approximateGradient(x, y, radius);
-            var newX, newY, newScore;
-            for (var i = 0; i < NUM_RESAMPLE; ++i) {
-                newX = Math.random() * width;
-                newY = Math.random() * height;
-                newScore = approximateGradient(newX, newY, radius)
-                if (newScore > score) {
-                    x = newX;
-                    y = newY;
+            
+            if (NUM_RESAMPLE > 0) {
+                var randVal = Math.random() * 100;
+                if (randVal < NUM_RESAMPLE) {
+                    var numResample = Math.min(10,Math.ceil(randVal / 3));
+                    var score = approximateGradient(x, y, radius);
+                    var newX, newY, newScore;
+                    for (var i = 0; i < numResample; ++i) {
+                        newX = Math.random() * width;
+                        newY = Math.random() * height;
+                        newScore = approximateGradient(newX, newY, radius)
+                        if (newScore > score) {
+                            x = newX;
+                            y = newY;
+                            score = newScore;
+                        }
+                    }
                 }
             }
             return [x, y];

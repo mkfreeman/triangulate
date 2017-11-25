@@ -226,7 +226,7 @@ $(function() {
         step: 1,
         range: {
             min: 0,
-            max: 200
+            max: 100
         }
     });
 
@@ -241,7 +241,7 @@ $(function() {
     resampleSlider
         .noUiSlider
         .on('update', function(value) {
-            $('#resample-slider-label').text('Resample for Contrast: ' + Math.floor(value));
+            $('#resample-slider-label').text('Resample for Contrast: ' + Math.floor(value) + '%');
         });
 
 
