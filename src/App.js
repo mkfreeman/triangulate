@@ -24,13 +24,13 @@ class App extends Component {
             invert: false,
             threshold: 110,
             contrast: 0,
-            distribute: 0,
-            algorithm: 'lloyd',
+            smoothIters: 0,
             blur: 0,
             srcCanvas: null,
             width: window.innerWidth - 300,
             height: window.innerHeight,
             originalSize: {},
+            smoothType: 'laplacian',
             sampler: null,
             polygons: null,
             canvasCopy: null
@@ -127,11 +127,13 @@ class App extends Component {
             height: height,
             width: width,
             numPoints: this.state.numPoints
+        }).updateSmoother({
+            smoothType: this.state.smoothType,
+            smoothIters: this.state.smoothIters
         })
 
-        let polygons = resampler.voronoi == null ? null :
-            resampler.voronoi(resampler.sites)
-                .polygons();
+        // Polygons to draw
+        let polygons = resampler.polygons === null ? null : resampler.getPolygons();
 
         // Set utilities options
         utilities.setOptions(this.state)

@@ -1,4 +1,6 @@
 // Utilities
+// Import polygon functions
+import PolygonUtils from './PolygonUtils';
 
 class Utilities {
     constructor() {}
@@ -15,40 +17,8 @@ class Utilities {
     makeColorString(r, g, b, a) {
         return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
     }
-    polygonArea(polygon) {
-        var area = 0;
-        var n = polygon.length;
-        var j = n - 1;
-        for (var i = 0; i < n; j = i++) {
-            area += polygon[i][0] * polygon[j][1];
-            area -= polygon[i][1] * polygon[j][0];
-        }
-        area /= 2;
-        return area;
-    }
-    polygonCentroid(polygon) {
-        var n = polygon.length;
-        var x = 0;
-        var y = 0;
-        var j = n - 1;
-        for (var i = 0; i < n; j = i++) {
-            var tmp = polygon[i][0] * polygon[j][1] - polygon[j][0] * polygon[i][1];
-            x += (polygon[i][0] + polygon[j][0]) * tmp;
-            y += (polygon[i][1] + polygon[j][1]) * tmp;
-        }
-        var sixA = this.polygonArea(polygon) * 6;
-        return [
-            x / sixA,
-            y / sixA
-        ];
-    }
-    getPolygonCentroids(polygons) {
-        return polygons.map(function(p) {
-            return this.polygonCentroid(p);
-        });
-    }
     getColor(d) {
-        var centroid = this.polygonCentroid(d);
+        var centroid = PolygonUtils.centroid(d);
         if (this.fillColor == 'centroid')
             return this.getColorAtPos(centroid);
 

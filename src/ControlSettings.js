@@ -89,7 +89,7 @@ const ControlSettings = [
         max: 200,
         step: 1
     }, {
-        id: 'distribute',
+        id: 'smoothIters',
         type: 'slider',
         getLabel: (num) => "Re-sample to Distribute Points: " + num + " times",
         min: 0,
@@ -103,19 +103,20 @@ const ControlSettings = [
         max: 100,
         step: 1
     }, {
-        id: 'algorithm',
+        id: 'smoothType',
         type: 'select',
         label: "Smoothing Algorithm",
         options: [
             {
                 id: "lloyd",
                 label: "Lloyd"
-            }, {
-                id: "vertex",
-                label: "Polygon Vertex"
-            }, {
+            },
+            {
                 id: "laplacian",
                 label: "Laplacian"
+            }, {
+                id: "polygonVertex",
+                label: "Polygon Vertex"
             }
         ]
     }
