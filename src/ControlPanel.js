@@ -78,27 +78,28 @@ class ControlPanel extends Component {
                                            </SelectField>
                                     break;
                                 case 'header':
-                                    return <div>
+                                    return <div key={ control.id }>
                                              <h3>{ control.label }</h3>
                                              <hr/>
                                            </div>
                                     break;
                                 case 'slider':
-                                    return <div className="sliderWrapper">
+                                    return <div key={ control.id } className="sliderWrapper">
                                              <label>
                                                { control.getLabel(this.props.status[control.id]) }
                                              </label>
-                                             <Slider key={ control.id } id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
-                                                                                                                                                                   ? false
-                                                                                                                                                                   : control.getDisabled(this.props.disabled) }
-                                               onChange={ (e, val) => this.handleSliderChange(control.id, val) } onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
+                                             <Slider id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
+                                                                                                                                                ? false
+                                                                                                                                                : control.getDisabled(this.props.disabled) } onChange={ (e, val) => this.handleSliderChange(control.id, val) }
+                                               onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
                                            </div>
                                     break;
                                 case 'checkbox':
                                     return <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
                                     break;
                                 case 'radio':
-                                    return <RadioButtonGroup onChange={ (e, val) => this.props.update(e, control.id, val) } key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ styles.radioGroup }>
+                                    return <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] }
+                                             style={ styles.radioGroup }>
                                              { control
                                                    .options
                                                    .map(function(d) {

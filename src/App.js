@@ -10,25 +10,17 @@ import Footer from './Footer';
 import RaisedButton from 'material-ui/RaisedButton';
 const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
 
-// Comment this in when connected to wifi
-// var ReactGA = require('react-ga');
+// Track page views
+var ReactGA = require('react-ga');
+ReactGA.initialize('UA-49431863-4');
 
-// function logPageView() {
-//     ReactGA.set({
-//         page: window.location.pathname + window.location.search
-//     });
-//     ReactGA.pageview(window.location.pathname + window.location.search);
-// }
-
-/* Current status:
-Tracks 2D context data in source, passes that to putImageData and CustomCanvas via Utilities
-However, this doesn't work if you set the image to the screensize (something wrong with
-putImageData() implementation). You can't just recompute the dimensions when it's uploaded, 
-as these will need to change. 
-
-You need to be able to use the image data *(that is the original size) in:
-putImageData (UpdateCanvasCopy)
-and in Utilities*/
+function logPageView() {
+    console.log('log page view')
+    ReactGA.set({
+        page: window.location.pathname + window.location.search
+    });
+    ReactGA.pageview(window.location.pathname + window.location.search);
+}
 
 const colorUtils = new ColorUtils();
 const resampler = new Resampler();
@@ -60,9 +52,8 @@ class App extends Component {
     }
 
     componentDidMount() {
+        logPageView();
         this.uploadFile('./imgs/mountains.png')
-    // ReactGA.initialize('UA-49431863-4');
-    // logPageView();
     }
 
     uploadFile(file) {
@@ -76,12 +67,15 @@ class App extends Component {
             orientation: true
         });
     }
-    downloadCanvas(link, canvasId, filename) {
+    setDownloadBlob(linkId, canvasId, filename) {
         let canvas = document.getElementById(canvasId);
+        let link = document.getElementById(linkId);
+        console.log('canvas', canvas)
 
         // Convert to blob and download
         canvas.toBlob(function(blob) {
             let url = URL.createObjectURL(blob);
+            console.log('url', url)
             link.href = url;
             link.download = filename;
         });
@@ -114,7 +108,6 @@ class App extends Component {
     }
     updateCanvasCopy(width, height, src) {
         if (!this.refs.canvasCopy || !this.state.srcCanvas) return
-        console.log('update canvas copy ', width, height, src)
         this.refs.canvasCopy.width = width;
         this.refs.canvasCopy.height = height;
         let ctx = this.refs.canvasCopy.getContext('2d');
@@ -135,7 +128,6 @@ class App extends Component {
                 width = Math.floor(this.state.width);
                 height = Math.floor(this.state.originalSize.height * scale);
             } else {
-                console.log('keep height!')
                 height = Math.floor(this.state.height);
                 width = Math.floor(this.state.originalSize.width * scale);
             }
@@ -204,15 +196,15 @@ class App extends Component {
                 <div id="canvasWrapper">
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
-                    <CustomCanvas shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } colorUtils={ colorUtils } polygons={ polygons }
-                    /> }
+                    <CustomCanvas onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") } shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } colorUtils={ colorUtils }
+                      polygons={ polygons } /> }
                 </div>
+                { /* figure out a better way to do this: react download file something... */ }
+                <a id="download" download>
+                  <RaisedButton>Download</RaisedButton>
+                </a>
+                <Footer />
               </div>
-              { /* figure out a better way to do this: react download file something... */ }
-              <a id="download" onClick={ () => this.downloadCanvas(this, canvasId, 'triangle-image.png') }>
-                <RaisedButton>Download</RaisedButton>
-              </a>
-              <Footer />
             </MuiThemeProvider>
         )
     }

@@ -20,7 +20,6 @@ class Resampler {
             update = true;
         }.bind(this))
         if (update === true) {
-            console.log('update sites')
             this.setVoronoi().setSites();
         }
         return this;
@@ -40,7 +39,6 @@ class Resampler {
 
     // Set the d3 voronoi diagram using current width/height
     setVoronoi() {
-        console.log('set voronoi', this.height, this.width)
         this.voronoi = d3
             .voronoi()
             .extent([
@@ -57,7 +55,6 @@ class Resampler {
 
     // Naively Set the current sites by randomly sampling in the width/height areas
     setSites() {
-        console.log('set sites', this.width, this.height)
         this.sites = d3
             .range(this.numPoints)
             .map((d) => [

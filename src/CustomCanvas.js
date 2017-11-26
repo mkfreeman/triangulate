@@ -49,6 +49,7 @@ class CustomCanvas extends Component {
 
     componentDidUpdate() {
         this.updateCanvas();
+        this.props.onUpdate();
     }
     // Function to draw cell
     drawCell(cell, con) {
