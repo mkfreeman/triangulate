@@ -33,8 +33,7 @@ class CustomCanvas extends Component {
     }
     // Function to draw a cell
     drawDot(site, radius, con) {
-        // var color = getDotColor(site, radius);
-        var color = "black"
+        var color = this.props.colorUtils.getDotColor(site, radius);
 
         con.beginPath();
         con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
@@ -64,8 +63,8 @@ class CustomCanvas extends Component {
         }
 
         // Fill path var color = getColor(cell);
-        var color = this.props.utilities.getColor(cell);
-        con.strokeStyle = this.props.utilities.showLines == true ? 'white' : color;
+        var color = this.props.colorUtils.getColor(cell);
+        con.strokeStyle = this.props.colorUtils.showLines == true ? 'white' : color;
         con.fillStyle = color;
         con.lineWidth = 0;
         con.fill();

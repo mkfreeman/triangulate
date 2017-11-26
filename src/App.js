@@ -5,7 +5,7 @@ import ControlPanel from './ControlPanel';
 import ControlSettings from './ControlSettings';
 import Resampler from './Resampler';
 import CustomCanvas from './CustomCanvas';
-import Utilities from './Utilities';
+import ColorUtils from './ColorUtils';
 import Footer from './Footer';
 import RaisedButton from 'material-ui/RaisedButton';
 const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
@@ -30,7 +30,7 @@ You need to be able to use the image data *(that is the original size) in:
 putImageData (UpdateCanvasCopy)
 and in Utilities*/
 
-const utilities = new Utilities();
+const colorUtils = new ColorUtils();
 const resampler = new Resampler();
 class App extends Component {
     constructor(props) {
@@ -171,17 +171,19 @@ class App extends Component {
             smoothIters: this.state.smoothIters
         })
 
-        // Polygons to draw
+        // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
-        console.log(resampler)
+
         // Set utilities options
-        utilities.setOptions(this.state)
-        utilities.setOptions({
+        colorUtils.setOptions({
             height: height,
-            width: width
+            width: width,
+            threshold: this.state.threshold,
+            fillColor: this.state.fillColor,
+            blackWhite: this.state.blackWhite
         })
         if (this.state.srcCanvas) {
-            utilities.setSrcCanvas(this.refs.canvasCopy)
+            colorUtils.setSrcCanvas(this.refs.canvasCopy)
         }
         return (
             <MuiThemeProvider>
@@ -202,7 +204,7 @@ class App extends Component {
                 <div id="canvasWrapper">
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
-                    <CustomCanvas shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } utilities={ utilities } polygons={ polygons }
+                    <CustomCanvas shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } colorUtils={ colorUtils } polygons={ polygons }
                     /> }
                 </div>
               </div>

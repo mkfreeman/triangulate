@@ -1,16 +1,15 @@
-// Utilities
+// Utilities for computing colors
 
 // Import polygon functions
 import PolygonUtils from './PolygonUtils';
 
-class Utilities {
+class ColorUtils {
     constructor() {}
     setOptions(options) {
         Object.keys(options).forEach((d) => this[d] = options[d]);
     }
 
     setSrcCanvas(srcCanvas) {
-        console.log('set src cavnavs', srcCanvas)
         // Store canvas data
         let context = srcCanvas.getContext('2d');
         let canvasData = context.getImageData(0, 0, this.width, this.height);
@@ -18,6 +17,28 @@ class Utilities {
     }
     makeColorString(r, g, b, a) {
         return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    getDotColor(pt, r) {
+        if (this.fillColor == 'centroid')
+            return this.getColorAtPos(pt);
+
+        var pt1 = [
+            pt[0] + r,
+            pt[1]
+        ];
+        var pt2 = [
+            pt[0] - r,
+            pt[1]
+        ];
+        var pt3 = [
+            pt[0], pt[1] + r
+        ];
+        var pt4 = [
+            pt[0], pt[1] - r
+        ];
+        var pts = [pt1, pt2, pt3, pt4];
+
+        return this.getAverageColor(pt, pts);
     }
     getColor(d) {
         var centroid = PolygonUtils.centroid(d);
@@ -71,4 +92,4 @@ class Utilities {
     }
 
 }
-export default Utilities;
+export default ColorUtils;
