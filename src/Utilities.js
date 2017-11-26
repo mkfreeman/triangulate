@@ -10,6 +10,7 @@ class Utilities {
     }
 
     setSrcCanvas(srcCanvas) {
+        console.log('set src cavnavs', srcCanvas)
         // Store canvas data
         let context = srcCanvas.getContext('2d');
         let canvasData = context.getImageData(0, 0, this.width, this.height);

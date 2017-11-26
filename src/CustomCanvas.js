@@ -8,15 +8,42 @@ class CustomCanvas extends Component {
 
     // Draw polygons on update
     updateCanvas() {
-        console.log('update canvas')
+        console.log("update canvas", this.props.width, this.props.height)
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
+        // draw polygons
+        if (this.props.shape !== "circles") {
+            this.drawPolygons(ctx);
+        } else {
+            this.drawCircles(ctx);
+        }
+    }
+    drawPolygons(ctx) {
         for (var i = 0, n = this.props.polygons.length; i < n; ++i) {
             this.drawCell(this.props.polygons[i], ctx);
         }
     }
+    // Issue: this.props.polygons doesn't currently have the radius....
+    drawCircles(ctx) {
+        if (this.props.polygons === null) return;
+        for (var i = 0, n = this.props.polygons.length; i < n; ++i) {
+            this.drawDot(this.props.polygons[i], this.props.polygons[i].radius, ctx);
+        }
+    }
+    // Function to draw a cell
+    drawDot(site, radius, con) {
+        // var color = getDotColor(site, radius);
+        var color = "black"
 
+        con.beginPath();
+        con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
+        con.closePath();
+        con.fillStyle = color;
+        con.strokeStyle = color;
+        con.lineWidth = 0;
+        con.fill();
+    }
     componentDidMount() {
         this.updateCanvas();
     }

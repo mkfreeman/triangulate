@@ -12,8 +12,8 @@ const ControlSettings = [
         label: "Shape",
         options: [
             {
-                id: "points",
-                label: "Points"
+                id: "circles",
+                label: "Circles"
             }, {
                 id: "triangles",
                 label: "Triangles"

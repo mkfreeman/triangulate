@@ -29,4 +29,4 @@ The `ControlSettings.js` file contains a JSON object to describe the rendering o
 This element draws a rendering of the original image depending on the settings chosen in the `<ControlPanel>`. The `<App>` passes this information as _properties_ to the `<CustomCanvas>` object. 
 
 ## Related work 
-For a much more robust command line tool that creates triangulated images, see [this project](https://github.com/esimov/triangle).
+For a more robust command line tool that creates triangulated images, see [this project](https://github.com/esimov/triangle).

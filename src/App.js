@@ -20,6 +20,16 @@ const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
 //     ReactGA.pageview(window.location.pathname + window.location.search);
 // }
 
+/* Current status:
+Tracks 2D context data in source, passes that to putImageData and CustomCanvas via Utilities
+However, this doesn't work if you set the image to the screensize (something wrong with
+putImageData() implementation). You can't just recompute the dimensions when it's uploaded, 
+as these will need to change. 
+
+You need to be able to use the image data *(that is the original size) in:
+putImageData (UpdateCanvasCopy)
+and in Utilities*/
+
 const utilities = new Utilities();
 const resampler = new Resampler();
 class App extends Component {
@@ -92,7 +102,7 @@ class App extends Component {
             .appendChild(img);
 
         // Store original size
-        let ele = document.getElementById(img.id)
+        let ele = document.getElementById(img.id);
         let originalSize = {
             width: ele.width,
             height: ele.height
@@ -103,15 +113,17 @@ class App extends Component {
         });
     }
     updateCanvasCopy(width, height, src) {
-        // console.log('update canvas copy ')
         if (!this.refs.canvasCopy || !this.state.srcCanvas) return
+        console.log('update canvas copy ', width, height, src)
         this.refs.canvasCopy.width = width;
         this.refs.canvasCopy.height = height;
         let ctx = this.refs.canvasCopy.getContext('2d');
         ctx.clearRect(0, 0, width, height);
+        // ctx.putImageData(src, [0, 0], [width, height]);
         ctx.drawImage(src, 0, 0, width, height);
     }
-    getDimensions() {
+    // Compute dimensions to maximize image size to fit screen
+    getDimensions(originalSize) {
         let width = null,
             height = null;
         if (this.state.fitToScreen == true) {
@@ -146,18 +158,22 @@ class App extends Component {
 
         // Update canvas copy 
         this.updateCanvasCopy(width, height, this.state.srcCanvas)
+
+        // Update re-sampler
+        // Issue: currently, updateValues will re-set the sites, as will updateSmoother. This redundancy should be removed
         resampler.updateValues({
             height: height,
             width: width,
-            numPoints: this.state.numPoints
+            numPoints: this.state.numPoints,
+            shape: this.state.shape
         }).updateSmoother({
             smoothType: this.state.smoothType,
             smoothIters: this.state.smoothIters
         })
 
         // Polygons to draw
-        let polygons = resampler.polygons === null ? null : resampler.getPolygons();
-
+        let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
+        console.log(resampler)
         // Set utilities options
         utilities.setOptions(this.state)
         utilities.setOptions({
@@ -186,7 +202,8 @@ class App extends Component {
                 <div id="canvasWrapper">
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
-                    <CustomCanvas canvasId={ canvasId } width={ width } height={ height } utilities={ utilities } polygons={ polygons } /> }
+                    <CustomCanvas shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } utilities={ utilities } polygons={ polygons }
+                    /> }
                 </div>
               </div>
               { /* figure out a better way to do this: react download file something... */ }
