@@ -1,0 +1,39 @@
+/* Footer */
+footer {
+    width: 100%;
+    background-color: white;
+    position: fixed;
+    bottom: 0px;
+    z-index: 9999;
+}
+
+.footer-copyright {
+    border-top: 1px solid #ee6e73;
+    margin-top: 10px;
+    padding: 5px;
+    opacity: .5;
+}
+
+.right {
+    float: right;
+}
+
+/* From materialize.css */
+
+.container {
+    margin: 0 auto;
+    max-width: 1280px;
+    width: 90%;
+  }
+  
+  @media only screen and (min-width: 601px) {
+    .container {
+      width: 85%;
+    }
+  }
+  
+  @media only screen and (min-width: 993px) {
+    .container {
+      width: 70%;
+    }
+  }

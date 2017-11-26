@@ -58,9 +58,11 @@ class ControlPanel extends Component {
             <div>
               <Drawer open={ this.state.open } style={ styles.drawer }>
                 <div className="controlWrapper">
-                  <RaisedButton containerElement='label' label='Upload File'>
-                    <input onChange={ (e) => this.props.uploadFile(e.target.files[0]) } type="file" style={ { display: 'none' } } />
-                  </RaisedButton>
+                  <div id="uploadWrapper">
+                    <RaisedButton primary={ true } containerElement='label' label='Upload File'>
+                      <input onChange={ (e) => this.props.uploadFile(e.target.files[0]) } type="file" style={ { display: 'none' } } />
+                    </RaisedButton>
+                  </div>
                   { this
                         .props
                         .controls

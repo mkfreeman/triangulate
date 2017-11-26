@@ -50,7 +50,7 @@ class CustomCanvas extends Component {
     }
     render() {
         return (
-            <canvas ref="canvas" width={ this.props.width } height={ this.props.height } style={ { marginLeft: "300px" } } />
+            <canvas id={ this.props.canvasId } ref="canvas" width={ this.props.width } height={ this.props.height } />
             );
     }
 }

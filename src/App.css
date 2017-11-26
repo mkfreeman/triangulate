@@ -37,3 +37,18 @@
     margin: 0px;
     opacity:.3;
 }
+
+/* Drawn canvas image */
+#canvasWrapper {
+    margin-left:256px;
+    text-align:center;
+    padding-top:10px;
+}
+
+/* Download button */
+#download {
+    position:fixed;
+    right:0px;
+    bottom:40px;
+    z-index: 999999;
+}

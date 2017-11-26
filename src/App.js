@@ -6,7 +6,19 @@ import ControlSettings from './ControlSettings';
 import Resampler from './Resampler';
 import CustomCanvas from './CustomCanvas';
 import Utilities from './Utilities';
+import Footer from './Footer';
+import RaisedButton from 'material-ui/RaisedButton';
 const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
+
+// Comment this in when connected to wifi
+// var ReactGA = require('react-ga');
+
+// function logPageView() {
+//     ReactGA.set({
+//         page: window.location.pathname + window.location.search
+//     });
+//     ReactGA.pageview(window.location.pathname + window.location.search);
+// }
 
 const utilities = new Utilities();
 const resampler = new Resampler();
@@ -27,8 +39,8 @@ class App extends Component {
             smoothIters: 0,
             blur: 0,
             srcCanvas: null,
-            width: window.innerWidth - 300,
-            height: window.innerHeight,
+            width: window.innerWidth - 256,
+            height: window.innerHeight - 20,
             originalSize: {},
             smoothType: 'laplacian',
             sampler: null,
@@ -39,6 +51,8 @@ class App extends Component {
 
     componentDidMount() {
         this.uploadFile('./imgs/mountains.png')
+    // ReactGA.initialize('UA-49431863-4');
+    // logPageView();
     }
 
     uploadFile(file) {
@@ -50,6 +64,16 @@ class App extends Component {
         }.bind(this), {
             canvas: true,
             orientation: true
+        });
+    }
+    downloadCanvas(link, canvasId, filename) {
+        let canvas = document.getElementById(canvasId);
+
+        // Convert to blob and download
+        canvas.toBlob(function(blob) {
+            let url = URL.createObjectURL(blob);
+            link.href = url;
+            link.download = filename;
         });
     }
 
@@ -114,8 +138,7 @@ class App extends Component {
     }
 
     render() {
-        console.log('up[date app')
-
+        let canvasId = 'customCanvas'
         // Dimensions
         let dims = this.getDimensions();
         let height = dims.height;
@@ -160,10 +183,17 @@ class App extends Component {
                                  .bind(this) } />
                 </div>
                 <div id="originalImage" ref="originalImage" style={ { display: 'none' } } />
-                <canvas id="canvasCopy" ref="canvasCopy" style={ { marginLeft: '300px' } } />
-                { this.state.srcCanvas !== null &&
-                  <CustomCanvas width={ width } height={ height } utilities={ utilities } polygons={ polygons } /> }
+                <div id="canvasWrapper">
+                  <canvas id="canvasCopy" ref="canvasCopy" />
+                  { this.state.srcCanvas !== null &&
+                    <CustomCanvas canvasId={ canvasId } width={ width } height={ height } utilities={ utilities } polygons={ polygons } /> }
+                </div>
               </div>
+              { /* figure out a better way to do this: react download file something... */ }
+              <a id="download" onClick={ () => this.downloadCanvas(this, canvasId, 'triangle-image.png') }>
+                <RaisedButton>Download</RaisedButton>
+              </a>
+              <Footer />
             </MuiThemeProvider>
         )
     }

@@ -93,7 +93,7 @@ const ControlSettings = [
         type: 'slider',
         getLabel: (num) => "Re-sample to Distribute Points: " + num + " times",
         min: 0,
-        max: 200,
+        max: 20,
         step: 1
     }, {
         id: 'blur',

@@ -15,6 +15,21 @@ const PolygonUtils = {
         return area;
     },
 
+    // Get 
+    getImageOffset(pt, width, height) {
+        var x = Math.round(pt[0]);
+        var y = Math.round(pt[1]);
+        if (x < 0)
+            x = 0;
+        if (y < 0)
+            y = 0;
+        if (x >= width)
+            x = width - 1;
+        if (y >= height)
+            y = height - 1;
+        return (4 * (x + y * width));
+    },
+
     // Compute centroid
     centroid(polygon) {
         var n = polygon.length;

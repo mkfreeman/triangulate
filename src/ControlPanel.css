@@ -13,3 +13,8 @@ h3 {
 .sliderWrapper {
     margin-top:15px;
 }
+
+#uploadWrapper {
+    width:100%;
+    text-align: center;
+}

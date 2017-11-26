@@ -1,4 +1,5 @@
 // Utilities
+
 // Import polygon functions
 import PolygonUtils from './PolygonUtils';
 
@@ -29,14 +30,14 @@ class Utilities {
         var g = 0;
         var b = 0;
         var a = 0;
-        var offset = this.getImageOffset(c);
+        var offset = PolygonUtils.getImageOffset(c, this.width, this.height);
         r += p.length * this.imageBuffer8[offset];
         g += p.length * this.imageBuffer8[offset + 1];
         b += p.length * this.imageBuffer8[offset + 2];
         a += p.length * this.imageBuffer8[offset + 3];
 
         p.forEach(function(pt) {
-            offset = this.getImageOffset(pt);
+            offset = PolygonUtils.getImageOffset(pt, this.width, this.height);
             r += this.imageBuffer8[offset];
             g += this.imageBuffer8[offset + 1];
             b += this.imageBuffer8[offset + 2];
@@ -57,7 +58,7 @@ class Utilities {
     }
     getColorAtPos(pt) {
         // Get color
-        var offset = this.getImageOffset(pt);
+        var offset = PolygonUtils.getImageOffset(pt, this.width, this.height);
         var color = this.makeColorString(this.imageBuffer8[offset], this.imageBuffer8[offset + 1], this.imageBuffer8[offset + 2], this.imageBuffer8[offset + 3]);
         // Calculate luminence
         if (this.blackWhite == 1) {
@@ -66,19 +67,6 @@ class Utilities {
             var color = test ? 'black' : 'white'
         }
         return color;
-    }
-    getImageOffset = function(pt) {
-        var x = Math.round(pt[0]);
-        var y = Math.round(pt[1]);
-        if (x < 0)
-            x = 0;
-        if (y < 0)
-            y = 0;
-        if (x >= this.width)
-            x = this.width - 1;
-        if (y >= this.height)
-            y = this.height - 1;
-        return (4 * (x + y * this.width));
     }
 
 }

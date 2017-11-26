@@ -2,7 +2,7 @@
 import * as d3 from 'd3';
 import PolygonUtils from './PolygonUtils';
 
-// Define resampler class
+// Define resampler class: resamples and smooths points
 class Resampler {
     constructor(width, height, numPoints, smoothIters, smoothType,) {
         this.width = width || 100;
