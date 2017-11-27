@@ -149,8 +149,7 @@ class App extends Component {
         // Update canvas copy 
         this.updateCanvasCopy(width, height, this.state.srcCanvas)
 
-        // Update re-sampler
-        // Issue: currently, updateValues will re-set the sites, as will updateSmoother. This redundancy should be removed        
+        // Update re-sampler        
         resampler.updateValues({
             height: height,
             width: width,
@@ -161,9 +160,7 @@ class App extends Component {
             smoothType: this.state.smoothType,
             smoothIters: this.state.smoothIters,
             contrastIters: this.state.contrastIters
-        })
-
-        resampler.setSrcCanvas(this.state.srcCanvas);
+        }).setSrcCanvas(this.state.srcCanvas);
         // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
 

@@ -13,6 +13,8 @@ class Resampler {
         this.smoothType = smoothType || 'lloyd';
         this.shape = shape || "triangles";
         this.imageBuffer8 = {};
+        this.needsSitesUpdate = true;;
+        this.needsSmootherUpdate = true;
         console.log(this.width, this.height)
     }
     setSrcCanvas(srcCanvas) {
@@ -28,11 +30,8 @@ class Resampler {
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
-        // update = true;
+            this.needsSitesUpdate = true;
         }.bind(this))
-        // if (update === true) {
-        //     this.setVoronoi().setSites();
-        // }
         return this;
     }
     updateSmoother(obj) {
@@ -40,11 +39,8 @@ class Resampler {
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
-        // update = true;
+            this.needsSmootherUpdate = true;
         }.bind(this));
-        // if (update === true) {
-        //     this.smoothSites();
-        // }
         return this;
     }
 
@@ -66,6 +62,7 @@ class Resampler {
 
     // Naively Set the current sites by randomly sampling in the width/height areas
     setSites() {
+        if (this.needsSitesUpdate === false) return this;
         this.sites = d3
             .range(this.numPoints)
             .map(function(d) {
@@ -92,7 +89,7 @@ class Resampler {
                 return pt;
 
             }.bind(this));
-        // this.smoothSites();
+        this.needsSitesUpdate = false;
         return this;
     }
     // Helper function for approximating gradient
@@ -126,7 +123,7 @@ class Resampler {
     // This would require not re-setting the sites in this function....
     smoothSites() {
         // Set sites, so that you start with a clean set of sites (i.e., so that it un-smooths)
-        this.setSites();
+        if (this.needsSmootherUpdate === false) return this;
         for (var i = 0; i < this.smoothIters; ++i) {
             if (this.smoothType == 'lloyd') {
                 let polygons = this.voronoi(this.sites).polygons();
@@ -141,6 +138,7 @@ class Resampler {
                 this.sites = PolygonUtils.getPolygonVertexAverages(polygons);
             }
         }
+        this.needsSmootherUpdate = false;
 
         return this;
     }
