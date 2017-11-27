@@ -1,5 +1,6 @@
 // CustomCanvas
 import React, { Component } from 'react';
+import ColorUtils from './ColorUtils';
 
 class CustomCanvas extends Component {
     constructor(props) {
@@ -8,7 +9,19 @@ class CustomCanvas extends Component {
 
     // Draw polygons on update
     updateCanvas() {
-        console.log("update canvas", this.props.width, this.props.height)
+        // Reset color utils
+        this.colorUtils = ColorUtils()
+            .height(this.props.colorSettings.height)
+            .width(this.props.colorSettings.width)
+            .fillColor(this.props.colorSettings.fillColor)
+            .threshold(this.props.colorSettings.threshold)
+            .blackWhite(this.props.colorSettings.blackWhite)
+            .invert(this.props.colorSettings.invert);
+
+        if (this.props.srcCanvas === null) return;
+        console.log(this.props.srcCanvas, this.props.colorSettings.width)
+        this.colorUtils.setSrcCanvas(this.props.srcCanvas);
+
         const ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
@@ -33,7 +46,7 @@ class CustomCanvas extends Component {
     }
     // Function to draw a cell
     drawDot(site, radius, con) {
-        var color = this.props.colorUtils.getDotColor(site, radius);
+        var color = this.colorUtils.getDotColor(site, radius);
 
         con.beginPath();
         con.arc(site[0], site[1], radius, 0, 2 * Math.PI);
@@ -64,8 +77,8 @@ class CustomCanvas extends Component {
         }
 
         // Fill path var color = getColor(cell);
-        var color = this.props.colorUtils.getColor(cell);
-        con.strokeStyle = this.props.colorUtils.showLines == true ? 'white' : color;
+        var color = this.colorUtils.getColor(cell);
+        con.strokeStyle = this.props.showLines == true ? 'white' : color;
         con.fillStyle = color;
         con.lineWidth = 0;
         con.fill();

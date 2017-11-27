@@ -5,7 +5,6 @@ import ControlPanel from './ControlPanel';
 import ControlSettings from './ControlSettings';
 import Resampler from './Resampler';
 import CustomCanvas from './CustomCanvas';
-import ColorUtils from './ColorUtils';
 import Footer from './Footer';
 import RaisedButton from 'material-ui/RaisedButton';
 const loadImage = require('../node_modules/blueimp-load-image/js/index.js')
@@ -22,7 +21,6 @@ function logPageView() {
     ReactGA.pageview(window.location.pathname + window.location.search);
 }
 
-const colorUtils = new ColorUtils();
 const resampler = new Resampler();
 class App extends Component {
     constructor(props) {
@@ -166,17 +164,16 @@ class App extends Component {
         // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
 
-        // Set utilities options
-        colorUtils.setOptions({
+        // Pass color utilities options
+        let colorSettings = {
             height: height,
             width: width,
             threshold: this.state.threshold,
             fillColor: this.state.fillColor,
-            blackWhite: this.state.blackWhite
-        })
-        if (this.state.srcCanvas) {
-            colorUtils.setSrcCanvas(this.refs.canvasCopy)
+            blackWhite: this.state.blackWhite,
+            invert: this.state.invert
         }
+
         return (
             <MuiThemeProvider>
               <div>
@@ -196,8 +193,8 @@ class App extends Component {
                 <div id="canvasWrapper">
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
-                    <CustomCanvas onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") } shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } colorUtils={ colorUtils }
-                      polygons={ polygons } /> }
+                    <CustomCanvas showLines={ this.state.showLines } srcCanvas={ this.refs.canvasCopy } colorSettings={ colorSettings } onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") } shape={ this.state.shape }
+                      canvasId={ canvasId } width={ width } height={ height } polygons={ polygons } /> }
                 </div>
                 { /* figure out a better way to do this: react download file something... */ }
                 <a id="download" download>
