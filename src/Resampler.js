@@ -4,24 +4,35 @@ import PolygonUtils from './PolygonUtils';
 
 // Define resampler class: resamples and smooths points
 class Resampler {
-    constructor(width, height, numPoints, smoothIters, smoothType, shape) {
+    constructor(width, height, numPoints, smoothIters, smoothType, shape, numResample) {
         this.width = width || 100;
         this.height = height || 100;
         this.numPoints = numPoints || 100;
         this.smoothIters = smoothIters || 0;
+        this.numResample = numResample || 0;
         this.smoothType = smoothType || 'lloyd';
         this.shape = shape || "triangles";
+        this.imageBuffer8 = {};
+        console.log(this.width, this.height)
+    }
+    setSrcCanvas(srcCanvas) {
+        console.log("set srcCanvas", srcCanvas, this.width, this.height)
+        if (srcCanvas !== null) {
+            let context = srcCanvas.getContext('2d');
+            let canvasData = context.getImageData(0, 0, this.width, this.height);
+            this.imageBuffer8 = new Uint8Array(canvasData.data.buffer);
+        }
     }
     updateValues(obj) {
-        let update = false;
+        // let update = false;
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
-            update = true;
+        // update = true;
         }.bind(this))
-        if (update === true) {
-            this.setVoronoi().setSites();
-        }
+        // if (update === true) {
+        //     this.setVoronoi().setSites();
+        // }
         return this;
     }
     updateSmoother(obj) {
@@ -29,11 +40,11 @@ class Resampler {
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
-            update = true;
+        // update = true;
         }.bind(this));
-        if (update === true) {
-            this.smoothSites();
-        }
+        // if (update === true) {
+        //     this.smoothSites();
+        // }
         return this;
     }
 
@@ -57,12 +68,58 @@ class Resampler {
     setSites() {
         this.sites = d3
             .range(this.numPoints)
-            .map((d) => [
-                Math.random() * this.width,
-                Math.random() * this.height
-            ]);
+            .map(function(d) {
+                let pt = [
+                    Math.random() * this.width,
+                    Math.random() * this.height];
+
+                // Resample for contrast!
+                let radius = Math.sqrt(this.width * this.height / this.numPoints) / 2;
+                if (radius < 1)
+                    radius = 1;
+                let score = this.approximateGradient(pt, radius);
+                // console.log('resample!', this.numResample)
+                for (var i = 0; i < this.numResample; ++i) {
+                    // console.log('resample!')
+                    var newPt = [
+                        Math.random() * this.width,
+                        Math.random() * this.height
+                    ];
+                    var newScore = this.approximateGradient(newPt, radius);
+                    if (newScore > score)
+                        pt = newPt;
+                }
+                return pt;
+
+            }.bind(this));
         // this.smoothSites();
         return this;
+    }
+    // Helper function for approximating gradient
+    imageDiffSq = function(off1, off2) {
+        var r = this.imageBuffer8[off1] - this.imageBuffer8[off2];
+        var b = this.imageBuffer8[off1 + 1] - this.imageBuffer8[off2 + 1];
+        var g = this.imageBuffer8[off1 + 2] - this.imageBuffer8[off2 + 2];
+        return r * r + b * b + g * g;
+    }
+    // Function for resampling for contrast
+    approximateGradient(pt, d) {
+        var off = PolygonUtils.getImageOffset(pt);
+        var offpx = PolygonUtils.getImageOffset([
+            pt[0] + d,
+            pt[1]
+        ]);
+        var offmx = PolygonUtils.getImageOffset([
+            pt[0] - d,
+            pt[1]
+        ]);
+        var offpy = PolygonUtils.getImageOffset([
+            pt[0], pt[1] + 5
+        ]);
+        var offmy = PolygonUtils.getImageOffset([
+            pt[0], pt[1] - 5
+        ]);
+        return this.imageDiffSq(offpx, off) + this.imageDiffSq(offmx, off) + this.imageDiffSq(offpy, off) + this.imageDiffSq(offmy, off);
     }
     // Issue: this could be re-written so that you only sample the additionally necessary times 
     // I.e., if you want 30 samples (and have done 29), only re-sample once more!
@@ -143,6 +200,10 @@ class Resampler {
     }
     // Function that returns the shapes for use
     getPolygons() {
+        // Set voronoi, sites, and smooth them
+        this.setVoronoi()
+            .setSites()
+            .smoothSites();
         let shapes;
         switch (this.shape) {
             case 'triangles':

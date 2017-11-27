@@ -35,7 +35,7 @@ class App extends Component {
             blackWhite: false,
             invert: false,
             threshold: 110,
-            contrast: 0,
+            contrastIters: 0,
             smoothIters: 0,
             blur: 0,
             srcCanvas: null,
@@ -150,17 +150,20 @@ class App extends Component {
         this.updateCanvasCopy(width, height, this.state.srcCanvas)
 
         // Update re-sampler
-        // Issue: currently, updateValues will re-set the sites, as will updateSmoother. This redundancy should be removed
+        // Issue: currently, updateValues will re-set the sites, as will updateSmoother. This redundancy should be removed        
         resampler.updateValues({
             height: height,
             width: width,
             numPoints: this.state.numPoints,
-            shape: this.state.shape
+            shape: this.state.shape,
+            numResample: this.state.contrastIters
         }).updateSmoother({
             smoothType: this.state.smoothType,
-            smoothIters: this.state.smoothIters
+            smoothIters: this.state.smoothIters,
+            contrastIters: this.state.contrastIters
         })
 
+        resampler.setSrcCanvas(this.state.srcCanvas);
         // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
 

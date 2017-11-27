@@ -82,11 +82,11 @@ const ControlSettings = [
         type: 'header',
         label: "Smoothing Options"
     }, {
-        id: 'contrast',
+        id: 'contrastIters',
         type: 'slider',
         getLabel: (num) => "Re-sample for Contrast: " + num + " times",
         min: 0,
-        max: 200,
+        max: 20,
         step: 1
     }, {
         id: 'smoothIters',
