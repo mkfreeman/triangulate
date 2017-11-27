@@ -59,48 +59,34 @@ function downloadCanvas(link, canvasId, filename) {
 var build = function() {
     if (imageOutOfDate) {
         // update the image on the canvas
-        console.time('update image');
         updateImage();
-        console.timeEnd('update image');
     }
 
     if (blurOutOfDate) {
         // Blur Canvases
-        console.time('blur');
         drawBlur();
-        console.timeEnd('blur');
 
         // Get all the image data at once since getImageData() calls seem to be a little
         // slow -- it seems to be much faster this way.
-        console.time('get image');
         getAllImageData();
-        console.timeEnd('get image');
     }
 
     if (sitesOutOfDate) {
         // Set (initial) sites
-        console.time('get sites');
         sites = getSites();
-        console.timeEnd('get sites');
     }
 
     if (smoothingWeightOutOfDate) {
-        console.time('smoothing weight');
         smoothingWeight = getSmoothingWeight();
-        console.timeEnd('smoothing weight');
     }
     
     if (smoothingOutOfDate) {
         // smooth the sites
-        console.time('smooth');
         smoothedSites = smoothSites();
-        console.timeEnd('smooth');
     }
 
     if (finalImageOutOfDate) {
-        console.time('final image');
         canvases.map(drawFinalImage);
-        console.timeEnd('final image');
     }
 
     // Set download for updated image
@@ -536,7 +522,6 @@ var getWeightedSites = function(inputSites, weights) {
         
     var diagram = voronoi(inputSites);
        
-    console.time('Accum');
     // Perform the weighted centroid calculation by integrating over 
     // the entire image and accumulating the integral for the relevant
     // polygon.
@@ -578,7 +563,6 @@ var getWeightedSites = function(inputSites, weights) {
             }
         }        
     }
-    console.timeEnd('Accum');
     // compute the weighted centroids and return
     return weightedCentroidData.map(function(d) {            
 			return [d[0]/d[2], d[1]/d[2]];
@@ -591,7 +575,6 @@ var getWeightedSites = function(inputSites, weights) {
 // here in the future.
 
 var getSmoothingWeight = function() {
-    console.time('Compute Weights');
     var weights = []; 
     if (SMOOTH_TYPE == 3) {
         for (var iW =0; iW < width; ++iW) {
@@ -608,7 +591,6 @@ var getSmoothingWeight = function() {
         // only need to redo the smoothing if we are using weighted smoothing
         smoothingOutOfDate = true;
     }
-    console.timeEnd('Compute Weights');
 
     smoothingWeightOutOfDate = false;
     return weights;
