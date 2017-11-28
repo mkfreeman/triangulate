@@ -15,10 +15,8 @@ class Resampler {
         this.imageBuffer8 = {};
         this.needsSitesUpdate = true;;
         this.needsSmootherUpdate = true;
-        console.log(this.width, this.height)
     }
     setSrcCanvas(srcCanvas) {
-        console.log("set srcCanvas", srcCanvas, this.width, this.height)
         if (srcCanvas !== null) {
             let context = srcCanvas.getContext('2d');
             let canvasData = context.getImageData(0, 0, this.width, this.height);
@@ -75,9 +73,7 @@ class Resampler {
                 if (radius < 1)
                     radius = 1;
                 let score = this.approximateGradient(pt, radius);
-                // console.log('resample!', this.numResample)
                 for (var i = 0; i < this.numResample; ++i) {
-                    // console.log('resample!')
                     var newPt = [
                         Math.random() * this.width,
                         Math.random() * this.height
@@ -124,6 +120,7 @@ class Resampler {
     smoothSites() {
         // Set sites, so that you start with a clean set of sites (i.e., so that it un-smooths)
         if (this.needsSmootherUpdate === false) return this;
+        this.setSites()
         for (var i = 0; i < this.smoothIters; ++i) {
             if (this.smoothType == 'lloyd') {
                 let polygons = this.voronoi(this.sites).polygons();

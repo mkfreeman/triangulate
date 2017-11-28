@@ -31,6 +31,8 @@ class CustomCanvas extends Component {
         } else {
             this.drawCircles(ctx);
         }
+        // Do whatever `props` says should happen on update
+        this.props.onUpdate();
     }
     drawPolygons(ctx) {
         for (var i = 0, n = this.props.polygons.length; i < n; ++i) {
@@ -62,7 +64,6 @@ class CustomCanvas extends Component {
 
     componentDidUpdate() {
         this.updateCanvas();
-        this.props.onUpdate();
     }
     // Function to draw cell
     drawCell(cell, con) {
