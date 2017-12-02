@@ -1,17 +1,17 @@
 # Triangulate
-<p>This project uses a <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a> to randomly sample points from an image to construct an abstracted representation of it. It was built based on <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. Simple controls allow you to specify the number of triangles, as well as blur the original photo. Blur effect is done with <a href="https://github.com/flozz/StackBlurStackBlur">this library</a>.</p>
+<p>This project uses a <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a> to randomly sample points from an image to construct an abstracted representation of it. It was built based on <a href="https://bl.ocks.org/mbostock/4341156">this example</a> that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. Simple controls allow you to specify the number of triangles, as well as blur the original photo.  </p>
 
 Hexagon, circle, and smoothing functionality built by <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank">Alex Rand</a>.
 
 Some examples:
 
-![mountain photo](imgs/triangle-mountains.png)
+![mountain outline](imgs/triangle-mountains.png)
 
 ![bird](imgs/bird-img.png)
 
 ![austin skyline](imgs/austin-skyline.png)
 
-![Freeman photo](imgs/freeman-triangle.png)
+![Freeman close-up](imgs/freeman-triangle.png)
 
 ## Updating project
 This project is a React application built with [create-react-app](https://github.com/facebookincubator/create-react-app). To begin create a local version, you should fork + clone the project, then install necessary packages using `npm install` in your project directly. Then, you can run a development server using `npm start` in your project directory. To deploy your project to a `gh-pages` branch, simply run `npm run deploy` in the root of your project directory. The project is organized into the following Components (and files).
