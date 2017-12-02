@@ -19,7 +19,8 @@ function logPageView() {
     });
     ReactGA.pageview(window.location.pathname + window.location.search);
 }
-
+const mobileThreshold = 900;
+const menuWidth = 256;
 const resampler = new Resampler();
 class App extends Component {
     constructor(props) {
@@ -38,7 +39,8 @@ class App extends Component {
             smoothIters: 0,
             blur: 0,
             srcCanvas: null,
-            width: window.innerWidth - 256,
+            mobile: window.innerWidth < mobileThreshold,
+            width: window.innerWidth < mobileThreshold ? window.innerWidth : window.innerWidth - menuWidth,
             height: window.innerHeight - 20,
             originalSize: {},
             smoothType: 'laplacian',
@@ -175,16 +177,17 @@ class App extends Component {
             <MuiThemeProvider>
               <div>
                 <div>
-                  <div id="title">
-                    <h1>Triangulate</h1>
-                    <p>Geometric patterns of images</p>
-                  </div>
-                  <ControlPanel uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ !this.state.blackWhite } handleImage={ this
-                                                                                                                                                                                   .handleImage
-                                                                                                                                                                                   .bind(this) }
-                    update={ this
-                                 .inputChangeHandler
-                                 .bind(this) } />
+                  { !this.state.mobile &&
+                    <div id="title">
+                      <h1>Triangulate</h1>
+                      <p>Geometric patterns of images</p>
+                    </div> }
+                  <ControlPanel mobile={ this.state.mobile } uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ !this.state.blackWhite }
+                    handleImage={ this
+                                      .handleImage
+                                      .bind(this) } update={ this
+                                                                                                                                                           .inputChangeHandler
+                                                                                                                                                           .bind(this) } />
                 </div>
                 <div id="originalImage" ref="originalImage" style={ { display: 'none' } } />
                 <div id="canvasWrapper">

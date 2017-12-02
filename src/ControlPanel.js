@@ -9,32 +9,47 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import Toggle from 'material-ui/Toggle';
 import Dialog from 'material-ui/Dialog';
 import RaisedButton from 'material-ui/RaisedButton';
+import AppBar from 'material-ui/AppBar';
 import './ControlPanel.css';
-const styles = {
-    slider: {
-        marginTop: '0px',
-        marginBottom: '20px'
-    },
-    radioGroup: {
-        marginTop: '10px',
-        marginBottom: '10px'
-    },
-    select: {
-        marginTop: '0px',
-        width: "100%"
-    }
-};
 
 class ControlPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
             open: true,
-            modalOpen: false
+            modalOpen: false,
+            styles: {
+                slider: {
+                    marginTop: '0px',
+                    marginBottom: '20px'
+                },
+                radioGroup: {
+                    marginTop: '10px',
+                    marginBottom: '10px'
+                },
+                select: {
+                    marginTop: '0px',
+                    width: "100%"
+                },
+                drawer: {
+                    marginTop: this.props.mobile === true ? '64px' : '0px',
+                    opacity: this.props.mobile === true ? 0.7 : 1
+                },
+                overlay: {
+                    opacity: '0'
+                }
+            }
         }
     }
 
-
+    handleOpen() {
+        let open = this.state.open === true ?
+            false :
+            true;
+        this.setState({
+            open: open
+        });
+    }
 
     handleModal() {
         let open = this.state.modalOpen === true
@@ -53,9 +68,13 @@ class ControlPanel extends Component {
         this.setState(obj);
     }
     render() {
+        console.log('mobile', this.props.mobile)
         return (
             <div>
-              <Drawer open={ this.state.open } style={ styles.drawer }>
+              { this.props.mobile && <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" /> }
+              <Drawer overlayStyle={ this.state.styles.overlay } docked={ !this.props.mobile } open={ this.state.open } onRequestChange={ (open) => this.setState({
+                                                                                                                                              open
+                                                                                                                                          }) } containerStyle={ this.state.styles.drawer }>
                 <div className="controlWrapper">
                   <div id="uploadWrapper">
                     <RaisedButton primary={ true } containerElement='label' label='Upload File'>
@@ -69,7 +88,7 @@ class ControlPanel extends Component {
                             let ele;
                             switch (control.type) {
                                 case 'select':
-                                    ele = <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ styles.select } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
+                                    ele = <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ this.state.styles.select } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
                                             { control
                                                   .options
                                                   .map(function(d) {
@@ -91,7 +110,7 @@ class ControlPanel extends Component {
                                                   { control.getLabel(this.props.status[control.id]) }
                                                 </label>
                                                 <Slider id={ control.id } min={ control.min } max={ control.max } step={ control.step } onChange={ (e, val) => this.handleSliderChange(control.id, val) } onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) }
-                                                  defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
+                                                  defaultValue={ this.props.status[control.id] } sliderStyle={ this.state.styles.slider } />
                                               </div> }
                                           </div>
                                     break;
@@ -99,7 +118,7 @@ class ControlPanel extends Component {
                                     ele = <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
                                     break;
                                 case 'radio':
-                                    ele = <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ styles.radioGroup }>
+                                    ele = <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ this.state.styles.radioGroup }>
                                             { control
                                                   .options
                                                   .map(function(d) {
@@ -110,7 +129,7 @@ class ControlPanel extends Component {
                                 case 'toggle':
                                     ele = <div key={ control.id }>
                                             { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled))) &&
-                                              <Toggle label={ control.label } style={ styles.toggle } toggled={ this.props.status[control.id] } onToggle={ (e, val) => this.props.update(e, control.id, val) } /> }
+                                              <Toggle label={ control.label } style={ this.state.styles.toggle } toggled={ this.props.status[control.id] } onToggle={ (e, val) => this.props.update(e, control.id, val) } /> }
                                           </div>
                                     break;
                                 default:

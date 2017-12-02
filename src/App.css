@@ -1,54 +1,66 @@
 /* App css */
 
+
 /* Original image: show on hover */
+
 #canvasCopy {
     position: absolute;
-    opacity:0;
+    opacity: 0;
     z-index: 999;
     -webkit-transition: opacity 1s;
     transition: opacity 1s;
 }
 
 #canvasCopy:hover {
-    opacity:1;
+    opacity: 1;
 }
 
 
 /* Title header */
+
 #title {
     text-align: center;
-    border-bottom:1px solid #d3d3d3;
-    padding-bottom:2px;
-    position:fixed;
-    top:0px;
-    left:0px;
-    width:256px;
-    z-index:99999;
-    background-color:white;
+    border-bottom: 1px solid #d3d3d3;
+    padding-bottom: 2px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 256px;
+    z-index: 99999;
+    background-color: white;
 }
 
 #title h1 {
-    font-weight:100;
-    font-size:2.5em;
-    margin-bottom:0px;
+    font-weight: 100;
+    font-size: 2.5em;
+    margin-bottom: 0px;
 }
 
 #title p {
     margin: 0px;
-    opacity:.3;
+    opacity: .3;
 }
+
 
 /* Drawn canvas image */
+
 #canvasWrapper {
-    margin-left:256px;
-    text-align:center;
-    padding-top:10px;
+    text-align: center;
+    padding-top: 10px;
 }
 
+
 /* Download button */
+
 #download {
-    position:fixed;
-    right:0px;
-    bottom:40px;
+    position: fixed;
+    right: 0px;
+    bottom: 40px;
     z-index: 999999;
+}
+
+@media (min-width:900px) {
+    #canvasWrapper {
+        margin-left: 256px;
+    }
 }

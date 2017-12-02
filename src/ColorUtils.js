@@ -75,9 +75,9 @@ const ColorUtils = function() {
         b /= (2 * p.length);
         a /= (2 * p.length);
         let color = this.makeColorString(Math.round(r), Math.round(g), Math.round(b), Math.round(a));
-        if (blackWhite === 1) {
+        if (blackWhite === true) {
             let y = 0.2126 * r + 0.7152 * g + 0.0722 * b
-            let test = invert === 0 ? y < threshold : y > threshold
+            let test = invert === false ? y < threshold : y > threshold
             color = test ? 'black' : 'white'
         }
         return color;
