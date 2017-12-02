@@ -14,7 +14,6 @@ var ReactGA = require('react-ga');
 ReactGA.initialize('UA-49431863-4');
 
 function logPageView() {
-    console.log('log page view')
     ReactGA.set({
         page: window.location.pathname + window.location.search
     });
@@ -68,12 +67,10 @@ class App extends Component {
     setDownloadBlob(linkId, canvasId, filename) {
         let canvas = document.getElementById(canvasId);
         let link = document.getElementById(linkId);
-        console.log('canvas', canvas)
 
         // Convert to blob and download
         canvas.toBlob(function(blob) {
             let url = URL.createObjectURL(blob);
-            console.log('url', url)
             link.href = url;
             link.download = filename;
         });
@@ -117,7 +114,7 @@ class App extends Component {
     getDimensions(originalSize) {
         let width = null,
             height = null;
-        if (this.state.fitToScreen == true) {
+        if (this.state.fitToScreen === true) {
             // Maximize area of photo
             let imageRatio = this.state.originalSize.width / this.state.originalSize.height;
             let screenRatio = this.state.width / this.state.height;

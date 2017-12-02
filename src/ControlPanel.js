@@ -48,7 +48,6 @@ class ControlPanel extends Component {
 
     // Handle slider change
     handleSliderChange(key, val) {
-        console.log('slider change', key, val)
         let obj = {}
         obj[key] = val;
         this.setState(obj);
@@ -67,52 +66,57 @@ class ControlPanel extends Component {
                         .props
                         .controls
                         .map(function(control) {
+                            let ele;
                             switch (control.type) {
                                 case 'select':
-                                    return <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ styles.select } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
-                                             { control
-                                                   .options
-                                                   .map(function(d) {
-                                                       return (<MenuItem key={ control.id + '-' + d.id } value={ d.id } primaryText={ d.label } />)
-                                                   }) }
-                                           </SelectField>
+                                    ele = <SelectField key={ control.id } floatingLabelText={ control.label } value={ this.props.status[control.id] } style={ styles.select } onChange={ (e, key, val) => this.props.update(e, control.id, val) }>
+                                            { control
+                                                  .options
+                                                  .map(function(d) {
+                                                      return (<MenuItem key={ control.id + '-' + d.id } value={ d.id } primaryText={ d.label } />)
+                                                  }) }
+                                          </SelectField>
                                     break;
                                 case 'header':
-                                    return <div key={ control.id }>
-                                             <h3>{ control.label }</h3>
-                                             <hr/>
-                                           </div>
+                                    ele = <div key={ control.id }>
+                                            <h3>{ control.label }</h3>
+                                            <hr/>
+                                          </div>
                                     break;
                                 case 'slider':
-                                    return <div key={ control.id } className="sliderWrapper">
-                                             <label>
-                                               { control.getLabel(this.props.status[control.id]) }
-                                             </label>
-                                             <Slider id={ control.id } min={ control.min } max={ control.max } step={ control.step } disabled={ control.getDisabled === undefined
-                                                                                                                                                ? false
-                                                                                                                                                : control.getDisabled(this.props.disabled) } onChange={ (e, val) => this.handleSliderChange(control.id, val) }
-                                               onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) } defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
-                                           </div>
+                                    ele = <div key={ control.id } className="sliderWrapper">
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled))) &&
+                                              <div>
+                                                <label>
+                                                  { control.getLabel(this.props.status[control.id]) }
+                                                </label>
+                                                <Slider id={ control.id } min={ control.min } max={ control.max } step={ control.step } onChange={ (e, val) => this.handleSliderChange(control.id, val) } onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) }
+                                                  defaultValue={ this.props.status[control.id] } sliderStyle={ styles.slider } />
+                                              </div> }
+                                          </div>
                                     break;
                                 case 'checkbox':
-                                    return <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
+                                    ele = <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
                                     break;
                                 case 'radio':
-                                    return <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } key={ control.id } name={ control.id } defaultSelected={ this.props.status[control.id] }
-                                             style={ styles.radioGroup }>
-                                             { control
-                                                   .options
-                                                   .map(function(d) {
-                                                       return (<RadioButton key={ control.id + "-" + d.id } value={ d.id } label={ d.label } />)
-                                                   }) }
-                                           </RadioButtonGroup>
+                                    ele = <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ styles.radioGroup }>
+                                            { control
+                                                  .options
+                                                  .map(function(d) {
+                                                      return (<RadioButton key={ control.id + "-" + d.id } value={ d.id } label={ d.label } />)
+                                                  }) }
+                                          </RadioButtonGroup>
                                     break;
                                 case 'toggle':
-                                    return <Toggle key={ control.id } label={ control.label } style={ styles.toggle } toggled={ this.props.status[control.id] } disabled={ control.getDisabled === undefined
-                                                                                                                                                    ? false
-                                                                                                                                                    : control.getDisabled(this.props.disabled) } onToggle={ (e, val) => this.props.update(e, control.id, val) }
-                                           />
+                                    ele = <div key={ control.id }>
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled))) &&
+                                              <Toggle label={ control.label } style={ styles.toggle } toggled={ this.props.status[control.id] } onToggle={ (e, val) => this.props.update(e, control.id, val) } /> }
+                                          </div>
+                                    break;
+                                default:
+                                    ele = <div key={ control.id }></div>
                             }
+                            return ele;
                         }.bind(this)) }
                   <RaisedButton label="About" onClick={ this
                                                             .handleModal
@@ -121,12 +125,13 @@ class ControlPanel extends Component {
                                                                                                            .handleModal
                                                                                                            .bind(this) }>
                     <p>This project uses a
-                      <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank">Voronoi Diagram</a>  to randomly sample points from an
-                      image to construct an abstracted representation of it. It was built based on
-                      <a href="https://bl.ocks.org/mbostock/4341156">this example</a>  that expresses the Delaunay Triangulation used to compute a Voronoi Diagram. See
-                      <a href="https://github.com/mkfreeman/triangulate" target="_blank">code</a>  on GitHub.</p>
+                      <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank" rel="noopener noreferrer">Voronoi Diagram</a>  to randomly
+                      sample points from an image to construct an abstracted representation of it. It was built based on
+                      <a href="https://bl.ocks.org/mbostock/4341156" rel="noopener noreferrer">this example</a>  that expresses the Delaunay Triangulation used to compute a
+                      Voronoi Diagram. See
+                      <a href="https://github.com/mkfreeman/triangulate" target="_blank" rel="noopener noreferrer">code</a>  on GitHub.</p>
                     Hexagon, circle, and smoothing functionality built by
-                    <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank">Alex Rand</a>.
+                    <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank" rel="noopener noreferrer">Alex Rand</a>.
                   </Dialog>
                 </div>
               </Drawer>

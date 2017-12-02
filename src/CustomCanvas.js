@@ -3,10 +3,6 @@ import React, { Component } from 'react';
 import ColorUtils from './ColorUtils';
 
 class CustomCanvas extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     // Draw polygons on update
     updateCanvas() {
         // Reset color utils
@@ -19,7 +15,6 @@ class CustomCanvas extends Component {
             .invert(this.props.colorSettings.invert);
 
         if (this.props.srcCanvas === null) return;
-        console.log(this.props.srcCanvas, this.props.colorSettings.width)
         this.colorUtils.setSrcCanvas(this.props.srcCanvas);
 
         const ctx = this.refs.canvas.getContext('2d');
@@ -79,11 +74,11 @@ class CustomCanvas extends Component {
 
         // Fill path var color = getColor(cell);
         var color = this.colorUtils.getColor(cell);
-        con.strokeStyle = this.props.showLines == true ? 'white' : color;
+        con.strokeStyle = this.props.showLines === true ? 'white' : color;
         con.fillStyle = color;
         con.lineWidth = 0;
         con.fill();
-        if (con.fillStyle != '#ffffff') {
+        if (con.fillStyle !== '#ffffff') {
             con.stroke();
         }
         con.closePath();

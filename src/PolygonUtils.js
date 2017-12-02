@@ -68,8 +68,8 @@ const PolygonUtils = {
             .edges
             .forEach(function(edge) {
                 if (typeof edge.right !== 'undefined') {
-                    var l = edge.left.index;
-                    var r = edge.right.index;
+                    let l = edge.left.index;
+                    let r = edge.right.index;
                     tmpSites[l][0] += edge.right.data[0];
                     tmpSites[l][1] += edge.right.data[1];
                     totalWeights[l] += 1.0;
@@ -77,7 +77,7 @@ const PolygonUtils = {
                     tmpSites[r][1] += edge.left.data[1];
                     totalWeights[r] += 1.0;
                 } else {
-                    var l = edge.left.index;
+                    let l = edge.left.index;
                     tmpSites[l][0] += (edge[0][0] + edge[1][0]);
                     tmpSites[l][1] += (edge[0][1] + edge[1][1]);
                     totalWeights[l] += 2.0;

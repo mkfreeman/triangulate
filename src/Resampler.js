@@ -24,7 +24,6 @@ class Resampler {
         }
     }
     updateValues(obj) {
-        // let update = false;
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
@@ -33,7 +32,6 @@ class Resampler {
         return this;
     }
     updateSmoother(obj) {
-        let update = false;
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
@@ -122,15 +120,15 @@ class Resampler {
         if (this.needsSmootherUpdate === false) return this;
         this.setSites()
         for (var i = 0; i < this.smoothIters; ++i) {
-            if (this.smoothType == 'lloyd') {
+            if (this.smoothType === 'lloyd') {
                 let polygons = this.voronoi(this.sites).polygons();
                 this.sites = PolygonUtils.getCentroids(polygons);
             }
-            if (this.smoothType == 'laplacian') {
+            if (this.smoothType === 'laplacian') {
                 let diagram = this.voronoi(this.sites);
                 this.sites = PolygonUtils.getLaplacianSites(this.sites, diagram);
             }
-            if (this.smoothType == 'polygonVertex') {
+            if (this.smoothType === 'polygonVertex') {
                 let polygons = this.voronoi(this.sites).polygons();
                 this.sites = PolygonUtils.getPolygonVertexAverages(polygons);
             }
@@ -209,6 +207,9 @@ class Resampler {
                 break;
             case 'circles':
                 shapes = this.getDotRadii();
+                break;
+            default:
+                break;
         }
         return shapes;
     }

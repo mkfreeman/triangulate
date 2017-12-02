@@ -14,9 +14,7 @@ const ColorUtils = function() {
 
     let utils = {};
     utils.setSrcCanvas = function(srcCanvas) {
-        // Store canvas data
-        console.log('width', width, 'height', height)
-        console.log(srcCanvas, width, height)
+        // Store canvas data        
         let context = srcCanvas.getContext('2d');
         let canvasData = context.getImageData(0, 0, width, height);
         this.imageBuffer8 = new Uint8Array(canvasData.data.buffer);
@@ -25,7 +23,7 @@ const ColorUtils = function() {
         return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
     }
     utils.getDotColor = function(pt, r) {
-        if (fillColor == 'centroid')
+        if (fillColor === 'centroid')
             return this.getColorAtPos(pt);
 
         var pt1 = [
@@ -48,7 +46,7 @@ const ColorUtils = function() {
     }
     utils.getColor = function(d) {
         var centroid = PolygonUtils.centroid(d);
-        if (fillColor == 'centroid')
+        if (fillColor === 'centroid')
             return this.getColorAtPos(centroid);
 
         return this.getAverageColor(centroid, d);
@@ -76,23 +74,23 @@ const ColorUtils = function() {
         g /= (2 * p.length);
         b /= (2 * p.length);
         a /= (2 * p.length);
-        var color = this.makeColorString(Math.round(r), Math.round(g), Math.round(b), Math.round(a));
-        if (blackWhite == 1) {
-            var y = 0.2126 * r + 0.7152 * g + 0.0722 * b
-            var test = invert == 0 ? y < threshold : y > threshold
-            var color = test ? 'black' : 'white'
+        let color = this.makeColorString(Math.round(r), Math.round(g), Math.round(b), Math.round(a));
+        if (blackWhite === 1) {
+            let y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+            let test = invert === 0 ? y < threshold : y > threshold
+            color = test ? 'black' : 'white'
         }
         return color;
     }
     utils.getColorAtPos = function(pt) {
         // Get color
-        var offset = PolygonUtils.getImageOffset(pt, width, height);
-        var color = this.makeColorString(this.imageBuffer8[offset], this.imageBuffer8[offset + 1], this.imageBuffer8[offset + 2], this.imageBuffer8[offset + 3]);
+        let offset = PolygonUtils.getImageOffset(pt, width, height);
+        let color = this.makeColorString(this.imageBuffer8[offset], this.imageBuffer8[offset + 1], this.imageBuffer8[offset + 2], this.imageBuffer8[offset + 3]);
         // Calculate luminence
-        if (blackWhite == 1) {
-            var y = 0.2126 * this.imageBuffer8[offset] + 0.7152 * this.imageBuffer8[offset + 1] + 0.0722 * this.imageBuffer8[offset + 2]
-            var test = invert == 0 ? y < threshold : y > threshold;
-            var color = test ? 'black' : 'white'
+        if (blackWhite === 1) {
+            let y = 0.2126 * this.imageBuffer8[offset] + 0.7152 * this.imageBuffer8[offset + 1] + 0.0722 * this.imageBuffer8[offset + 2]
+            let test = invert === 0 ? y < threshold : y > threshold;
+            color = test ? 'black' : 'white'
         }
         return color;
     }
@@ -105,9 +103,7 @@ const ColorUtils = function() {
     };
     utils.width = function(w) {
         if (arguments.length === 0) return width;
-        console.log("set width", w)
         width = w;
-        console.log("set width", width)
         return utils;
     };
     utils.blackWhite = function(w) {
