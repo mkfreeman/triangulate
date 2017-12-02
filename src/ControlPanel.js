@@ -143,12 +143,16 @@ class ControlPanel extends Component {
                                                                                                            .handleModal
                                                                                                            .bind(this) }>
                     <p>This project uses a
-                      <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank" rel="noopener noreferrer">Voronoi Diagram</a>  to randomly
+                      { ' ' }
+                      <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank" rel="noopener noreferrer">Voronoi Diagram</a> to randomly
                       sample points from an image to construct an abstracted representation of it. It was built based on
+                      { ' ' }
                       <a href="https://bl.ocks.org/mbostock/4341156" rel="noopener noreferrer">this example</a>  that expresses the Delaunay Triangulation used to compute a
                       Voronoi Diagram. See
+                      { ' ' }
                       <a href="https://github.com/mkfreeman/triangulate" target="_blank" rel="noopener noreferrer">code</a>  on GitHub.</p>
                     Hexagon, circle, and smoothing functionality built by
+                    { ' ' }
                     <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank" rel="noopener noreferrer">Alex Rand</a>.
                   </Dialog>
                 </div>
