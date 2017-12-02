@@ -27,7 +27,7 @@ const ControlSettings = [
         type: 'slider',
         getLabel: (num) => "# of Points: " + num,
         min: 10,
-        max: 20000,
+        max: 10000,
         step: 100
     }, {
         id: 'fitToScreen',
