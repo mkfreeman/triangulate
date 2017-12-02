@@ -16,8 +16,8 @@ const ColorUtils = function() {
     utils.setSrcCanvas = function(srcCanvas) {
         // Store canvas data        
         let context = srcCanvas.getContext('2d');
-        let canvasData = context.getImageData(0, 0, width, height);
-        this.imageBuffer8 = new Uint8Array(canvasData.data.buffer);
+        this.imageData = context.getImageData(0, 0, width, height);
+        this.imageBuffer8 = new Uint8Array(this.imageData.data.buffer);
     }
     utils.makeColorString = function(r, g, b, a) {
         return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';

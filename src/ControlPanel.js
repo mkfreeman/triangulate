@@ -68,7 +68,6 @@ class ControlPanel extends Component {
         this.setState(obj);
     }
     render() {
-        console.log('mobile', this.props.mobile)
         return (
             <div>
               { this.props.mobile && <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" /> }

@@ -30,7 +30,7 @@ class App extends Component {
             shape: 'triangles',
             fitToScreen: true,
             showLines: false,
-            blend: 50,
+            blend: 0,
             fillColor: "average",
             blackWhite: false,
             invert: false,
@@ -193,8 +193,8 @@ class App extends Component {
                 <div id="canvasWrapper">
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
-                    <CustomCanvas showLines={ this.state.showLines } srcCanvas={ this.refs.canvasCopy } colorSettings={ colorSettings } onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") } shape={ this.state.shape }
-                      canvasId={ canvasId } width={ width } height={ height } polygons={ polygons } /> }
+                    <CustomCanvas numBlend={ this.state.blend } showLines={ this.state.showLines } srcCanvas={ this.refs.canvasCopy } colorSettings={ colorSettings } onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") }
+                      shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } polygons={ polygons } /> }
                 </div>
                 { /* figure out a better way to do this: react download file something... */ }
                 <a id="download" download>

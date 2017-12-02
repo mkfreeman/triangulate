@@ -17,7 +17,7 @@ class CustomCanvas extends Component {
         if (this.props.srcCanvas === null) return;
         this.colorUtils.setSrcCanvas(this.props.srcCanvas);
 
-        const ctx = this.refs.canvas.getContext('2d');
+        let ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
 
         // draw polygons
@@ -26,6 +26,10 @@ class CustomCanvas extends Component {
         } else {
             this.drawCircles(ctx);
         }
+
+        // Blend image
+        this.blendOriginalImage(ctx);
+
         // Do whatever `props` says should happen on update
         this.props.onUpdate();
     }
@@ -53,6 +57,16 @@ class CustomCanvas extends Component {
         con.lineWidth = 0;
         con.fill();
     }
+    blendOriginalImage(context) {
+        if (this.props.numBlend === 0 || this.props.srcCanvas === null)
+            return;
+        let imageData = context.getImageData(0, 0, this.props.width, this.props.height);
+        for (let i = 0; i < imageData.data.length; i += 1) {
+            imageData.data[i] = ((100 - this.props.numBlend) * imageData.data[i] + this.props.numBlend * this.colorUtils.imageBuffer8[i]) / 100;
+        }
+        context.putImageData(imageData, 0, 0);
+    }
+
     componentDidMount() {
         this.updateCanvas();
     }
