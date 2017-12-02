@@ -26,7 +26,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            numPoints: 5000,
+            numPoints: 2500,
             shape: 'triangles',
             fitToScreen: true,
             showLines: false,

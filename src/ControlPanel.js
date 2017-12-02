@@ -36,7 +36,8 @@ class ControlPanel extends Component {
                     opacity: this.props.mobile === true ? 0.7 : 1
                 },
                 overlay: {
-                    opacity: '0'
+                    opacity: '0',
+                    backgroundColor: 'none'
                 }
             }
         }
