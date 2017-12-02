@@ -87,9 +87,9 @@ const ColorUtils = function() {
         let offset = PolygonUtils.getImageOffset(pt, width, height);
         let color = this.makeColorString(this.imageBuffer8[offset], this.imageBuffer8[offset + 1], this.imageBuffer8[offset + 2], this.imageBuffer8[offset + 3]);
         // Calculate luminence
-        if (blackWhite === 1) {
+        if (blackWhite === true) {
             let y = 0.2126 * this.imageBuffer8[offset] + 0.7152 * this.imageBuffer8[offset + 1] + 0.0722 * this.imageBuffer8[offset + 2]
-            let test = invert === 0 ? y < threshold : y > threshold;
+            let test = invert === false ? y < threshold : y > threshold;
             color = test ? 'black' : 'white'
         }
         return color;
