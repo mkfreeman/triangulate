@@ -28,7 +28,7 @@ class App extends Component {
         this.state = {
             numPoints: 2500,
             circleSpacing: 3,
-            shape: 'circles',
+            shape: 'triangles',
             fitToScreen: true,
             fill: true,
             showLines: false,
