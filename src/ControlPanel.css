@@ -23,5 +23,6 @@ h3 {
 @media (min-width:900px) {
     .controlWrapper {
         margin-top: 100px;
+        margin-bottom: 50px;
     }
 }

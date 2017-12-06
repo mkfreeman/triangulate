@@ -27,8 +27,10 @@ class App extends Component {
         super(props);
         this.state = {
             numPoints: 2500,
-            shape: 'triangles',
+            circleSpacing: 3,
+            shape: 'circles',
             fitToScreen: true,
+            fill: true,
             showLines: false,
             blend: 0,
             fillColor: "average",
@@ -152,6 +154,7 @@ class App extends Component {
         resampler.updateValues({
             height: height,
             width: width,
+            circleSpacing: this.state.circleSpacing,
             numPoints: this.state.numPoints,
             shape: this.state.shape,
             numResample: this.state.contrastIters
@@ -160,10 +163,11 @@ class App extends Component {
             smoothIters: this.state.smoothIters,
             contrastIters: this.state.contrastIters
         }).setSrcCanvas(this.state.srcCanvas);
+
         // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();
 
-        // Pass color utilities options
+        // Pass color settings
         let colorSettings = {
             height: height,
             width: width,
@@ -173,6 +177,13 @@ class App extends Component {
             invert: this.state.invert
         }
 
+        // Determine which controls should be disabled
+        let disabled = {
+            invert: !this.state.blackWhite,
+            threshold: !this.state.blackWhite,
+            showLines: this.state.shape === "circles" || !this.state.fill,
+            circleSpacing: this.state.shape !== "circles"
+        }
         return (
             <MuiThemeProvider>
               <div>
@@ -182,7 +193,7 @@ class App extends Component {
                       <h1>Triangulate</h1>
                       <p>Geometric patterns of images</p>
                     </div> }
-                  <ControlPanel mobile={ this.state.mobile } uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ !this.state.blackWhite }
+                  <ControlPanel mobile={ this.state.mobile } uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ disabled }
                     handleImage={ this
                                       .handleImage
                                       .bind(this) } update={ this
@@ -194,7 +205,8 @@ class App extends Component {
                   <canvas id="canvasCopy" ref="canvasCopy" />
                   { this.state.srcCanvas !== null &&
                     <CustomCanvas numBlend={ this.state.blend } showLines={ this.state.showLines } srcCanvas={ this.refs.canvasCopy } colorSettings={ colorSettings } onUpdate={ () => this.setDownloadBlob("download", canvasId, "triangle-image.png") }
-                      shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } polygons={ polygons } /> }
+                      fill={ this.state.fill } shape={ this.state.shape } canvasId={ canvasId } width={ width } height={ height } polygons={ polygons }
+                    /> }
                 </div>
                 { /* figure out a better way to do this: react download file something... */ }
                 <a id="download" download>

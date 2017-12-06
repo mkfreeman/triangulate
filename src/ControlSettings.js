@@ -29,13 +29,10 @@ const ControlSettings = [
         min: 10,
         max: 10000,
         step: 100
-    }, {
+    },
+    {
         id: 'fitToScreen',
-        label: "Fit Image To Screen",
-        type: 'checkbox'
-    }, {
-        id: 'showLines',
-        label: "Show Polygon Outlines",
+        label: "Fit image To screen",
         type: 'checkbox'
     }, {
         id: 'blend',
@@ -48,6 +45,16 @@ const ControlSettings = [
         id: 'color-header',
         type: 'header',
         label: "Color Options"
+    }, {
+        id: 'fill',
+        label: "Fill with color",
+        type: 'checkbox'
+    },
+    {
+        id: 'showLines',
+        label: "Show Polygon Overlay",
+        type: 'checkbox',
+        getDisabled: (d) => d
     }, {
         id: "fillColor",
         type: 'radio',
@@ -119,7 +126,16 @@ const ControlSettings = [
                 label: "Polygon Vertex"
             }
         ]
-    }
+    },
+    {
+        id: 'circleSpacing',
+        type: 'slider',
+        getLabel: (num) => "Circle Spacing Factor: " + num,
+        min: .8,
+        max: 7,
+        step: .1,
+        getDisabled: (d) => d
+    },
 ];
 
 export default ControlSettings;

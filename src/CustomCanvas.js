@@ -54,8 +54,10 @@ class CustomCanvas extends Component {
         con.closePath();
         con.fillStyle = color;
         con.strokeStyle = color;
-        con.lineWidth = 0;
-        con.fill();
+        con.lineWidth = 1;
+        if (!this.props.fill) con.stroke()
+        if (this.props.fill) con.fill();
+
     }
     blendOriginalImage(context) {
         if (this.props.numBlend === 0 || this.props.srcCanvas === null)
@@ -91,7 +93,7 @@ class CustomCanvas extends Component {
         con.strokeStyle = this.props.showLines === true ? 'white' : color;
         con.fillStyle = color;
         con.lineWidth = 0;
-        con.fill();
+        if (this.props.fill) con.fill();
         if (con.fillStyle !== '#ffffff') {
             con.stroke();
         }

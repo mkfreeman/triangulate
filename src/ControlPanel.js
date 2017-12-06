@@ -69,6 +69,7 @@ class ControlPanel extends Component {
         this.setState(obj);
     }
     render() {
+        console.log(this.props.disabled)
         return (
             <div>
               { this.props.mobile && <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" /> }
@@ -103,8 +104,11 @@ class ControlPanel extends Component {
                                           </div>
                                     break;
                                 case 'slider':
+                                    if (control.id === "circleSpacing") {
+                                        console.log(this.props.disabled[control.id], control.id)
+                                    }
                                     ele = <div key={ control.id } className="sliderWrapper">
-                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled))) &&
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
                                               <div>
                                                 <label>
                                                   { control.getLabel(this.props.status[control.id]) }
@@ -115,7 +119,10 @@ class ControlPanel extends Component {
                                           </div>
                                     break;
                                 case 'checkbox':
-                                    ele = <Checkbox key={ control.id } checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } />
+                                    ele = <div key={ control.id }>
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
+                                              <Checkbox checked={ this.props.status[control.id] } label={ control.label } onCheck={ (e, val) => this.props.update(e, control.id, val) } /> }
+                                          </div>
                                     break;
                                 case 'radio':
                                     ele = <RadioButtonGroup key={ control.id } onChange={ (e, val) => this.props.update(e, control.id, val) } name={ control.id } defaultSelected={ this.props.status[control.id] } style={ this.state.styles.radioGroup }>
@@ -128,7 +135,7 @@ class ControlPanel extends Component {
                                     break;
                                 case 'toggle':
                                     ele = <div key={ control.id }>
-                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled))) &&
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
                                               <Toggle label={ control.label } style={ this.state.styles.toggle } toggled={ this.props.status[control.id] } onToggle={ (e, val) => this.props.update(e, control.id, val) } /> }
                                           </div>
                                     break;

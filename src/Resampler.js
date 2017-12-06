@@ -4,8 +4,9 @@ import PolygonUtils from './PolygonUtils';
 
 // Define resampler class: resamples and smooths points
 class Resampler {
-    constructor(width, height, numPoints, smoothIters, smoothType, shape, numResample) {
+    constructor(width, height, numPoints, smoothIters, smoothType, shape, numResample, circleSpacing) {
         this.width = width || 100;
+        this.circleSpacing = circleSpacing || 3;
         this.height = height || 100;
         this.numPoints = numPoints || 100;
         this.smoothIters = smoothIters || 0;
@@ -183,8 +184,11 @@ class Resampler {
             if (ratio > 2.0)
                 radii[i] = minDist[i] / 2.05;
             else {
-                radii[i] = minDist[i] / (3.05 - 1.0 * (ratio - 1.0));
+                // radii[i] = minDist[i] / (3.05 - 1.0 * (ratio - 1.0));
+                let val = minDist[i] / (this.circleSpacing - 1.0 * (ratio - 1.0)) <= 1 ? 1 : minDist[i] / (this.circleSpacing - 1.0 * (ratio - 1.0));
+                radii[i] = val;
             }
+
         }
         let sitesWithRadii = this.sites.map(function(d, i) {
             d.radius = radii[i];
