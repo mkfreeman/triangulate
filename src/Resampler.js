@@ -28,6 +28,7 @@ class Resampler {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
             this.needsSitesUpdate = true;
+            this.needsSmootherUpdate = true;
         }.bind(this))
         return this;
     }
