@@ -16,9 +16,9 @@ const PolygonUtils = {
     },
 
     // Get 
-    getImageOffset(pt, width, height) {
-        var x = Math.round(pt[0]);
-        var y = Math.round(pt[1]);
+    getImageOffset(xin, yin, width, height) {
+        var x = Math.round(xin);
+        var y = Math.round(yin);
         if (x < 0)
             x = 0;
         if (y < 0)

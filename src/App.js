@@ -150,19 +150,21 @@ class App extends Component {
         // Update canvas copy 
         this.updateCanvasCopy(width, height, this.state.srcCanvas)
 
-        // Update re-sampler        
-        resampler.updateValues({
-            height: height,
-            width: width,
-            circleSpacing: this.state.circleSpacing,
-            numPoints: this.state.numPoints,
-            shape: this.state.shape,
-            numResample: this.state.contrastIters
-        }).updateSmoother({
-            smoothType: this.state.smoothType,
-            smoothIters: this.state.smoothIters,
-            contrastIters: this.state.contrastIters
-        }).setSrcCanvas(this.state.srcCanvas);
+        if (this.refs.canvasCopy != null) {
+        // Update re-sampler
+            resampler.updateValues({
+                height: height,
+                width: width,
+                circleSpacing: this.state.circleSpacing,
+                numPoints: this.state.numPoints,
+                shape: this.state.shape,
+                numResample: this.state.contrastIters
+            }).updateSmoother({
+                smoothType: this.state.smoothType,
+                smoothIters: this.state.smoothIters,
+                contrastIters: this.state.contrastIters
+            }).setSrcCanvas(this.refs.canvasCopy);
+        }
 
         // Get polygons from resampler
         let polygons = this.state.srcCanvas === null ? null : resampler.getPolygons();

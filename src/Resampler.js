@@ -64,26 +64,28 @@ class Resampler {
         this.sites = d3
             .range(this.numPoints)
             .map(function(d) {
-                let pt = [
-                    Math.random() * this.width,
-                    Math.random() * this.height];
-
-                // Resample for contrast!
-                let radius = Math.sqrt(this.width * this.height / this.numPoints) / 2;
-                if (radius < 1)
-                    radius = 1;
-                let score = this.approximateGradient(pt, radius);
-                for (var i = 0; i < this.numResample; ++i) {
-                    var newPt = [
-                        Math.random() * this.width,
-                        Math.random() * this.height
-                    ];
-                    var newScore = this.approximateGradient(newPt, radius);
-                    if (newScore > score)
-                        pt = newPt;
+                let x = Math.random() * this.width;
+                let y = Math.random() * this.height;
+            
+                if (this.numResample > 0) {
+                    let randVal = Math.random() * 100;
+                    if (randVal < this.numResample) {
+                        let curResample = 6; //Math.min(10,Math.ceil(randVal / 3));
+                        let radius = Math.max(1, Math.sqrt(this.width * this.height / this.numPoints) / 2);
+                        let score = this.approximateGradient(x, y, radius);
+                        for (let i = 0; i < curResample; ++i) {
+                            let newX = Math.random() * this.width;
+                            let newY = Math.random() * this.height;
+                            let newScore = this.approximateGradient(newX, newY, radius);
+                            if (newScore > score) {
+                                x = newX;
+                                y = newY;
+                                score = newScore;
+                            }
+                        }
+                    }
                 }
-                return pt;
-
+                return [x, y];
             }.bind(this));
         this.needsSitesUpdate = false;
         return this;
@@ -96,24 +98,14 @@ class Resampler {
         return r * r + b * b + g * g;
     }
     // Function for resampling for contrast
-    approximateGradient(pt, d) {
-        var off = PolygonUtils.getImageOffset(pt);
-        var offpx = PolygonUtils.getImageOffset([
-            pt[0] + d,
-            pt[1]
-        ]);
-        var offmx = PolygonUtils.getImageOffset([
-            pt[0] - d,
-            pt[1]
-        ]);
-        var offpy = PolygonUtils.getImageOffset([
-            pt[0], pt[1] + 5
-        ]);
-        var offmy = PolygonUtils.getImageOffset([
-            pt[0], pt[1] - 5
-        ]);
-        return this.imageDiffSq(offpx, off) + this.imageDiffSq(offmx, off) + this.imageDiffSq(offpy, off) + this.imageDiffSq(offmy, off);
+    approximateGradient(x, y, d) {
+        let off = PolygonUtils.getImageOffset(x, y, this.width, this.height);
+        return this.imageDiffSq(PolygonUtils.getImageOffset(x + d, y, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x - d, y, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x, y + d, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x, y - d, this.width, this.height), off);
     }
+
     // Issue: this could be re-written so that you only sample the additionally necessary times 
     // I.e., if you want 30 samples (and have done 29), only re-sample once more!
     // This would require not re-setting the sites in this function....
