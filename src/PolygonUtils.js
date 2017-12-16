@@ -108,6 +108,62 @@ const PolygonUtils = {
     },
     getPolygonVertexAverages: function(polygons) {
         return polygons.map((d) => this.polygonVertexAverage(d));
+    },
+    getWeightedSites: function(inputSites, weights, diagram, width, height) {
+        // initialize the result to contain the original sites so that
+        // if a polygon contains no weight, then the site doesn't move
+        let weightedCentroidData = inputSites.map(function(d) {
+                return [d[0], d[1] , 0.0];
+            });
+
+        // Perform the weighted centroid calculation by integrating over 
+        // the entire image and accumulating the integral for the relevant
+        // polygon.
+        let site = 0;
+        let weight = 0;
+        let counter = 0;
+        for (let iW =0; iW < width; ++iW) {
+            if (iW % 2 === 0) {
+                for (let iH=0; iH < height; ++iH) {
+                    weight = weights[counter];
+                    ++counter; // note: counter = iW*height+iH; but this is a little faster?
+                    if (weight > 0.0) {
+                        site = diagram.find(iW, iH).index; // find which polygon contains this pixels
+                        if (weightedCentroidData[site][2] === 0.0) {
+                            weightedCentroidData[site][0] = weight*iW;
+                            weightedCentroidData[site][1] = weight*iH;
+                        } else {
+                            weightedCentroidData[site][0] += weight*iW;
+                            weightedCentroidData[site][1] += weight*iH;
+                        }
+                        weightedCentroidData[site][2] += weight;
+                    }
+                }
+            } else {
+                for (let iH=height-1; iH >= 0; --iH) {
+                    weight = weights[counter];
+                    ++counter; // note: counter = iW*height+iH; but this is a little faster?
+                    if (weight > 0.0) {
+                        site = diagram.find(iW, iH).index; // find which polygon contains this pixel
+                        if (weightedCentroidData[site][2] === 0.0) {
+                            weightedCentroidData[site][0] = weight*iW;
+                            weightedCentroidData[site][1] = weight*iH;
+                        } else {
+                            weightedCentroidData[site][0] += weight*iW;
+                            weightedCentroidData[site][1] += weight*iH;
+                        }
+                        weightedCentroidData[site][2] += weight;
+                    }
+                }
+            }
+        }
+
+        // compute the weighted centroids and return
+        return weightedCentroidData.map(function(d) {
+                if (d[2] === 0.0)
+                    return [d[0], d[1]];
+                return [d[0]/d[2], d[1]/d[2]];
+            });  
     }
 }
 

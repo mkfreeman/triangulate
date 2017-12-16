@@ -69,7 +69,7 @@ class ControlPanel extends Component {
         this.setState(obj);
     }
     render() {
-        console.log(this.props.disabled)
+        //console.log(this.props.disabled)
         return (
             <div>
               { this.props.mobile && <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" /> }
@@ -105,7 +105,7 @@ class ControlPanel extends Component {
                                     break;
                                 case 'slider':
                                     if (control.id === "circleSpacing") {
-                                        console.log(this.props.disabled[control.id], control.id)
+                                        //console.log(this.props.disabled[control.id], control.id)
                                     }
                                     ele = <div key={ control.id } className="sliderWrapper">
                                             { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&

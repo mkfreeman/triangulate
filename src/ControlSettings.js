@@ -124,6 +124,9 @@ const ControlSettings = [
             }, {
                 id: "polygonVertex",
                 label: "Polygon Vertex"
+            }, {
+                id: "contrastWeighted",
+                label: "Contrast Weighted"
             }
         ]
     },
