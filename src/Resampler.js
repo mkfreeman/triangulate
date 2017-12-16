@@ -14,7 +14,8 @@ class Resampler {
         this.smoothType = smoothType || 'lloyd';
         this.shape = shape || "triangles";
         this.imageBuffer8 = {};
-        this.needsSitesUpdate = true;;
+        this.needsSitesUpdate = true;
+        this.needsWeightUpdate = true;
         this.needsSmootherUpdate = true;
     }
     setSrcCanvas(srcCanvas) {
@@ -22,15 +23,27 @@ class Resampler {
             let context = srcCanvas.getContext('2d');
             let canvasData = context.getImageData(0, 0, this.width, this.height);
             this.imageBuffer8 = new Uint8Array(canvasData.data.buffer);
+            this.needsWeightUpdate = true;
         }
+        return this;
     }
     updateValues(obj) {
         Object.keys(obj).forEach(function(prop) {
             if (obj[prop] === this[prop]) return;
             this[prop] = obj[prop];
             this.needsSitesUpdate = true;
+            this.needsWeightUpdate = true;
             this.needsSmootherUpdate = true;
         }.bind(this))
+        return this;
+    }
+    updateWeight(obj) {
+        Object.keys(obj).forEach(function(prop) {
+            if (obj[prop] === this[prop]) return;
+            this[prop] = obj[prop];
+            this.needsWeightUpdate = true;
+            this.needsSmootherUpdate = true;
+        }.bind(this));
         return this;
     }
     updateSmoother(obj) {
@@ -64,30 +77,58 @@ class Resampler {
         this.sites = d3
             .range(this.numPoints)
             .map(function(d) {
-                let pt = [
-                    Math.random() * this.width,
-                    Math.random() * this.height];
-
-                // Resample for contrast!
-                let radius = Math.sqrt(this.width * this.height / this.numPoints) / 2;
-                if (radius < 1)
-                    radius = 1;
-                let score = this.approximateGradient(pt, radius);
-                for (var i = 0; i < this.numResample; ++i) {
-                    var newPt = [
-                        Math.random() * this.width,
-                        Math.random() * this.height
-                    ];
-                    var newScore = this.approximateGradient(newPt, radius);
-                    if (newScore > score)
-                        pt = newPt;
+                let x = Math.random() * this.width;
+                let y = Math.random() * this.height;
+            
+                if (this.numResample > 0) {
+                    let randVal = Math.random() * 100;
+                    if (randVal < this.numResample) {
+                        let curResample = 6; //Math.min(10,Math.ceil(randVal / 3));
+                        let radius = Math.max(1, Math.sqrt(this.width * this.height / this.numPoints) / 2);
+                        let score = this.approximateGradient(x, y, radius);
+                        for (let i = 0; i < curResample; ++i) {
+                            let newX = Math.random() * this.width;
+                            let newY = Math.random() * this.height;
+                            let newScore = this.approximateGradient(newX, newY, radius);
+                            if (newScore > score) {
+                                x = newX;
+                                y = newY;
+                                score = newScore;
+                            }
+                        }
+                    }
                 }
-                return pt;
-
+                return [x, y];
             }.bind(this));
         this.needsSitesUpdate = false;
         return this;
     }
+    
+    // precompute the smoothing weights since this can be expensive and
+    // only needs to be done when the image changes, not other settings
+    setWeight() {
+        if (this.needsWeightUpdate === false) return this;
+        this.weights = []; 
+        if (this.smoothType === 'contrastWeighted') {
+            for (let iW =0; iW < this.width; ++iW) {
+                if (iW % 2  === 0) {
+                    for (let iH=0; iH < this.height; ++iH) {
+                        this.weights.push(this.approximateGradient(iW, iH, 1) + 1.0);
+                    }
+                } else {
+                    for (let iH=this.height-1; iH >= 0; --iH) {
+                        this.weights.push(this.approximateGradient(iW, iH, 1) + 1.0);
+                    }
+                }
+            }
+            // only need to redo the smoothing if we are using weighted smoothing
+            this.needsSmootherUpdate = true;
+        }
+
+        this.needsWeightUpdate = false;
+        return this;
+    }
+    
     // Helper function for approximating gradient
     imageDiffSq = function(off1, off2) {
         var r = this.imageBuffer8[off1] - this.imageBuffer8[off2];
@@ -96,43 +137,39 @@ class Resampler {
         return r * r + b * b + g * g;
     }
     // Function for resampling for contrast
-    approximateGradient(pt, d) {
-        var off = PolygonUtils.getImageOffset(pt);
-        var offpx = PolygonUtils.getImageOffset([
-            pt[0] + d,
-            pt[1]
-        ]);
-        var offmx = PolygonUtils.getImageOffset([
-            pt[0] - d,
-            pt[1]
-        ]);
-        var offpy = PolygonUtils.getImageOffset([
-            pt[0], pt[1] + 5
-        ]);
-        var offmy = PolygonUtils.getImageOffset([
-            pt[0], pt[1] - 5
-        ]);
-        return this.imageDiffSq(offpx, off) + this.imageDiffSq(offmx, off) + this.imageDiffSq(offpy, off) + this.imageDiffSq(offmy, off);
+    approximateGradient(x, y, d) {
+        let off = PolygonUtils.getImageOffset(x, y, this.width, this.height);
+        return this.imageDiffSq(PolygonUtils.getImageOffset(x + d, y, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x - d, y, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x, y + d, this.width, this.height), off) +
+            this.imageDiffSq(PolygonUtils.getImageOffset(x, y - d, this.width, this.height), off);
     }
+
     // Issue: this could be re-written so that you only sample the additionally necessary times 
     // I.e., if you want 30 samples (and have done 29), only re-sample once more!
     // This would require not re-setting the sites in this function....
     smoothSites() {
         // Set sites, so that you start with a clean set of sites (i.e., so that it un-smooths)
         if (this.needsSmootherUpdate === false) return this;
-        this.setSites()
+        this.setSites();
+        this.setWeight();
+        this.smoothedSites = this.sites;
         for (var i = 0; i < this.smoothIters; ++i) {
             if (this.smoothType === 'lloyd') {
-                let polygons = this.voronoi(this.sites).polygons();
-                this.sites = PolygonUtils.getCentroids(polygons);
+                let polygons = this.voronoi(this.smoothedSites).polygons();
+                this.smoothedSites = PolygonUtils.getCentroids(polygons);
             }
             if (this.smoothType === 'laplacian') {
-                let diagram = this.voronoi(this.sites);
-                this.sites = PolygonUtils.getLaplacianSites(this.sites, diagram);
+                let diagram = this.voronoi(this.smoothedSites);
+                this.smoothedSites = PolygonUtils.getLaplacianSites(this.smoothedSites, diagram);
             }
             if (this.smoothType === 'polygonVertex') {
-                let polygons = this.voronoi(this.sites).polygons();
-                this.sites = PolygonUtils.getPolygonVertexAverages(polygons);
+                let polygons = this.voronoi(this.smoothedSites).polygons();
+                this.smoothedSites = PolygonUtils.getPolygonVertexAverages(polygons);
+            }
+            if (this.smoothType === 'contrastWeighted') {
+                let diagram = this.voronoi(this.smoothedSites);
+                this.smoothedSites = PolygonUtils.getWeightedSites(this.smoothedSites, this.weights, diagram, this.width, this.height);
             }
         }
         this.needsSmootherUpdate = false;
@@ -142,12 +179,12 @@ class Resampler {
 
     // Function to get dot radii given the diagram
     getDotRadii() {
-        let diagram = this.voronoi(this.sites);
+        let diagram = this.voronoi(this.smoothedSites);
         // first compute the distance to the nearest and furthest Voronoi neighbors
         var minDist = [];
         var maxDist = [];
         var radii = [];
-        this.sites.forEach(function(site) {
+        this.smoothedSites.forEach(function(site) {
             minDist.push(this.width + this.height);
             maxDist.push(0.0);
             radii.push(0.0);
@@ -190,7 +227,7 @@ class Resampler {
             }
 
         }
-        let sitesWithRadii = this.sites.map(function(d, i) {
+        let sitesWithRadii = this.smoothedSites.map(function(d, i) {
             d.radius = radii[i];
             return d;
         })
@@ -201,14 +238,15 @@ class Resampler {
         // Set voronoi, sites, and smooth them
         this.setVoronoi()
             .setSites()
+            .setWeight()
             .smoothSites();
         let shapes;
         switch (this.shape) {
             case 'triangles':
-                shapes = this.voronoi(this.sites).triangles();
+                shapes = this.voronoi(this.smoothedSites).triangles();
                 break;
             case 'polygons':
-                shapes = this.voronoi(this.sites).polygons()
+                shapes = this.voronoi(this.smoothedSites).polygons()
                 break;
             case 'circles':
                 shapes = this.getDotRadii();

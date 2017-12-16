@@ -56,14 +56,14 @@ const ColorUtils = function() {
         var g = 0;
         var b = 0;
         var a = 0;
-        var offset = PolygonUtils.getImageOffset(c, width, height);
+        var offset = PolygonUtils.getImageOffset(c[0], c[1], width, height);
         r += p.length * this.imageBuffer8[offset];
         g += p.length * this.imageBuffer8[offset + 1];
         b += p.length * this.imageBuffer8[offset + 2];
         a += p.length * this.imageBuffer8[offset + 3];
 
         p.forEach(function(pt) {
-            offset = PolygonUtils.getImageOffset(pt, width, height);
+            offset = PolygonUtils.getImageOffset(pt[0], pt[1], width, height);
             r += this.imageBuffer8[offset];
             g += this.imageBuffer8[offset + 1];
             b += this.imageBuffer8[offset + 2];
@@ -84,7 +84,7 @@ const ColorUtils = function() {
     }
     utils.getColorAtPos = function(pt) {
         // Get color
-        let offset = PolygonUtils.getImageOffset(pt, width, height);
+        let offset = PolygonUtils.getImageOffset(pt[0], pt[1], width, height);
         let color = this.makeColorString(this.imageBuffer8[offset], this.imageBuffer8[offset + 1], this.imageBuffer8[offset + 2], this.imageBuffer8[offset + 3]);
         // Calculate luminence
         if (blackWhite === true) {
