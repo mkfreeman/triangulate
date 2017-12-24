@@ -56,7 +56,7 @@
     position: fixed;
     right: 0px;
     bottom: 40px;
-    z-index: 999999;
+    z-index: 999;
 }
 
 @media (min-width:900px) {

@@ -72,10 +72,16 @@ class ControlPanel extends Component {
         //console.log(this.props.disabled)
         return (
             <div>
-              { this.props.mobile && <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" /> }
-              <Drawer overlayStyle={ this.state.styles.overlay } docked={ !this.props.mobile } open={ this.state.open } onRequestChange={ (open) => this.setState({
-                                                                                                                                              open
-                                                                                                                                          }) } containerStyle={ this.state.styles.drawer }>
+              { this.props.mobile &&
+                <div>
+                  <div className="customOverlay" onClick={ () => this.setState({
+                                                               open: !this.state.open
+                                                           }) } />
+                  <AppBar title="Triangulate" onLeftIconButtonTouchTap={ () => this.handleOpen() } iconClassNameRight="muidocs-icon-navigation-expand-more" />
+                </div> }
+              <Drawer overlayStyle={ this.state.styles.overlay } open={ this.state.open } onRequestChange={ (open) => this.setState({
+                                                                                                                open
+                                                                                                            }) } containerStyle={ this.state.styles.drawer }>
                 <div className="controlWrapper">
                   <div id="uploadWrapper">
                     <RaisedButton primary={ true } containerElement='label' label='Upload File'>
@@ -104,9 +110,7 @@ class ControlPanel extends Component {
                                           </div>
                                     break;
                                 case 'slider':
-                                    if (control.id === "circleSpacing") {
-                                        //console.log(this.props.disabled[control.id], control.id)
-                                    }
+                    
                                     ele = <div key={ control.id } className="sliderWrapper">
                                             { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
                                               <div>
@@ -147,9 +151,9 @@ class ControlPanel extends Component {
                   <RaisedButton label="About" onClick={ this
                                                             .handleModal
                                                             .bind(this) } />
-                  <Dialog title="About" modal={ false } open={ this.state.modalOpen } onRequestClose={ this
-                                                                                                           .handleModal
-                                                                                                           .bind(this) }>
+                  <Dialog title="About" autoScrollBodyContent={ true } modal={ false } open={ this.state.modalOpen } onRequestClose={ this
+                                                                                                                                          .handleModal
+                                                                                                                                          .bind(this) }>
                     <p>This project uses a
                       { ' ' }
                       <a href="https://github.com/d3/d3/blob/master/API.md#voronoi-diagrams-d3-voronoi" target="_blank" rel="noopener noreferrer">Voronoi Diagram</a> to randomly

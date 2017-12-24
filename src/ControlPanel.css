@@ -26,3 +26,9 @@ h3 {
         margin-bottom: 50px;
     }
 }
+
+.customOverlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}

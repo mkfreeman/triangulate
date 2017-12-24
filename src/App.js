@@ -45,7 +45,7 @@ class App extends Component {
             width: window.innerWidth < mobileThreshold ? window.innerWidth : window.innerWidth - menuWidth,
             height: window.innerHeight - 20,
             originalSize: {},
-            smoothType: 'laplacian',
+            smoothType: 'none',
             sampler: null,
             polygons: null,
             canvasCopy: null
@@ -151,7 +151,7 @@ class App extends Component {
         this.updateCanvasCopy(width, height, this.state.srcCanvas)
 
         if (this.refs.canvasCopy != null) {
-        // Update re-sampler
+            // Update re-sampler
             resampler.setSrcCanvas(this.refs.canvasCopy
             ).updateValues({
                 height: height,
@@ -186,7 +186,9 @@ class App extends Component {
             invert: !this.state.blackWhite,
             threshold: !this.state.blackWhite,
             showLines: this.state.shape === "circles" || !this.state.fill,
-            circleSpacing: this.state.shape !== "circles"
+            circleSpacing: this.state.shape !== "circles",
+            smoothIters: this.state.smoothType === "none",
+            contrastIters: this.state.smoothType === "none"
         }
         return (
             <MuiThemeProvider>

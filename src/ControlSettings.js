@@ -1,35 +1,32 @@
 /* Control Settings
 
 Set `id` as **state** object to manipulate */
-const ControlSettings = [
-    {
-        id: 'image-header',
-        type: 'header',
-        label: "Image Options"
+const ControlSettings = [{
+    id: 'image-header',
+    type: 'header',
+    label: "Image Options"
+}, {
+    id: 'shape',
+    type: 'select',
+    label: "Shape",
+    options: [{
+        id: "circles",
+        label: "Circles"
     }, {
-        id: 'shape',
-        type: 'select',
-        label: "Shape",
-        options: [
-            {
-                id: "circles",
-                label: "Circles"
-            }, {
-                id: "triangles",
-                label: "Triangles"
-            }, {
-                id: "polygons",
-                label: "Polygons"
-            }
-        ]
+        id: "triangles",
+        label: "Triangles"
     }, {
-        id: 'numPoints',
-        type: 'slider',
-        getLabel: (num) => "# of Points: " + num,
-        min: 10,
-        max: 10000,
-        step: 100
-    },
+        id: "polygons",
+        label: "Polygons"
+    }]
+}, {
+    id: 'numPoints',
+    type: 'slider',
+    getLabel: (num) => "# of Points: " + num,
+    min: 10,
+    max: 10000,
+    step: 100
+},
     {
         id: 'fitToScreen',
         label: "Fit image To screen",
@@ -58,15 +55,13 @@ const ControlSettings = [
     }, {
         id: "fillColor",
         type: 'radio',
-        options: [
-            {
-                id: "centroid",
-                label: "Center Color"
-            }, {
-                id: "average",
-                label: "Average Color"
-            }
-        ]
+        options: [{
+            id: "centroid",
+            label: "Center Color"
+        }, {
+            id: "average",
+            label: "Average Color"
+        }]
     }, {
         id: 'blackWhite',
         label: "Black and White",
@@ -89,31 +84,18 @@ const ControlSettings = [
         type: 'header',
         label: "Smoothing Options"
     }, {
-        id: 'contrastIters',
-        type: 'slider',
-        getLabel: (num) => "Re-sample for Contrast: " + num + "%",
-        min: 0,
-        max: 100,
-        step: 1
-    }, {
-        id: 'smoothIters',
-        type: 'slider',
-        getLabel: (num) => "Re-sample to Distribute Points: " + num + " times",
-        min: 0,
-        max: 20,
-        step: 1
-    }, {
-        id: 'blur',
-        type: 'Slider',
-        getLabel: (num) => "Blur is " + num,
-        min: 0,
-        max: 100,
-        step: 1
-    }, {
         id: 'smoothType',
         type: 'select',
         label: "Smoothing Algorithm",
         options: [
+            {
+                id: "none",
+                label: "None"
+            },
+            {
+                id: "contrastWeighted",
+                label: "Contrast Weighted"
+            },
             {
                 id: "lloyd",
                 label: "Lloyd"
@@ -124,11 +106,31 @@ const ControlSettings = [
             }, {
                 id: "polygonVertex",
                 label: "Polygon Vertex"
-            }, {
-                id: "contrastWeighted",
-                label: "Contrast Weighted"
             }
         ]
+    }, {
+        id: 'contrastIters',
+        type: 'slider',
+        getLabel: (num) => "Re-sample for Contrast: " + num + "%",
+        min: 0,
+        max: 100,
+        step: 1,
+        getDisabled: (d) => d
+    }, {
+        id: 'smoothIters',
+        type: 'slider',
+        getLabel: (num) => "Re-sample to Distribute Points: " + num + " times",
+        min: 0,
+        max: 20,
+        step: 1,
+        getDisabled: (d) => d
+    }, {
+        id: 'blur',
+        type: 'Slider',
+        getLabel: (num) => "Blur is " + num,
+        min: 0,
+        max: 100,
+        step: 1
     },
     {
         id: 'circleSpacing',
