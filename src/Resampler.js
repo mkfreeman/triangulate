@@ -17,6 +17,7 @@ class Resampler {
         this.needsSitesUpdate = true;
         this.needsWeightUpdate = true;
         this.needsSmootherUpdate = true;
+
     }
     setSrcCanvas(srcCanvas) {
         if (srcCanvas !== null) {
@@ -145,6 +146,24 @@ class Resampler {
             this.imageDiffSq(PolygonUtils.getImageOffset(x, y - d, this.width, this.height), off);
     }
 
+    // Snap the sites with Voronoi cells that touch the  perimeter to actually lie on
+    // the perimeter. This is used to create a Delaunay triangulation that covers the 
+    // entire square.
+    snapToRetainPerimeter() {
+        let snappedAny = true;
+        let snapCount = 0;
+        // Sometimes this takes a couple iterations to ensure that the Delaunay triangulation
+        // contains the full perimeter of the shape, although I have never seem more than 3 iterations
+        // on normal point distributions.
+        while (snappedAny && snapCount < 5)
+        {
+            let diagram = this.voronoi(this.smoothedSites);
+            snappedAny = PolygonUtils.snapToPerimeter(this.smoothedSites, diagram, this.width, this.height);
+            snapCount += 1;
+        }
+        return this;
+    }
+    
     // Issue: this could be re-written so that you only sample the additionally necessary times 
     // I.e., if you want 30 samples (and have done 29), only re-sample once more!
     // This would require not re-setting the sites in this function....
@@ -155,6 +174,13 @@ class Resampler {
         this.setWeight();
         this.smoothedSites = this.sites;
         for (var i = 0; i < this.smoothIters; ++i) {
+            
+            // Snap to the perimeter during the last few iterations
+            // so that the perimeter cells don't end up skewed.
+            if (i > this.smoothIters - 3 && 
+                this.shape === 'triangles')
+                this.snapToRetainPerimeter();
+            
             if (this.smoothType === 'lloyd') {
                 let polygons = this.voronoi(this.smoothedSites).polygons();
                 this.smoothedSites = PolygonUtils.getCentroids(polygons);
@@ -170,10 +196,14 @@ class Resampler {
             if (this.smoothType === 'contrastWeighted') {
                 let diagram = this.voronoi(this.smoothedSites);
                 this.smoothedSites = PolygonUtils.getWeightedSites(this.smoothedSites, this.weights, diagram, this.width, this.height);
-            }
+            }            
         }
+        
+        if (this.shape === 'triangles')
+            this.snapToRetainPerimeter();
+        
         this.needsSmootherUpdate = false;
-
+        
         return this;
     }
 

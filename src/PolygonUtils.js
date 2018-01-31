@@ -164,6 +164,43 @@ const PolygonUtils = {
                     return [d[0], d[1]];
                 return [d[0]/d[2], d[1]/d[2]];
             });  
+    },
+    snapToPerimeter: function(sites, diagram, width, height) {
+        let snappedAny = false;
+        // Sites that edges of Voronoi cells that lie on the perimeter of
+        // the polygon will be snapped to the perimeter.
+        diagram.edges.map(function(edge) {
+            // Perimeter edges don't have a neighboring Voronoi site.
+            if (typeof edge.right === 'undefined') {
+                // If the site has already been snapped to the perimeter, skip it.
+                if ( (sites[edge.left.index][0] > 0 && sites[edge.left.index][0] < width) &&
+                     (sites[edge.left.index][1] > 0 && sites[edge.left.index][1] < height) ) {
+                    snappedAny = true;
+                    
+                    // Move the site to the midpoint of the edge along the perimter.
+                    sites[edge.left.index][0] = (edge[0][0] + edge[1][0])/2;
+                    sites[edge.left.index][1] = (edge[0][1] + edge[1][1])/2;
+                    
+                    // Note: d3 returns a kind of weird Voronoi diagram that cuts
+                    //       the corners of the cells in this edges array, rather
+                    //       than include the full cell in user specified extent.
+                    //       That is why we check 00 and 11 or 01 and 10 for extreme
+                    //       values to push the site into a corner.
+                    if ( (edge[0][0] > width || edge[0][0] < 0) && 
+                         (edge[1][1] > height || edge[1][1] < 0) ) {
+                        sites[edge.left.index][0] = edge[0][0];
+                        sites[edge.left.index][1] = edge[1][1];
+                    } else if ( (edge[1][0] > width || edge[1][0] < 0) && 
+                                (edge[0][1] > height || edge[0][1] < 0) ) {
+                        sites[edge.left.index][0] = edge[1][0];
+                        sites[edge.left.index][1] = edge[0][1];
+                    }
+                }
+            }
+        });
+        
+        // Return if any vertices were moved.
+        return snappedAny;
     }
 }
 
