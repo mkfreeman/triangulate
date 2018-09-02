@@ -41,6 +41,13 @@ It also has the following smoothing algorithms (used in `Resampler.smoothSites()
 - `getPolygonVertex`: Uses _Polygon Vertex_ method, which moves a site to the average of the vertices of the Voronoi polygon.
 - `getCentroids`: Uses the _Lloyd_ method, which moves sites to their polygon centroids.
 
+### `RectangleUtils.js`
+This modules also exports an object that has pure functions, including:
+
+- `fillRectangles`: Recursive function for subdividing rectangles until each one contains a single site in the input sites list.
+- `getSplitLocation`: Compute some kind of middle point between a minimum and maximum value used to encapsulate some randomization in the rectangular subdivision process.
+- `swapSites`: Helper function for swapping two objects in an arrray of objects.s
+
 ### `ColorUtils.js`
 Using a slightly different approach, `ColorUtils.js` leverages a **closure** to have locally scoped variables (this is because many of the functions depend on the same information, such as the `width` and `height`). The module exports a **function that returns an object** which has many methods on it. It is implemented in `CustomCanvas.js` as follows:
 

@@ -163,7 +163,7 @@ class ControlPanel extends Component {
                       Voronoi Diagram. See
                       { ' ' }
                       <a href="https://github.com/mkfreeman/triangulate" target="_blank" rel="noopener noreferrer">code</a>  on GitHub.</p>
-                    Hexagon, circle, and smoothing functionality built by
+                    Polygon, circle, rectangle, and smoothing functionality built by
                     { ' ' }
                     <a href="https://scholar.google.com/citations?user=247cncgAAAAJ" target="_blank" rel="noopener noreferrer">Alex Rand</a>.
                   </Dialog>

@@ -1,6 +1,7 @@
 // Resampler
 import * as d3 from 'd3';
 import PolygonUtils from './PolygonUtils';
+import RectangleUtils from './RectangleUtils';
 
 // Define resampler class: resamples and smooths points
 class Resampler {
@@ -207,6 +208,15 @@ class Resampler {
         return this;
     }
 
+    // Function to get rectangle diagram from given sites
+    getRectangles() {
+        let copySites = this.smoothedSites;
+        let nSites = copySites.length;
+        var rectangles = new Array(nSites);
+        RectangleUtils.fillRectangles(copySites, 0,0,this.width, this.height, 0, nSites, rectangles);
+        return rectangles;
+    }
+
     // Function to get dot radii given the diagram
     getDotRadii() {
         let diagram = this.voronoi(this.smoothedSites);
@@ -276,7 +286,10 @@ class Resampler {
                 shapes = this.voronoi(this.smoothedSites).triangles();
                 break;
             case 'polygons':
-                shapes = this.voronoi(this.smoothedSites).polygons()
+                shapes = this.voronoi(this.smoothedSites).polygons();
+                break;
+            case 'rectangles':
+                shapes = this.getRectangles();
                 break;
             case 'circles':
                 shapes = this.getDotRadii();
