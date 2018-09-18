@@ -13,6 +13,9 @@ const ControlSettings = [{
         id: "circles",
         label: "Circles"
     }, {
+        id: "rectangles",
+        label: "Rectangles"
+    }, {
         id: "triangles",
         label: "Triangles"
     }, {
