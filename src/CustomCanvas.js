@@ -19,6 +19,8 @@ class CustomCanvas extends Component {
 
         let ctx = this.refs.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.props.width, this.props.height);
+        ctx.fillStyle = this.props.colorSettings.backgroundColor;
+        ctx.fillRect(0, 0, this.props.width, this.props.height)
 
         // draw polygons
         if (this.props.shape !== "circles") {

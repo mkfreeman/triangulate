@@ -143,6 +143,16 @@ class ControlPanel extends Component {
                                               <Toggle label={ control.label } style={ this.state.styles.toggle } toggled={ this.props.status[control.id] } onToggle={ (e, val) => this.props.update(e, control.id, val) } /> }
                                           </div>
                                     break;
+                                case 'color-input':
+                                    ele = <div key={ control.id } style={{marginBottom:"2px"}}>
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
+                                              <div>
+                                                  <label htmlFor={control.id}>{control.label}</label>
+                                                  <input id={control.id} value={ this.props.status[control.id] } type="color" onChange={ (e, val) => this.props.update(e, control.id, e.target.value) } /> 
+                                              </div>    
+                                            }
+                                          </div>
+                                    break;
                                 default:
                                     ele = <div key={ control.id }></div>
                             }

@@ -27,6 +27,7 @@ class App extends Component {
         super(props);
         this.state = {
             numPoints: 2500,
+            backgroundColor:"#fdfdfd", // doesn't work with white or black -- strange
             circleSpacing: 3,
             shape: 'triangles',
             fitToScreen: true,
@@ -81,6 +82,7 @@ class App extends Component {
     }
 
     inputChangeHandler(event, id, newValue) {
+        console.log(event, id, newValue)
         let obj = {};
         obj[id] = newValue;
         this.setState(obj);
@@ -178,18 +180,22 @@ class App extends Component {
             threshold: this.state.threshold,
             fillColor: this.state.fillColor,
             blackWhite: this.state.blackWhite,
-            invert: this.state.invert
+            invert: this.state.invert, 
+            backgroundColor: this.state.backgroundColor
         }
 
-        // Determine which controls should be disabled
+        // Determine which controls should be disabled        
+        
         let disabled = {
             invert: !this.state.blackWhite,
             threshold: !this.state.blackWhite,
             showLines: this.state.shape === "circles" || !this.state.fill,
             circleSpacing: this.state.shape !== "circles",
             smoothIters: this.state.smoothType === "none",
-            contrastIters: this.state.smoothType === "none"
+            contrastIters: this.state.smoothType === "none", 
+            backgroundColor: this.state.shape != "circles" && this.state.fill ? true : false
         }
+
         return (
             <MuiThemeProvider>
               <div>
@@ -202,9 +208,10 @@ class App extends Component {
                   <ControlPanel mobile={ this.state.mobile } uploadFile={ this.uploadFile.bind(this) } controls={ ControlSettings } status={ this.state } disabled={ disabled }
                     handleImage={ this
                                       .handleImage
-                                      .bind(this) } update={ this
-                                                                                                                                                           .inputChangeHandler
-                                                                                                                                                           .bind(this) } />
+                                      .bind(this) } 
+                    update={ this
+                    .inputChangeHandler
+                    .bind(this) } />
                 </div>
                 <div id="originalImage" ref="originalImage" style={ { display: 'none' } } />
                 <div id="canvasWrapper">

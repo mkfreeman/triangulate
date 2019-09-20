@@ -27,7 +27,7 @@ const ControlSettings = [{
     type: 'slider',
     getLabel: (num) => "# of Points: " + num,
     min: 10,
-    max: 10000,
+    max: 100000,
     step: 100
 },
     {
@@ -49,6 +49,12 @@ const ControlSettings = [{
         id: 'fill',
         label: "Fill with color",
         type: 'checkbox'
+    },
+    {
+        id: 'backgroundColor',
+        type: 'color-input',
+        label: "Background Color: ", 
+        getDisabled: (d) => d,
     },
     {
         id: 'showLines',
