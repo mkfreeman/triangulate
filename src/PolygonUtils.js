@@ -169,7 +169,7 @@ const PolygonUtils = {
         let snappedAny = false;
         // Sites that edges of Voronoi cells that lie on the perimeter of
         // the polygon will be snapped to the perimeter.
-        diagram.edges.map(function(edge) {
+        diagram.edges.forEach(function(edge) {
             // Perimeter edges don't have a neighboring Voronoi site.
             if (typeof edge.right === 'undefined') {
                 // If the site has already been snapped to the perimeter, skip it.

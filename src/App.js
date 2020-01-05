@@ -193,7 +193,7 @@ class App extends Component {
             circleSpacing: this.state.shape !== "circles",
             smoothIters: this.state.smoothType === "none",
             contrastIters: this.state.smoothType === "none", 
-            backgroundColor: this.state.shape != "circles" && this.state.fill ? true : false
+            backgroundColor: this.state.shape !== "circles" && this.state.fill ? true : false
         }
 
         return (
