@@ -110,7 +110,6 @@ class ControlPanel extends Component {
                                           </div>
                                     break;
                                 case 'slider':
-                    
                                     ele = <div key={ control.id } className="sliderWrapper">
                                             { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
                                               <div>
@@ -122,6 +121,18 @@ class ControlPanel extends Component {
                                               </div> }
                                           </div>
                                     break;
+                                case 'logslider':
+                                    ele = <div key={ control.id } className="sliderWrapper">
+                                            { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&
+                                              <div>
+                                                <label>
+                                                  { control.getLabel(this.props.status[control.id]) }
+                                                </label>
+                                                <Slider id={ control.id } min={ 0 } max={ 100 } step={ 0.25 } onChange={ (e, val) => this.handleSliderChange(control.id, Math.round(Math.pow(10,(val/25+1)))) } onDragStop={ (e) => this.props.update(e, control.id, this.state[control.id]) }
+                                                  defaultValue={ Math.log10(this.props.status[control.id])*25-25 } sliderStyle={ this.state.styles.slider } />
+                                              </div> }
+                                          </div>
+                                    break;                                    
                                 case 'checkbox':
                                     ele = <div key={ control.id }>
                                             { (control.getDisabled === undefined || (control.getDisabled !== undefined && !control.getDisabled(this.props.disabled[control.id]))) &&

@@ -24,11 +24,10 @@ const ControlSettings = [{
     }]
 }, {
     id: 'numPoints',
-    type: 'slider',
+    type: 'logslider',
     getLabel: (num) => "# of Points: " + num,
     min: 10,
-    max: 50000,
-    step: 100
+    max: 100000
 },
 {
     id: 'fitToScreen',
