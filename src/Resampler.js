@@ -113,14 +113,8 @@ class Resampler {
         this.weights = []; 
         if (this.smoothType === 'contrastWeighted') {
             for (let iW =0; iW < this.width; ++iW) {
-                if (iW % 2  === 0) {
-                    for (let iH=0; iH < this.height; ++iH) {
-                        this.weights.push(this.approximateGradient(iW, iH, 1) + 1.0);
-                    }
-                } else {
-                    for (let iH=this.height-1; iH >= 0; --iH) {
-                        this.weights.push(this.approximateGradient(iW, iH, 1) + 1.0);
-                    }
+                for (let iH=0; iH < this.height; ++iH) {
+                    this.weights.push(this.approximateGradient(iW, iH, 1) + 1.0);
                 }
             }
             // only need to redo the smoothing if we are using weighted smoothing
