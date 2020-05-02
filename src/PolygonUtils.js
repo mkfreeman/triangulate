@@ -123,38 +123,20 @@ const PolygonUtils = {
         let weight = 0;
         let counter = 0;
         for (let iW =0; iW < width; ++iW) {
-            if (iW % 2 === 0) {
-                for (let iH=0; iH < height; ++iH) {
-                    weight = weights[counter];
-                    ++counter; // note: counter = iW*height+iH; but this is a little faster?
-                    if (weight > 0.0) {
-                        site = diagram.find(iW, iH).index; // find which polygon contains this pixels
-                        if (weightedCentroidData[site][2] === 0.0) {
-                            weightedCentroidData[site][0] = weight*iW;
-                            weightedCentroidData[site][1] = weight*iH;
-                        } else {
-                            weightedCentroidData[site][0] += weight*iW;
-                            weightedCentroidData[site][1] += weight*iH;
-                        }
-                        weightedCentroidData[site][2] += weight;
+            for (let iH=0; iH < height; ++iH) {
+                weight = weights[counter];
+                ++counter; // note: counter = iW*height+iH; but this is a little faster?
+                if (weight > 0.0) {
+                    site = diagram.find(iW, iH).index; // find which polygon contains this pixels
+                    if (weightedCentroidData[site][2] === 0.0) {
+                        weightedCentroidData[site][0] = weight*iW;
+                        weightedCentroidData[site][1] = weight*iH;
+                    } else {
+                        weightedCentroidData[site][0] += weight*iW;
+                        weightedCentroidData[site][1] += weight*iH;
                     }
-                }
-            } else {
-                for (let iH=height-1; iH >= 0; --iH) {
-                    weight = weights[counter];
-                    ++counter; // note: counter = iW*height+iH; but this is a little faster?
-                    if (weight > 0.0) {
-                        site = diagram.find(iW, iH).index; // find which polygon contains this pixel
-                        if (weightedCentroidData[site][2] === 0.0) {
-                            weightedCentroidData[site][0] = weight*iW;
-                            weightedCentroidData[site][1] = weight*iH;
-                        } else {
-                            weightedCentroidData[site][0] += weight*iW;
-                            weightedCentroidData[site][1] += weight*iH;
-                        }
-                        weightedCentroidData[site][2] += weight;
-                    }
-                }
+                    weightedCentroidData[site][2] += weight;
+                }            
             }
         }
 
@@ -169,7 +151,7 @@ const PolygonUtils = {
         let snappedAny = false;
         // Sites that edges of Voronoi cells that lie on the perimeter of
         // the polygon will be snapped to the perimeter.
-        diagram.edges.map(function(edge) {
+        diagram.edges.forEach(function(edge) {
             // Perimeter edges don't have a neighboring Voronoi site.
             if (typeof edge.right === 'undefined') {
                 // If the site has already been snapped to the perimeter, skip it.
